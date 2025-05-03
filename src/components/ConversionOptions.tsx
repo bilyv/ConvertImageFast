@@ -51,7 +51,10 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
 
   // Handle format selection
   const handleFormatChange = (value: string) => {
-    onFormatChange(value as FormatOption);
+    // Ensure value is a valid FormatOption before passing it to onFormatChange
+    if (value === 'jpg' || value === 'png' || value === 'webp') {
+      onFormatChange(value as FormatOption);
+    }
   };
 
   // Handle quality slider change
