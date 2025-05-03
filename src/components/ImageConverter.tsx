@@ -6,53 +6,90 @@ import ImagePreview from './ImagePreview';
 import ConvertedImage from './ConvertedImage';
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Download } from 'lucide-react';
+
+interface ImageFile {
+  file: File;
+  originalUrl: string;
+  convertedUrl: string | null;
+  convertedFileName: string;
+}
 
 const ImageConverter: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [originalImage, setOriginalImage] = useState<string | null>(null);
-  const [convertedImage, setConvertedImage] = useState<string | null>(null);
+  const [imageFiles, setImageFiles] = useState<ImageFile[]>([]);
   const [selectedFormat, setSelectedFormat] = useState<FormatOption>('jpg');
   const [quality, setQuality] = useState<number>(85);
   const [isConverting, setIsConverting] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState<number>(-1);
   const { toast } = useToast();
 
-  // When a file is uploaded, update state and reset converted image
-  const handleFileUpload = (uploadedFile: File) => {
-    setFile(uploadedFile);
-    setConvertedImage(null);
-    
-    // Create URL for preview
-    const imageUrl = URL.createObjectURL(uploadedFile);
-    setOriginalImage(imageUrl);
-    
-    // Set default format based on uploaded file type
-    const fileType = uploadedFile.type;
-    if (fileType === 'image/jpeg') {
-      setSelectedFormat('png');  // Default to PNG if JPG is uploaded
-    } else if (fileType === 'image/png') {
-      setSelectedFormat('jpg');  // Default to JPG if PNG is uploaded
-    } else if (fileType === 'image/webp') {
-      setSelectedFormat('png');  // Default to PNG if WebP is uploaded
-    }
-  };
-
-  // Clean up object URLs when component unmounts
+  // When component unmounts, clean up object URLs
   useEffect(() => {
     return () => {
-      if (originalImage) URL.revokeObjectURL(originalImage);
-      if (convertedImage && convertedImage.startsWith('blob:')) {
-        URL.revokeObjectURL(convertedImage);
-      }
+      imageFiles.forEach(image => {
+        if (image.originalUrl) URL.revokeObjectURL(image.originalUrl);
+        if (image.convertedUrl && image.convertedUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(image.convertedUrl);
+        }
+      });
     };
-  }, [originalImage, convertedImage]);
+  }, [imageFiles]);
+
+  // Auto-delete images after 30 minutes (privacy feature)
+  useEffect(() => {
+    const autoDeleteTimer = setTimeout(() => {
+      if (imageFiles.length > 0) {
+        toast({
+          title: "Images removed",
+          description: "For privacy, uploaded images have been removed after 30 minutes.",
+        });
+        setImageFiles([]);
+      }
+    }, 30 * 60 * 1000); // 30 minutes
+
+    return () => clearTimeout(autoDeleteTimer);
+  }, [imageFiles, toast]);
+
+  // When files are uploaded
+  const handleFileUpload = (uploadedFiles: File[]) => {
+    const newImageFiles = uploadedFiles.map(file => {
+      // Create URL for preview
+      const imageUrl = URL.createObjectURL(file);
+      
+      // Determine default format based on uploaded file type
+      let format: FormatOption = 'png';
+      if (file.type === 'image/jpeg') format = 'png';
+      else if (file.type === 'image/png') format = 'jpg';
+      else if (file.type === 'image/webp') format = 'png';
+      
+      // Set format for the next conversion
+      setSelectedFormat(format);
+      
+      return {
+        file,
+        originalUrl: imageUrl,
+        convertedUrl: null,
+        convertedFileName: getConvertedFileName(file, format),
+      };
+    });
+
+    setImageFiles([...imageFiles, ...newImageFiles]);
+    setActiveImageIndex(imageFiles.length); // Select the first new image
+  };
+
+  // Generate file name for the converted image
+  const getConvertedFileName = (file: File, format: FormatOption) => {
+    // Extract name without extension
+    const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    return `${originalName}.${format}`;
+  };
 
   // Handle conversion process
   const handleConvert = async () => {
-    if (!file || !originalImage) {
+    if (imageFiles.length === 0 || activeImageIndex < 0) {
       toast({
         title: "No image selected",
-        description: "Please upload an image first.",
+        description: "Please upload and select an image first.",
         variant: "destructive"
       });
       return;
@@ -61,36 +98,51 @@ const ImageConverter: React.FC = () => {
     setIsConverting(true);
 
     try {
-      // Create canvas for image conversion
-      const img = new Image();
-      img.src = originalImage;
+      const updatedImageFiles = [...imageFiles];
       
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve();
-        img.onerror = () => reject(new Error("Failed to load image"));
-      });
+      // If all images should be converted (batch conversion)
+      for (let i = 0; i < updatedImageFiles.length; i++) {
+        const imageFile = updatedImageFiles[i];
+        
+        // Create canvas for image conversion
+        const img = new Image();
+        img.src = imageFile.originalUrl;
+        
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error("Failed to load image"));
+        });
 
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error("Failed to create canvas context");
+        
+        // Draw image on canvas
+        ctx.drawImage(img, 0, 0);
+        
+        // Set quality options (only for JPG and WebP)
+        const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
+        const qualityOption = selectedFormat !== 'png' ? quality / 100 : undefined;
+        
+        // Convert to new format
+        const convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
+        
+        // Update the file entry
+        updatedImageFiles[i] = {
+          ...imageFile,
+          convertedUrl: convertedImageUrl,
+          convertedFileName: getConvertedFileName(imageFile.file, selectedFormat),
+        };
+      }
       
-      const ctx = canvas.getContext('2d');
-      if (!ctx) throw new Error("Failed to create canvas context");
-      
-      // Draw image on canvas
-      ctx.drawImage(img, 0, 0);
-      
-      // Set quality options (only for JPG and WebP)
-      const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
-      const qualityOption = selectedFormat !== 'png' ? quality / 100 : undefined;
-      
-      // Convert to new format
-      const convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
-      setConvertedImage(convertedImageUrl);
+      setImageFiles(updatedImageFiles);
 
       toast({
         title: "Conversion successful",
-        description: `Image converted to ${selectedFormat.toUpperCase()}`,
+        description: `${updatedImageFiles.length} image(s) converted to ${selectedFormat.toUpperCase()}`,
       });
     } catch (error) {
       console.error("Conversion error:", error);
@@ -104,58 +156,155 @@ const ImageConverter: React.FC = () => {
     }
   };
 
-  // Generate file name for the converted image
-  const getConvertedFileName = () => {
-    if (!file) return '';
+  // Batch download all converted images
+  const handleBatchDownload = () => {
+    const convertedImages = imageFiles.filter(image => image.convertedUrl);
     
-    // Extract name without extension
-    const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-    return `${originalName}.${selectedFormat}`;
+    if (convertedImages.length === 0) {
+      toast({
+        title: "No converted images",
+        description: "Please convert your images first.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Create download links for each converted image
+    convertedImages.forEach((image, index) => {
+      if (!image.convertedUrl) return;
+      
+      const link = document.createElement('a');
+      link.href = image.convertedUrl;
+      link.download = image.convertedFileName;
+      document.body.appendChild(link);
+      
+      // Add a small delay between downloads
+      setTimeout(() => {
+        link.click();
+        document.body.removeChild(link);
+      }, index * 100);
+    });
+
+    toast({
+      title: "Download started",
+      description: `Downloading ${convertedImages.length} image(s)`,
+    });
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4">
+    <div className="w-full max-w-6xl mx-auto p-4">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div>
           <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
           <FileUploader onFileUpload={handleFileUpload} />
           
-          {originalImage && (
+          {imageFiles.length > 0 && (
             <>
               <div className="mt-6">
-                <ImagePreview originalImage={originalImage} fileName={file?.name || ''} />
+                <h3 className="text-md font-medium mb-2">Uploaded Images ({imageFiles.length})</h3>
+                <div className="flex overflow-x-auto pb-2 gap-2">
+                  {imageFiles.map((image, index) => (
+                    <div 
+                      key={`thumb-${index}`} 
+                      className={`w-16 h-16 flex-shrink-0 rounded cursor-pointer overflow-hidden border-2 transition-all
+                                ${activeImageIndex === index ? 'border-app-primary' : 'border-border'}`}
+                      onClick={() => setActiveImageIndex(index)}
+                    >
+                      <img 
+                        src={image.originalUrl} 
+                        alt={`Thumbnail ${index+1}`}
+                        className="w-full h-full object-cover" 
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-              
-              <div className="mt-6 space-y-4">
-                <h2 className="text-xl font-semibold">Conversion Options</h2>
-                <ConversionOptions
-                  currentFileType={file?.type || null}
-                  selectedFormat={selectedFormat}
-                  quality={quality}
-                  onFormatChange={setSelectedFormat}
-                  onQualityChange={setQuality}
-                />
-                
-                <Button 
-                  className="w-full bg-app-primary hover:bg-app-primary/90 text-white mt-4"
-                  onClick={handleConvert}
-                  disabled={isConverting}
-                >
-                  {isConverting ? 'Converting...' : 'Convert Image'}
-                  {!isConverting && <ArrowRight className="ml-2 h-4 w-4" />}
-                </Button>
-              </div>
+
+              {activeImageIndex >= 0 && activeImageIndex < imageFiles.length && (
+                <>
+                  <div className="mt-4">
+                    <ImagePreview 
+                      originalImage={imageFiles[activeImageIndex].originalUrl} 
+                      fileName={imageFiles[activeImageIndex].file.name} 
+                    />
+                  </div>
+                  
+                  <div className="mt-6 space-y-4">
+                    <h2 className="text-xl font-semibold">Conversion Options</h2>
+                    <ConversionOptions
+                      currentFileType={imageFiles[activeImageIndex].file.type}
+                      selectedFormat={selectedFormat}
+                      quality={quality}
+                      onFormatChange={setSelectedFormat}
+                      onQualityChange={setQuality}
+                    />
+                    
+                    <Button 
+                      className="w-full bg-app-primary hover:bg-app-primary/90 text-white mt-4"
+                      onClick={handleConvert}
+                      disabled={isConverting}
+                    >
+                      {isConverting ? 'Converting...' : `Convert ${imageFiles.length > 1 ? 'All Images' : 'Image'}`}
+                      {!isConverting && <ArrowRight className="ml-2 h-4 w-4" />}
+                    </Button>
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>
         
         <div>
-          <h2 className="text-xl font-semibold mb-4">Output</h2>
-          <ConvertedImage
-            convertedImage={convertedImage}
-            convertedFileName={getConvertedFileName()}
-            isConverting={isConverting}
-          />
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Output</h2>
+            {imageFiles.some(img => img.convertedUrl) && (
+              <Button 
+                variant="outline"
+                onClick={handleBatchDownload}
+                className="bg-app-accent hover:bg-app-accent/90 text-white border-none"
+              >
+                <Download className="h-4 w-4 mr-1" />
+                Download All
+              </Button>
+            )}
+          </div>
+
+          {activeImageIndex >= 0 && activeImageIndex < imageFiles.length ? (
+            <ConvertedImage
+              convertedImage={imageFiles[activeImageIndex].convertedUrl}
+              convertedFileName={imageFiles[activeImageIndex].convertedFileName}
+              isConverting={isConverting}
+            />
+          ) : (
+            <div className="rounded-lg overflow-hidden border border-border h-64 flex items-center justify-center bg-muted/30">
+              <p className="text-muted-foreground text-sm">Select an image to convert</p>
+            </div>
+          )}
+          
+          {/* Show thumbnails of all converted images */}
+          {imageFiles.some(img => img.convertedUrl) && (
+            <div className="mt-6">
+              <h3 className="text-md font-medium mb-2">Converted Images</h3>
+              <div className="flex overflow-x-auto pb-2 gap-2">
+                {imageFiles.map((image, index) => (
+                  image.convertedUrl && (
+                    <div 
+                      key={`converted-thumb-${index}`} 
+                      className={`w-16 h-16 flex-shrink-0 rounded cursor-pointer overflow-hidden border-2 transition-all
+                                ${activeImageIndex === index ? 'border-app-primary' : 'border-border'}`}
+                      onClick={() => setActiveImageIndex(index)}
+                    >
+                      <img 
+                        src={image.convertedUrl} 
+                        alt={`Converted ${index+1}`}
+                        className="w-full h-full object-cover" 
+                      />
+                    </div>
+                  )
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

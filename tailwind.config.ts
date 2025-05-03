@@ -65,10 +65,10 @@ export default {
 				},
 				// Custom colors
 				app: {
-					background: '#F9FAFB',
-					primary: '#3B82F6',
-					accent: '#10B981',
-					text: '#111827'
+					background: '#F9FAFB', // Light gray background
+					primary: '#1abc9c',    // Teal accent
+					accent: '#3498db',     // Vibrant blue
+					text: '#333333'        // Dark gray text
 				}
 			},
 			borderRadius: {

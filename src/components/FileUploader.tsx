@@ -4,7 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { FileImage } from 'lucide-react';
 
 interface FileUploaderProps {
-  onFileUpload: (file: File) => void;
+  onFileUpload: (files: File[]) => void;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
@@ -35,42 +35,57 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
     setIsDragging(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      validateAndProcessFile(file);
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      validateAndProcessFiles(droppedFiles);
     }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      validateAndProcessFile(file);
+      const selectedFiles = Array.from(e.target.files);
+      validateAndProcessFiles(selectedFiles);
     }
   };
 
-  const validateAndProcessFile = (file: File) => {
-    // Validate image file
+  const validateAndProcessFiles = (files: File[]) => {
+    // Filter valid image files
     const validImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!validImageTypes.includes(file.type)) {
+    const validFiles = files.filter(file => validImageTypes.includes(file.type));
+    
+    // Check if any files were invalid
+    if (validFiles.length < files.length) {
       toast({
-        title: "Invalid file type",
-        description: "Please upload an image (JPG, PNG, or WebP).",
+        title: "Some files were skipped",
+        description: "Only JPG, PNG, and WebP images are supported.",
         variant: "destructive"
       });
-      return;
     }
-
-    // File size validation (max 10MB)
+    
+    // Check file size for each valid file (max 10MB)
     const maxSizeMB = 10;
-    if (file.size > maxSizeMB * 1024 * 1024) {
+    const sizeValidFiles = validFiles.filter(file => file.size <= maxSizeMB * 1024 * 1024);
+    
+    if (sizeValidFiles.length < validFiles.length) {
       toast({
-        title: "File too large",
-        description: `Please upload an image smaller than ${maxSizeMB}MB.`,
+        title: "Some files were skipped",
+        description: `Files must be smaller than ${maxSizeMB}MB.`,
         variant: "destructive"
       });
-      return;
     }
 
-    onFileUpload(file);
+    if (sizeValidFiles.length > 0) {
+      onFileUpload(sizeValidFiles);
+      toast({
+        title: "Upload successful",
+        description: `${sizeValidFiles.length} image${sizeValidFiles.length > 1 ? 's' : ''} uploaded.`,
+      });
+    } else {
+      toast({
+        title: "No valid images",
+        description: "Please upload JPG, PNG, or WebP images smaller than 10MB.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleButtonClick = () => {
@@ -96,10 +111,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
         onChange={handleFileInputChange}
         accept="image/jpeg,image/png,image/webp"
         className="hidden"
+        multiple
       />
       <div className="flex flex-col items-center justify-center">
         <FileImage className="h-12 w-12 text-app-primary mb-3" />
-        <p className="text-lg font-medium mb-1">Drag & drop an image here</p>
+        <p className="text-lg font-medium mb-1">Drag & drop images here</p>
         <p className="text-sm text-muted-foreground mb-3">
           or click to browse (JPG, PNG, WebP)
         </p>
@@ -111,8 +127,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
             handleButtonClick();
           }}
         >
-          Select Image
+          Select Images
         </button>
+        <p className="text-xs text-muted-foreground mt-2">
+          Multiple files supported • Max 10MB per file
+        </p>
       </div>
     </div>
   );

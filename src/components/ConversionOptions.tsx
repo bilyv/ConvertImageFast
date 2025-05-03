@@ -40,12 +40,11 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   const availableFormats = getAvailableFormats();
 
   // Helper function to get readable format name
-  const getFormatName = (format: FormatOption) => {
+  const getFormatName = (format: FormatOption): string => {
     switch (format) {
       case 'jpg': return 'JPG';
       case 'png': return 'PNG';
       case 'webp': return 'WebP';
-      // Remove the default case since all FormatOption values are covered
     }
   };
 
