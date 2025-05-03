@@ -45,7 +45,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       case 'jpg': return 'JPG';
       case 'png': return 'PNG';
       case 'webp': return 'WebP';
-      default: return format.toUpperCase();
+      default: return format.toUpperCase(); // This is causing the error
     }
   };
 
