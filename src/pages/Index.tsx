@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import ImageConverter from '../components/ImageConverter';
+import BreadcrumbNav from '../components/BreadcrumbNav';
 import { MoonIcon, SunIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Helmet } from 'react-helmet';
 
 const Index = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -24,10 +25,111 @@ const Index = () => {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'dark bg-gray-900' : 'bg-app-background'}`}>
-      {/* SEO Metadata */}
+      {/* SEO Metadata with enhanced information */}
       <Helmet>
         <title>Image Format Converter | PNG to JPG | WebP Converter Online</title>
         <meta name="description" content="Easily convert images between PNG, JPG, and WebP formats with our free online tool. Fast, secure, and no registration required." />
+        <meta name="keywords" content="png to jpg converter, convert png to jpg online, jpg to png converter, webp to jpg converter, image format converter" />
+        <link rel="canonical" href="https://imageconvert.app" />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:title" content="Image Format Converter | PNG to JPG | WebP Converter Online" />
+        <meta property="og:description" content="Easily convert images between PNG, JPG, and WebP formats with our free online tool. Fast, secure, and no registration required." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://imageconvert.app" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Image Format Converter | PNG to JPG | WebP Converter Online" />
+        <meta name="twitter:description" content="Easily convert images between PNG, JPG, and WebP formats with our free online tool. Fast, secure, and no registration required." />
+        
+        {/* Schema.org structured data for FAQs */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "How do I convert PNG to JPG online?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Simply upload your PNG image using our tool, select JPG as the output format, adjust the quality if needed, and click 'Convert'. Then download your converted JPG image."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Can I convert multiple images at once?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, our image converter supports batch processing. Upload multiple files, convert them all at once, and download them individually or as a batch."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Will converting from PNG to JPG lose transparency?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, JPG does not support transparency. When converting from PNG with transparency to JPG, transparent areas will become white. If you need to preserve transparency, consider using WebP as your output format instead."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "What's the maximum file size for conversion?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can convert images up to 10MB each. This limit ensures optimal performance while still accommodating most common image sizes."
+                  }
+                }
+              ]
+            }
+          `}
+        </script>
+        
+        {/* Schema.org structured data for How-To */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "HowTo",
+              "name": "How to Convert PNG to JPG",
+              "description": "Step-by-step guide to convert PNG images to JPG format online.",
+              "step": [
+                {
+                  "@type": "HowToStep",
+                  "name": "Upload Image",
+                  "text": "Click the upload button or drag and drop your PNG image into the upload area.",
+                  "position": 1
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Select Format",
+                  "text": "Choose JPG as your output format from the dropdown menu.",
+                  "position": 2
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Adjust Settings",
+                  "text": "Optionally, adjust the quality setting for your JPG output.",
+                  "position": 3
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Convert",
+                  "text": "Click the 'Convert' button to process your image.",
+                  "position": 4
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Download",
+                  "text": "Click the download button to save your converted JPG image.",
+                  "position": 5
+                }
+              ]
+            }
+          `}
+        </script>
       </Helmet>
 
       {/* Header Navigation */}
@@ -56,6 +158,9 @@ const Index = () => {
           </Button>
         </div>
       </header>
+
+      {/* Breadcrumb Navigation */}
+      <BreadcrumbNav />
 
       {/* Hero Section with SEO optimized content */}
       <section className="pt-12 pb-8 px-4">
