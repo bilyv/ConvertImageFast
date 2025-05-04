@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import ImageConverter from '../components/ImageConverter';
@@ -29,28 +30,21 @@ const Index = () => {
         {/* ... keep existing code (schema.org structured data for FAQs and How-To) */}
       </Helmet>
 
-      {/* Header Navigation */}
+      {/* Header Navigation - Removed links and kept only the logo/title */}
       <header className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center">
           <div className="flex items-center space-x-1">
             <img src="/logo.png" alt="ImageConvert Logo - Online Image Format Converter" className="h-8 w-8" onError={(e) => e.currentTarget.style.display = 'none'} />
-            <div className="h-12">
+            <div className="h-10 w-64"> {/* Fixed height and width for the title */}
               <GooeyText 
-                texts={["ImageConvert", "Image Format", "Converter", "PNG to JPG", "JPG to PNG"]} 
+                texts={["ImageConvert", "Image Format Converter"]} 
                 morphTime={1.5}
                 cooldownTime={2}
                 className="font-bold"
-                textClassName="text-app-primary text-xl md:text-2xl"
+                textClassName="text-app-primary text-xl"
               />
             </div>
           </div>
-          
-          <nav className="hidden md:flex space-x-6">
-            <a href="/" className="text-app-text hover:text-app-primary transition-colors" aria-label="Home page">Home</a>
-            <a href="/#tools" className="text-app-text hover:text-app-primary transition-colors" aria-label="Image conversion tools">Tools</a>
-            <a href="/#about" className="text-app-text hover:text-app-primary transition-colors" aria-label="About our image converter">About</a>
-            <a href="/#contact" className="text-app-text hover:text-app-primary transition-colors" aria-label="Contact us">Contact</a>
-          </nav>
         </div>
       </header>
 
@@ -83,14 +77,22 @@ const Index = () => {
         <ImageConverter />
       </main>
       
-      {/* About Section with SEO content */}
+      {/* About Section with enhanced design */}
       <section id="about" className="py-12 bg-muted/20">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-app-text mb-8">About Our Image Format Converter</h2>
+          <div className="relative flex items-center justify-center mb-8">
+            <div className="h-0.5 bg-gradient-to-r from-transparent via-app-primary/50 to-transparent w-full"></div>
+            <h2 className="text-2xl md:text-3xl font-bold text-center text-app-text bg-muted/20 px-6 absolute">
+              About Our Image Format Converter
+            </h2>
+          </div>
           
           <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-3">Why Convert Image Formats?</h3>
+            <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-app-primary">
+              <h3 className="text-xl font-semibold mb-3 flex items-center">
+                <span className="inline-block w-2 h-2 rounded-full bg-app-primary mr-2"></span>
+                Why Convert Image Formats?
+              </h3>
               <p className="mb-4">
                 Different image formats serve different purposes. PNG files support transparency but can be large, JPG files are compact 
                 but don't support transparency, and WebP offers both transparency and compression, but isn't supported everywhere.
@@ -101,8 +103,11 @@ const Index = () => {
               </p>
             </div>
             
-            <div>
-              <h3 className="text-xl font-semibold mb-3">Security & Privacy First</h3>
+            <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-app-accent">
+              <h3 className="text-xl font-semibold mb-3 flex items-center">
+                <span className="inline-block w-2 h-2 rounded-full bg-app-accent mr-2"></span>
+                Security & Privacy First
+              </h3>
               <p className="mb-4">
                 Our image converter processes your files directly in your browser. Your images are never uploaded to any server, 
                 ensuring complete privacy and security for your sensitive content.
@@ -115,38 +120,43 @@ const Index = () => {
         </div>
       </section>
 
-      {/* FAQ Section for SEO */}
+      {/* FAQ Section with improved design */}
       <section className="py-12">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-app-text mb-8">Frequently Asked Questions</h2>
+          <div className="relative flex items-center justify-center mb-10">
+            <div className="h-0.5 bg-gradient-to-r from-transparent via-app-accent/50 to-transparent w-full"></div>
+            <h2 className="text-2xl md:text-3xl font-bold text-center text-app-text bg-app-background px-6 absolute">
+              Frequently Asked Questions
+            </h2>
+          </div>
           
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">How do I convert PNG to JPG online?</h3>
-              <p>
+            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-muted">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">How do I convert PNG to JPG online?</h3>
+              <p className="pl-5 border-l-2 border-app-primary/30">
                 Simply upload your PNG image using our tool, select JPG as the output format, adjust the quality if needed, 
                 and click "Convert". Then download your converted JPG image.
               </p>
             </div>
             
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Can I convert multiple images at once?</h3>
-              <p>
+            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-muted">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">Can I convert multiple images at once?</h3>
+              <p className="pl-5 border-l-2 border-app-primary/30">
                 Yes, our image converter supports batch processing. Upload multiple files, convert them all at once, 
                 and download them individually or as a batch.
               </p>
             </div>
             
-            <div>
-              <h3 className="text-lg font-semibold mb-2">What's the maximum file size for conversion?</h3>
-              <p>
+            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-muted">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">What's the maximum file size for conversion?</h3>
+              <p className="pl-5 border-l-2 border-app-primary/30">
                 You can convert images up to 10MB each. This limit ensures optimal performance while still accommodating most common image sizes.
               </p>
             </div>
             
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Will converting from PNG to JPG lose transparency?</h3>
-              <p>
+            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-muted">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">Will converting from PNG to JPG lose transparency?</h3>
+              <p className="pl-5 border-l-2 border-app-primary/30">
                 Yes, JPG does not support transparency. When converting from PNG with transparency to JPG, transparent areas will become white.
                 If you need to preserve transparency, consider using WebP as your output format instead.
               </p>
