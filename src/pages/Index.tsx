@@ -1,30 +1,12 @@
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import ImageConverter from '../components/ImageConverter';
 import BreadcrumbNav from '../components/BreadcrumbNav';
-import { MoonIcon, SunIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { GooeyText } from '@/components/ui/gooey-text';
 
 const Index = () => {
-  const [darkMode, setDarkMode] = useState(false);
-
-  // Check for system preference on initial load
-  useEffect(() => {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDarkMode(isDark);
-    document.documentElement.classList.toggle('dark', isDark);
-  }, []);
-
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    document.documentElement.classList.toggle('dark', newDarkMode);
-  };
-
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'dark bg-gray-900' : 'bg-app-background'}`}>
+    <div className="min-h-screen bg-app-background">
       {/* SEO Metadata with enhanced information */}
       <Helmet>
         <title>Image Format Converter | PNG to JPG | WebP Converter Online</title>
@@ -43,93 +25,8 @@ const Index = () => {
         <meta name="twitter:title" content="Image Format Converter | PNG to JPG | WebP Converter Online" />
         <meta name="twitter:description" content="Easily convert images between PNG, JPG, and WebP formats with our free online tool. Fast, secure, and no registration required." />
         
-        {/* Schema.org structured data for FAQs */}
-        <script type="application/ld+json">
-          {`
-            {
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [
-                {
-                  "@type": "Question",
-                  "name": "How do I convert PNG to JPG online?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Simply upload your PNG image using our tool, select JPG as the output format, adjust the quality if needed, and click 'Convert'. Then download your converted JPG image."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Can I convert multiple images at once?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, our image converter supports batch processing. Upload multiple files, convert them all at once, and download them individually or as a batch."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Will converting from PNG to JPG lose transparency?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, JPG does not support transparency. When converting from PNG with transparency to JPG, transparent areas will become white. If you need to preserve transparency, consider using WebP as your output format instead."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "What's the maximum file size for conversion?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "You can convert images up to 10MB each. This limit ensures optimal performance while still accommodating most common image sizes."
-                  }
-                }
-              ]
-            }
-          `}
-        </script>
-        
-        {/* Schema.org structured data for How-To */}
-        <script type="application/ld+json">
-          {`
-            {
-              "@context": "https://schema.org",
-              "@type": "HowTo",
-              "name": "How to Convert PNG to JPG",
-              "description": "Step-by-step guide to convert PNG images to JPG format online.",
-              "step": [
-                {
-                  "@type": "HowToStep",
-                  "name": "Upload Image",
-                  "text": "Click the upload button or drag and drop your PNG image into the upload area.",
-                  "position": 1
-                },
-                {
-                  "@type": "HowToStep",
-                  "name": "Select Format",
-                  "text": "Choose JPG as your output format from the dropdown menu.",
-                  "position": 2
-                },
-                {
-                  "@type": "HowToStep",
-                  "name": "Adjust Settings",
-                  "text": "Optionally, adjust the quality setting for your JPG output.",
-                  "position": 3
-                },
-                {
-                  "@type": "HowToStep",
-                  "name": "Convert",
-                  "text": "Click the 'Convert' button to process your image.",
-                  "position": 4
-                },
-                {
-                  "@type": "HowToStep",
-                  "name": "Download",
-                  "text": "Click the download button to save your converted JPG image.",
-                  "position": 5
-                }
-              ]
-            }
-          `}
-        </script>
+        {/* Schema.org structured data */}
+        {/* ... keep existing code (schema.org structured data for FAQs and How-To) */}
       </Helmet>
 
       {/* Header Navigation */}
@@ -137,7 +34,15 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-1">
             <img src="/logo.png" alt="ImageConvert Logo - Online Image Format Converter" className="h-8 w-8" onError={(e) => e.currentTarget.style.display = 'none'} />
-            <span className="text-xl font-bold text-app-primary">ImageConvert</span>
+            <div className="h-12">
+              <GooeyText 
+                texts={["ImageConvert", "Image Format", "Converter", "PNG to JPG", "JPG to PNG"]} 
+                morphTime={1.5}
+                cooldownTime={2}
+                className="font-bold"
+                textClassName="text-app-primary text-xl md:text-2xl"
+              />
+            </div>
           </div>
           
           <nav className="hidden md:flex space-x-6">
@@ -146,16 +51,6 @@ const Index = () => {
             <a href="/#about" className="text-app-text hover:text-app-primary transition-colors" aria-label="About our image converter">About</a>
             <a href="/#contact" className="text-app-text hover:text-app-primary transition-colors" aria-label="Contact us">Contact</a>
           </nav>
-          
-          <Button 
-            variant="outline" 
-            size="icon"
-            onClick={toggleDarkMode}
-            className="ml-auto md:ml-0"
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {darkMode ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
-          </Button>
         </div>
       </header>
 
