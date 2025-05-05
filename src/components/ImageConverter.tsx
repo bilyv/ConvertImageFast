@@ -7,13 +7,15 @@ import ConvertedImage from './ConvertedImage';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowRight, Download, X } from 'lucide-react';
+import { ArrowRight, Download, X, FileType, AlertTriangle } from 'lucide-react';
 
 interface ImageFile {
   file: File;
   originalUrl: string;
   convertedUrl: string | null;
   convertedFileName: string;
+  fileType: string;
+  fileTypeDisplay: string;
 }
 
 const ImageConverter: React.FC = () => {
@@ -23,15 +25,37 @@ const ImageConverter: React.FC = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(-1);
   const [hasMultipleFormats, setHasMultipleFormats] = useState(false);
+  const [formatMismatchError, setFormatMismatchError] = useState(false);
   const { toast } = useToast();
+  
+  const MAX_IMAGES = 2;
+
+  // Get readable format name from mimetype
+  const getFileTypeDisplay = (mimeType: string): string => {
+    switch (mimeType) {
+      case 'image/jpeg': return 'JPEG';
+      case 'image/png': return 'PNG';
+      case 'image/webp': return 'WebP';
+      case 'image/bmp': return 'BMP';
+      case 'image/gif': return 'GIF';
+      case 'image/tiff': return 'TIFF';
+      case 'image/avif': return 'AVIF';
+      case 'image/x-icon': return 'ICO';
+      default: return 'Unknown';
+    }
+  };
 
   // Check if uploaded images have multiple formats
   useEffect(() => {
     if (imageFiles.length > 1) {
       const formats = new Set(imageFiles.map(img => img.file.type));
       setHasMultipleFormats(formats.size > 1);
+      
+      // Set format mismatch error if formats differ
+      setFormatMismatchError(formats.size > 1);
     } else {
       setHasMultipleFormats(false);
+      setFormatMismatchError(false);
     }
   }, [imageFiles]);
 
@@ -64,6 +88,31 @@ const ImageConverter: React.FC = () => {
 
   // When files are uploaded
   const handleFileUpload = (uploadedFiles: File[]) => {
+    // Check if adding would exceed maximum
+    if (imageFiles.length + uploadedFiles.length > MAX_IMAGES) {
+      toast({
+        title: "Upload limit exceeded",
+        description: `You can only upload a maximum of ${MAX_IMAGES} images.`,
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // If we already have files, check if the formats match
+    if (imageFiles.length > 0 && uploadedFiles.length > 0) {
+      const existingFormat = imageFiles[0].file.type;
+      const newFormats = new Set(uploadedFiles.map(file => file.type));
+      
+      if (newFormats.size > 1 || !newFormats.has(existingFormat)) {
+        toast({
+          title: "Format mismatch",
+          description: "All images must be of the same format. Please upload images with matching formats.",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+
     const newImageFiles = uploadedFiles.map(file => {
       // Create URL for preview
       const imageUrl = URL.createObjectURL(file);
@@ -82,6 +131,8 @@ const ImageConverter: React.FC = () => {
         originalUrl: imageUrl,
         convertedUrl: null,
         convertedFileName: getConvertedFileName(file, format),
+        fileType: file.type,
+        fileTypeDisplay: getFileTypeDisplay(file.type),
       };
     });
 
@@ -102,6 +153,16 @@ const ImageConverter: React.FC = () => {
       toast({
         title: "No image selected",
         description: "Please upload and select an image first.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Don't allow conversion if format mismatch error exists
+    if (formatMismatchError) {
+      toast({
+        title: "Format mismatch",
+        description: "Cannot convert images with different formats. Please upload images of the same format.",
         variant: "destructive"
       });
       return;
@@ -238,9 +299,22 @@ const ImageConverter: React.FC = () => {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div>
           <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
-          <FileUploader onFileUpload={handleFileUpload} />
+          <FileUploader 
+            onFileUpload={handleFileUpload} 
+            currentFileCount={imageFiles.length}
+            maxFiles={MAX_IMAGES}
+          />
           
-          {hasMultipleFormats && (
+          {formatMismatchError && (
+            <Alert className="mt-4 bg-red-50 border-red-200">
+              <AlertTriangle className="h-4 w-4 text-red-600 mr-2" />
+              <AlertDescription className="text-red-800">
+                <strong>Error:</strong> Images have different formats. Please upload images with the same format for batch conversion.
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {hasMultipleFormats && !formatMismatchError && (
             <Alert className="mt-4 bg-amber-50 border-amber-200">
               <AlertDescription className="text-amber-800">
                 <strong>Notice:</strong> You've uploaded images with different formats. All selected images will be converted to the same output format.
@@ -250,8 +324,26 @@ const ImageConverter: React.FC = () => {
           
           {imageFiles.length > 0 && (
             <>
+              {/* Image Type Display */}
+              <div className="mt-4 p-3 bg-muted/30 rounded-md border border-border">
+                <div className="flex items-center space-x-2">
+                  <FileType className="h-4 w-4 text-app-primary" />
+                  <span className="text-sm font-medium">Image Types:</span>
+                </div>
+                <div className="mt-2 space-y-1">
+                  {imageFiles.map((image, index) => (
+                    <div key={`type-${index}`} className="flex justify-between items-center text-sm">
+                      <span className="truncate max-w-[70%]">{image.file.name}</span>
+                      <span className="bg-app-primary/10 text-app-primary px-2 py-0.5 rounded-full text-xs">
+                        {image.fileTypeDisplay}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="mt-6">
-                <h3 className="text-md font-medium mb-2">Uploaded Images ({imageFiles.length})</h3>
+                <h3 className="text-md font-medium mb-2">Uploaded Images ({imageFiles.length}/{MAX_IMAGES})</h3>
                 <div className="flex overflow-x-auto pb-2 gap-2">
                   {imageFiles.map((image, index) => (
                     <div 
@@ -303,7 +395,7 @@ const ImageConverter: React.FC = () => {
                     <Button 
                       className="w-full bg-app-primary hover:bg-app-primary/90 text-white mt-4"
                       onClick={handleConvert}
-                      disabled={isConverting}
+                      disabled={isConverting || formatMismatchError}
                     >
                       {isConverting ? 'Converting...' : `Convert ${imageFiles.length > 1 ? 'All Images' : 'Image'}`}
                       {!isConverting && <ArrowRight className="ml-2 h-4 w-4" />}
