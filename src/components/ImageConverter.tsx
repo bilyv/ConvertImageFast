@@ -4,9 +4,10 @@ import FileUploader from './FileUploader';
 import ConversionOptions, { FormatOption } from './ConversionOptions';
 import ImagePreview from './ImagePreview';
 import ConvertedImage from './ConvertedImage';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowRight, Download } from 'lucide-react';
+import { ArrowRight, Download, X } from 'lucide-react';
 
 interface ImageFile {
   file: File;
@@ -21,7 +22,18 @@ const ImageConverter: React.FC = () => {
   const [quality, setQuality] = useState<number>(85);
   const [isConverting, setIsConverting] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(-1);
+  const [hasMultipleFormats, setHasMultipleFormats] = useState(false);
   const { toast } = useToast();
+
+  // Check if uploaded images have multiple formats
+  useEffect(() => {
+    if (imageFiles.length > 1) {
+      const formats = new Set(imageFiles.map(img => img.file.type));
+      setHasMultipleFormats(formats.size > 1);
+    } else {
+      setHasMultipleFormats(false);
+    }
+  }, [imageFiles]);
 
   // When component unmounts, clean up object URLs
   useEffect(() => {
@@ -125,7 +137,7 @@ const ImageConverter: React.FC = () => {
         
         // Set quality options (only for JPG and WebP)
         const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
-        const qualityOption = selectedFormat !== 'png' ? quality / 100 : undefined;
+        const qualityOption = !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat) ? quality / 100 : undefined;
         
         // Convert to new format
         const convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
@@ -191,12 +203,50 @@ const ImageConverter: React.FC = () => {
     });
   };
 
+  // Remove a specific image
+  const handleRemoveImage = (indexToRemove: number) => {
+    const updatedImageFiles = [...imageFiles];
+    
+    // Revoke the URL to prevent memory leaks
+    if (updatedImageFiles[indexToRemove].originalUrl) {
+      URL.revokeObjectURL(updatedImageFiles[indexToRemove].originalUrl);
+    }
+    if (updatedImageFiles[indexToRemove].convertedUrl && updatedImageFiles[indexToRemove].convertedUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(updatedImageFiles[indexToRemove].convertedUrl);
+    }
+    
+    // Remove the image from the array
+    updatedImageFiles.splice(indexToRemove, 1);
+    
+    setImageFiles(updatedImageFiles);
+    
+    // Update active index if needed
+    if (activeImageIndex === indexToRemove) {
+      setActiveImageIndex(updatedImageFiles.length > 0 ? 0 : -1);
+    } else if (activeImageIndex > indexToRemove) {
+      setActiveImageIndex(activeImageIndex - 1);
+    }
+
+    toast({
+      title: "Image removed",
+      description: "The image has been removed from the converter."
+    });
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto p-4">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div>
           <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
           <FileUploader onFileUpload={handleFileUpload} />
+          
+          {hasMultipleFormats && (
+            <Alert className="mt-4 bg-amber-50 border-amber-200">
+              <AlertDescription className="text-amber-800">
+                <strong>Notice:</strong> You've uploaded images with different formats. All selected images will be converted to the same output format.
+              </AlertDescription>
+            </Alert>
+          )}
           
           {imageFiles.length > 0 && (
             <>
@@ -206,15 +256,26 @@ const ImageConverter: React.FC = () => {
                   {imageFiles.map((image, index) => (
                     <div 
                       key={`thumb-${index}`} 
-                      className={`w-16 h-16 flex-shrink-0 rounded cursor-pointer overflow-hidden border-2 transition-all
-                                ${activeImageIndex === index ? 'border-app-primary' : 'border-border'}`}
-                      onClick={() => setActiveImageIndex(index)}
+                      className="relative"
                     >
-                      <img 
-                        src={image.originalUrl} 
-                        alt={`Thumbnail ${index+1}`}
-                        className="w-full h-full object-cover" 
-                      />
+                      <div 
+                        className={`w-16 h-16 flex-shrink-0 rounded cursor-pointer overflow-hidden border-2 transition-all
+                                  ${activeImageIndex === index ? 'border-app-primary' : 'border-border'}`}
+                        onClick={() => setActiveImageIndex(index)}
+                      >
+                        <img 
+                          src={image.originalUrl} 
+                          alt={`Thumbnail ${index+1}`}
+                          className="w-full h-full object-cover" 
+                        />
+                      </div>
+                      <button
+                        onClick={() => handleRemoveImage(index)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors"
+                        title="Remove image"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
                     </div>
                   ))}
                 </div>

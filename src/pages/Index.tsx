@@ -11,20 +11,20 @@ const Index = () => {
       {/* SEO Metadata with enhanced information */}
       <Helmet>
         <title>Image Format Converter | PNG to JPG | WebP Converter Online</title>
-        <meta name="description" content="Easily convert images between PNG, JPG, and WebP formats with our free online tool. Fast, secure, and no registration required." />
-        <meta name="keywords" content="png to jpg converter, convert png to jpg online, jpg to png converter, webp to jpg converter, image format converter" />
+        <meta name="description" content="Easily convert images between PNG, JPG, WebP, BMP, GIF, TIFF, AVIF and ICO formats with our free online tool. Fast, secure, and no registration required." />
+        <meta name="keywords" content="png to jpg converter, convert png to jpg online, jpg to png converter, webp to jpg converter, image format converter, bmp converter, gif converter, tiff converter, avif converter, ico converter" />
         <link rel="canonical" href="https://imageconvert.app" />
         
         {/* Open Graph / Facebook */}
         <meta property="og:title" content="Image Format Converter | PNG to JPG | WebP Converter Online" />
-        <meta property="og:description" content="Easily convert images between PNG, JPG, and WebP formats with our free online tool. Fast, secure, and no registration required." />
+        <meta property="og:description" content="Easily convert images between PNG, JPG, WebP, BMP, GIF, TIFF, AVIF and ICO formats with our free online tool. Fast, secure, and no registration required." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://imageconvert.app" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Image Format Converter | PNG to JPG | WebP Converter Online" />
-        <meta name="twitter:description" content="Easily convert images between PNG, JPG, and WebP formats with our free online tool. Fast, secure, and no registration required." />
+        <meta name="twitter:description" content="Easily convert images between PNG, JPG, WebP, BMP, GIF, TIFF, AVIF and ICO formats with our free online tool. Fast, secure, and no registration required." />
         
         {/* Schema.org structured data */}
         {/* ... keep existing code (schema.org structured data for FAQs and How-To) */}
@@ -55,10 +55,10 @@ const Index = () => {
       <section className="pt-12 pb-8 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-app-text mb-3">
-            Image Format Converter: PNG to JPG, JPG to PNG, WebP Converter
+            Image Format Converter: Convert to Multiple Formats
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-            Instantly convert between PNG, JPG, and WebP formats with our free online tool.
+            Instantly convert between PNG, JPG, WebP, BMP, GIF, TIFF, AVIF, and ICO formats with our free online tool.
             No signup required, and your images never leave your browser for maximum privacy and security.
           </p>
           
@@ -68,6 +68,10 @@ const Index = () => {
             <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">JPG to PNG Converter</span>
             <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">WebP to JPG Converter</span>
             <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">PNG to WebP Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">JPG to BMP Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">PNG to AVIF Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">WebP to ICO Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">JPG to TIFF Converter</span>
           </div>
         </div>
       </section>
@@ -190,7 +194,7 @@ const Index = () => {
             </div>
           </div>
           <div className="mt-4 text-xs text-center text-muted-foreground/70">
-            <p>Convert PNG to JPG, JPG to PNG, WebP to JPG, PNG to WebP, and more - all for free, with no sign-up required.</p>
+            <p>Convert between PNG, JPG, WebP, BMP, GIF, TIFF, AVIF, and ICO formats - all for free, with no sign-up required.</p>
           </div>
         </div>
       </footer>

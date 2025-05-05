@@ -3,7 +3,7 @@ import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 
-export type FormatOption = 'jpg' | 'png' | 'webp';
+export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico';
 
 interface ConversionOptionsProps {
   currentFileType: string | null;
@@ -22,13 +22,18 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
 }) => {
   // Get available formats based on current file type (excluding current format)
   const getAvailableFormats = () => {
-    const allFormats: FormatOption[] = ['jpg', 'png', 'webp'];
+    const allFormats: FormatOption[] = ['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico'];
     
     // Determine current format from file type
     let currentFormat: FormatOption | null = null;
     if (currentFileType === 'image/jpeg') currentFormat = 'jpg';
     if (currentFileType === 'image/png') currentFormat = 'png';
     if (currentFileType === 'image/webp') currentFormat = 'webp';
+    if (currentFileType === 'image/bmp') currentFormat = 'bmp';
+    if (currentFileType === 'image/gif') currentFormat = 'gif';
+    if (currentFileType === 'image/tiff') currentFormat = 'tiff';
+    if (currentFileType === 'image/avif') currentFormat = 'avif';
+    if (currentFileType === 'image/x-icon') currentFormat = 'ico';
 
     // Return all formats if no file uploaded yet
     if (!currentFormat) return allFormats;
@@ -45,13 +50,18 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       case 'jpg': return 'JPG';
       case 'png': return 'PNG';
       case 'webp': return 'WebP';
+      case 'bmp': return 'BMP';
+      case 'gif': return 'GIF';
+      case 'tiff': return 'TIFF';
+      case 'avif': return 'AVIF';
+      case 'ico': return 'ICO';
     }
   };
 
   // Handle format selection
   const handleFormatChange = (value: string) => {
     // Ensure value is a valid FormatOption before passing it to onFormatChange
-    if (value === 'jpg' || value === 'png' || value === 'webp') {
+    if (['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico'].includes(value)) {
       onFormatChange(value as FormatOption);
     }
   };
@@ -62,7 +72,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   };
 
   // Check if quality settings should be shown (PNG doesn't use quality)
-  const showQualitySettings = selectedFormat !== 'png';
+  const showQualitySettings = !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat);
 
   return (
     <div className="space-y-6 animate-fade-in">
