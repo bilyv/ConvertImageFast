@@ -5,13 +5,12 @@ import { ImageFile, getFileTypeDisplay, getConvertedFileName, isSupportedFileTyp
 import { FormatOption } from '../components/ConversionOptions';
 import { CropArea, cropAndResizeImage } from '../utils/cropUtils';
 
-export const useImageConverter = (maxImages = 2) => {
+export const useImageConverter = (maxImages = 1) => {
   const [imageFiles, setImageFiles] = useState<ImageFile[]>([]);
   const [selectedFormat, setSelectedFormat] = useState<FormatOption>('jpg');
   const [quality, setQuality] = useState<number>(85);
   const [isConverting, setIsConverting] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(-1);
-  const [hasMultipleFormats, setHasMultipleFormats] = useState(false);
   const [formatMismatchError, setFormatMismatchError] = useState(false);
   const [isCropping, setIsCropping] = useState<boolean>(false);
   const [cropResult, setCropResult] = useState<string | null>(null);
@@ -19,20 +18,6 @@ export const useImageConverter = (maxImages = 2) => {
   const [resizeDimensions, setResizeDimensions] = useState<{width?: number; height?: number}>({});
   const [maintainResizeAspectRatio, setMaintainResizeAspectRatio] = useState<boolean>(true);
   const { toast } = useToast();
-
-  // Check if uploaded images have multiple formats
-  useEffect(() => {
-    if (imageFiles.length > 1) {
-      const formats = new Set(imageFiles.map(img => img.file.type));
-      setHasMultipleFormats(formats.size > 1);
-      
-      // Set format mismatch error if formats differ
-      setFormatMismatchError(formats.size > 1);
-    } else {
-      setHasMultipleFormats(false);
-      setFormatMismatchError(false);
-    }
-  }, [imageFiles]);
 
   // When component unmounts, clean up object URLs
   useEffect(() => {
@@ -63,71 +48,62 @@ export const useImageConverter = (maxImages = 2) => {
 
   // When files are uploaded
   const handleFileUpload = (uploadedFiles: File[]) => {
-    // Check if adding would exceed maximum
-    if (imageFiles.length + uploadedFiles.length > maxImages) {
+    // Since we're only allowing single image upload now, take the first file
+    if (uploadedFiles.length === 0) return;
+    
+    const file = uploadedFiles[0];
+    
+    // Check if file type is supported
+    if (!isSupportedFileType(file.type)) {
       toast({
-        title: "Upload limit exceeded",
-        description: `You can only upload a maximum of ${maxImages} images.`,
+        title: "Unsupported file format",
+        description: `File "${file.name}" is not a supported image format.`,
         variant: "destructive"
       });
       return;
     }
     
-    // Filter for supported file types
-    const supportedFiles = uploadedFiles.filter(file => {
-      const isSupported = isSupportedFileType(file.type);
-      if (!isSupported) {
-        toast({
-          title: "Unsupported file format",
-          description: `File "${file.name}" is not a supported image format.`,
-          variant: "destructive"
-        });
+    // Create URL for preview
+    const imageUrl = URL.createObjectURL(file);
+    
+    // Determine default format based on uploaded file type
+    let format: FormatOption = 'png';
+    if (file.type === 'image/jpeg' || file.type === 'image/jfif') format = 'png';
+    else if (file.type === 'image/png') format = 'jpg';
+    else if (file.type === 'image/webp') format = 'png';
+    
+    // Set format for the next conversion
+    setSelectedFormat(format);
+    
+    // Clear existing images and set the new one
+    // Clean up any existing object URLs first
+    imageFiles.forEach(image => {
+      if (image.originalUrl) URL.revokeObjectURL(image.originalUrl);
+      if (image.convertedUrl && image.convertedUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(image.convertedUrl);
       }
-      return isSupported;
     });
     
-    if (supportedFiles.length === 0) return;
+    const newImageFile = {
+      file,
+      originalUrl: imageUrl,
+      convertedUrl: null,
+      convertedFileName: getConvertedFileName(file, format),
+      fileType: file.type,
+      fileTypeDisplay: getFileTypeDisplay(file.type),
+    };
     
-    // If we already have files, check if the formats match
-    if (imageFiles.length > 0 && supportedFiles.length > 0) {
-      const existingFormat = imageFiles[0].file.type;
-      const newFormats = new Set(supportedFiles.map(file => file.type));
-      
-      if (newFormats.size > 1 || !newFormats.has(existingFormat)) {
-        toast({
-          title: "Format mismatch",
-          description: "All images must be of the same format. Please upload images with matching formats.",
-          variant: "destructive"
-        });
-        return;
-      }
-    }
-
-    const newImageFiles = supportedFiles.map(file => {
-      // Create URL for preview
-      const imageUrl = URL.createObjectURL(file);
-      
-      // Determine default format based on uploaded file type
-      let format: FormatOption = 'png';
-      if (file.type === 'image/jpeg' || file.type === 'image/jfif') format = 'png';
-      else if (file.type === 'image/png') format = 'jpg';
-      else if (file.type === 'image/webp') format = 'png';
-      
-      // Set format for the next conversion
-      setSelectedFormat(format);
-      
-      return {
-        file,
-        originalUrl: imageUrl,
-        convertedUrl: null,
-        convertedFileName: getConvertedFileName(file, format),
-        fileType: file.type,
-        fileTypeDisplay: getFileTypeDisplay(file.type),
-      };
+    setImageFiles([newImageFile]);
+    setActiveImageIndex(0);
+    
+    // Reset crop data when new image is uploaded
+    setCropResult(null);
+    setCropData(null);
+    
+    toast({
+      title: "Image uploaded",
+      description: "Your image is ready for conversion.",
     });
-
-    setImageFiles([...imageFiles, ...newImageFiles]);
-    setActiveImageIndex(imageFiles.length); // Select the first new image
   };
   
   // Handle conversion process
@@ -135,17 +111,7 @@ export const useImageConverter = (maxImages = 2) => {
     if (imageFiles.length === 0 || activeImageIndex < 0) {
       toast({
         title: "No image selected",
-        description: "Please upload and select an image first.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Don't allow conversion if format mismatch error exists
-    if (formatMismatchError) {
-      toast({
-        title: "Format mismatch",
-        description: "Cannot convert images with different formats. Please upload images of the same format.",
+        description: "Please upload an image first.",
         variant: "destructive"
       });
       return;
@@ -154,81 +120,58 @@ export const useImageConverter = (maxImages = 2) => {
     setIsConverting(true);
 
     try {
-      const updatedImageFiles = [...imageFiles];
+      const imageFile = imageFiles[activeImageIndex];
       
-      // Process one image at a time to prevent memory issues
-      for (let i = 0; i < updatedImageFiles.length; i++) {
-        const imageFile = updatedImageFiles[i];
-        
-        try {
-          // Use cropResult URL if available and active image index matches
-          const sourceUrl = (cropResult && i === activeImageIndex) ? 
-            cropResult : imageFile.originalUrl;
-          
-          // Create canvas for image conversion
-          const img = new Image();
-          img.crossOrigin = "anonymous"; // Handle CORS issues
-          img.src = sourceUrl;
-          
-          await new Promise<void>((resolve, reject) => {
-            img.onload = () => resolve();
-            img.onerror = (e) => reject(new Error(`Failed to load image: ${e}`));
-          });
+      // Use cropResult URL if available
+      const sourceUrl = cropResult || imageFile.originalUrl;
+      
+      // Create canvas for image conversion
+      const img = new Image();
+      img.crossOrigin = "anonymous"; // Handle CORS issues
+      img.src = sourceUrl;
+      
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = (e) => reject(new Error(`Failed to load image: ${e}`));
+      });
 
-          const canvas = document.createElement('canvas');
-          
-          // Set canvas dimensions to original image size (no resize)
-          canvas.width = img.width;
-          canvas.height = img.height;
-          
-          const ctx = canvas.getContext('2d');
-          if (!ctx) throw new Error("Failed to create canvas context");
-          
-          // Draw image on canvas
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          
-          // Set quality options (only for JPG and WebP)
-          const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
-          const qualityOption = !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat) ? quality / 100 : undefined;
-          
-          // Convert to new format
-          const convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
-          
-          // Update the file entry
-          updatedImageFiles[i] = {
-            ...imageFile,
-            convertedUrl: convertedImageUrl,
-            convertedFileName: getConvertedFileName(imageFile.file, selectedFormat),
-          };
-        } catch (error) {
-          console.error(`Error converting image ${i}:`, error);
-          toast({
-            title: `Error with image ${i + 1}`,
-            description: `Could not convert "${imageFile.file.name}". Skipping this file.`,
-            variant: "destructive"
-          });
-          // Continue with next image instead of failing the whole batch
-        }
-      }
+      const canvas = document.createElement('canvas');
+      
+      // Set canvas dimensions to original image size
+      canvas.width = img.width;
+      canvas.height = img.height;
+      
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error("Failed to create canvas context");
+      
+      // Draw image on canvas
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      
+      // Set quality options (only for JPG and WebP)
+      const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
+      const qualityOption = !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat) ? quality / 100 : undefined;
+      
+      // Convert to new format
+      const convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
+      
+      // Update the image file
+      const updatedImageFiles = [...imageFiles];
+      updatedImageFiles[activeImageIndex] = {
+        ...imageFile,
+        convertedUrl: convertedImageUrl,
+        convertedFileName: getConvertedFileName(imageFile.file, selectedFormat),
+      };
       
       setImageFiles(updatedImageFiles);
+      
       // Reset crop data after conversion is complete
       setCropResult(null);
       setCropData(null);
 
-      const convertedCount = updatedImageFiles.filter(img => img.convertedUrl).length;
-      if (convertedCount > 0) {
-        toast({
-          title: "Conversion successful",
-          description: `${convertedCount} image(s) converted to ${selectedFormat.toUpperCase()}`,
-        });
-      } else {
-        toast({
-          title: "Conversion failed",
-          description: "No images could be converted. Please try again with different images.",
-          variant: "destructive"
-        });
-      }
+      toast({
+        title: "Conversion successful",
+        description: `Image converted to ${selectedFormat.toUpperCase()}`,
+      });
     } catch (error) {
       console.error("Conversion error:", error);
       toast({
@@ -246,7 +189,7 @@ export const useImageConverter = (maxImages = 2) => {
     if (activeImageIndex < 0 || !imageFiles[activeImageIndex]) {
       toast({
         title: "No image selected",
-        description: "Please upload and select an image first.",
+        description: "Please upload an image first.",
         variant: "destructive"
       });
       return;
@@ -277,64 +220,49 @@ export const useImageConverter = (maxImages = 2) => {
     setResizeDimensions({});
   }, [activeImageIndex]);
 
-  // Batch download all converted images
-  const handleBatchDownload = () => {
-    const convertedImages = imageFiles.filter(image => image.convertedUrl);
+  // Download converted image
+  const handleDownload = () => {
+    const image = imageFiles[activeImageIndex];
     
-    if (convertedImages.length === 0) {
+    if (!image || !image.convertedUrl) {
       toast({
-        title: "No converted images",
-        description: "Please convert your images first.",
+        title: "No converted image",
+        description: "Please convert your image first.",
         variant: "destructive"
       });
       return;
     }
 
-    // Create download links for each converted image
-    convertedImages.forEach((image, index) => {
-      if (!image.convertedUrl) return;
-      
-      const link = document.createElement('a');
-      link.href = image.convertedUrl;
-      link.download = image.convertedFileName;
-      document.body.appendChild(link);
-      
-      // Add a small delay between downloads
-      setTimeout(() => {
-        link.click();
-        document.body.removeChild(link);
-      }, index * 100);
-    });
+    const link = document.createElement('a');
+    link.href = image.convertedUrl;
+    link.download = image.convertedFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
     toast({
       title: "Download started",
-      description: `Downloading ${convertedImages.length} image(s)`,
+      description: "Your image is being downloaded.",
     });
   };
 
-  // Remove a specific image
-  const handleRemoveImage = (indexToRemove: number) => {
-    const updatedImageFiles = [...imageFiles];
+  // Remove the image
+  const handleRemoveImage = () => {
+    if (imageFiles.length === 0) return;
+    
+    const image = imageFiles[0];
     
     // Revoke the URL to prevent memory leaks
-    if (updatedImageFiles[indexToRemove].originalUrl) {
-      URL.revokeObjectURL(updatedImageFiles[indexToRemove].originalUrl);
+    if (image.originalUrl) {
+      URL.revokeObjectURL(image.originalUrl);
     }
-    if (updatedImageFiles[indexToRemove].convertedUrl && updatedImageFiles[indexToRemove].convertedUrl?.startsWith('blob:')) {
-      URL.revokeObjectURL(updatedImageFiles[indexToRemove].convertedUrl);
+    if (image.convertedUrl && image.convertedUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(image.convertedUrl);
     }
     
-    // Remove the image from the array
-    updatedImageFiles.splice(indexToRemove, 1);
-    
-    setImageFiles(updatedImageFiles);
-    
-    // Update active index if needed
-    if (activeImageIndex === indexToRemove) {
-      setActiveImageIndex(updatedImageFiles.length > 0 ? 0 : -1);
-    } else if (activeImageIndex > indexToRemove) {
-      setActiveImageIndex(activeImageIndex - 1);
-    }
+    // Clear images
+    setImageFiles([]);
+    setActiveImageIndex(-1);
 
     toast({
       title: "Image removed",
@@ -351,7 +279,7 @@ export const useImageConverter = (maxImages = 2) => {
     isConverting,
     activeImageIndex,
     setActiveImageIndex,
-    hasMultipleFormats,
+    hasMultipleFormats: false, // Always false now since we only allow single upload
     formatMismatchError,
     isCropping,
     cropResult,
@@ -361,7 +289,7 @@ export const useImageConverter = (maxImages = 2) => {
     setMaintainResizeAspectRatio,
     handleFileUpload,
     handleConvert,
-    handleBatchDownload,
+    handleDownload,
     handleRemoveImage,
     handleStartCropping,
     handleCropComplete,

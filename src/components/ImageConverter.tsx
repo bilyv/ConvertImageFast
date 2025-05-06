@@ -4,16 +4,14 @@ import FileUploader from './FileUploader';
 import ConversionOptions from './ConversionOptions';
 import ImagePreview from './ImagePreview';
 import ConvertedImage from './ConvertedImage';
-import ImageThumbnails from './ImageThumbnails';
 import ImageTypeDisplay from './ImageTypeDisplay';
 import ImageCropper from './ImageCropper';
-import ResizeControl from './ResizeControl';
 import FormatMismatchAlert from './FormatMismatchAlert';
 import { Button } from '@/components/ui/button';
-import { Download, ArrowRight, Crop } from 'lucide-react';
+import { Crop, ArrowRight } from 'lucide-react';
 import { useImageConverter } from '../hooks/useImageConverter';
 
-const MAX_IMAGES = 2;
+const MAX_IMAGES = 1; // Now we only allow 1 image
 
 const ImageConverter: React.FC = () => {
   const {
@@ -24,18 +22,11 @@ const ImageConverter: React.FC = () => {
     setQuality,
     isConverting,
     activeImageIndex,
-    setActiveImageIndex,
-    hasMultipleFormats,
-    formatMismatchError,
     isCropping,
     cropResult,
-    resizeDimensions,
-    setResizeDimensions,
-    maintainResizeAspectRatio,
-    setMaintainResizeAspectRatio,
     handleFileUpload,
     handleConvert,
-    handleBatchDownload,
+    handleDownload,
     handleRemoveImage,
     handleStartCropping,
     handleCropComplete,
@@ -53,21 +44,9 @@ const ImageConverter: React.FC = () => {
             maxFiles={MAX_IMAGES}
           />
           
-          <FormatMismatchAlert 
-            formatMismatchError={formatMismatchError} 
-            hasMultipleFormats={hasMultipleFormats} 
-          />
-          
           {imageFiles.length > 0 && (
             <>
               <ImageTypeDisplay imageFiles={imageFiles} />
-
-              <ImageThumbnails 
-                imageFiles={imageFiles}
-                activeImageIndex={activeImageIndex}
-                setActiveImageIndex={setActiveImageIndex}
-                handleRemoveImage={handleRemoveImage}
-              />
 
               {activeImageIndex >= 0 && activeImageIndex < imageFiles.length && !isCropping && (
                 <>
@@ -100,12 +79,12 @@ const ImageConverter: React.FC = () => {
                     />
                     
                     <Button 
-                      className="w-full bg-app-primary hover:bg-app-primary/90 text-white mt-4"
+                      className="w-full bg-app-primary hover:bg-app-primary/90 text-white mt-4 conversion-button"
                       onClick={handleConvert}
-                      disabled={isConverting || formatMismatchError}
+                      disabled={isConverting}
                     >
-                      {isConverting ? 'Converting...' : `Convert ${imageFiles.length > 1 ? 'All Images' : 'Image'}`}
-                      {!isConverting && <ArrowRight className="ml-2 h-4 w-4" />}
+                      {isConverting ? 'Converting...' : 'Convert Image'}
+                      {!isConverting && <ArrowRight className="ml-2 h-4 w-4 animate-slide-right" />}
                     </Button>
                   </div>
                 </>
@@ -128,16 +107,6 @@ const ImageConverter: React.FC = () => {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Output</h2>
-            {imageFiles.some(img => img.convertedUrl) && (
-              <Button 
-                variant="outline"
-                onClick={handleBatchDownload}
-                className="bg-app-accent hover:bg-app-accent/90 text-white border-none"
-              >
-                <Download className="h-4 w-4 mr-1" />
-                Download All
-              </Button>
-            )}
           </div>
 
           {activeImageIndex >= 0 && activeImageIndex < imageFiles.length ? (
@@ -148,18 +117,21 @@ const ImageConverter: React.FC = () => {
             />
           ) : (
             <div className="rounded-lg overflow-hidden border border-border h-64 flex items-center justify-center bg-muted/30">
-              <p className="text-muted-foreground text-sm">Select an image to convert</p>
+              <p className="text-muted-foreground text-sm">Convert an image to see the result</p>
             </div>
           )}
           
-          {/* Show thumbnails of all converted images */}
-          <ImageThumbnails 
-            imageFiles={imageFiles}
-            activeImageIndex={activeImageIndex}
-            setActiveImageIndex={setActiveImageIndex}
-            handleRemoveImage={handleRemoveImage}
-            isConverted={true}
-          />
+          {imageFiles.length > 0 && imageFiles[0].convertedUrl && (
+            <div className="mt-4 flex justify-end">
+              <Button 
+                variant="outline"
+                onClick={handleDownload}
+                className="bg-app-accent hover:bg-app-accent/90 text-white border-none"
+              >
+                Download Converted Image
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
