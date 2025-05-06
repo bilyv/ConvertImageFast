@@ -1,6 +1,7 @@
+
 import { useState, useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
-import { ImageFile, getFileTypeDisplay, getConvertedFileName } from '../utils/imageUtils';
+import { ImageFile, getFileTypeDisplay, getConvertedFileName, isSupportedFileType } from '../utils/imageUtils';
 import { FormatOption } from '../components/ConversionOptions';
 import { CropArea, cropAndResizeImage } from '../utils/cropUtils';
 
@@ -72,10 +73,25 @@ export const useImageConverter = (maxImages = 2) => {
       return;
     }
     
+    // Filter for supported file types
+    const supportedFiles = uploadedFiles.filter(file => {
+      const isSupported = isSupportedFileType(file.type);
+      if (!isSupported) {
+        toast({
+          title: "Unsupported file format",
+          description: `File "${file.name}" is not a supported image format.`,
+          variant: "destructive"
+        });
+      }
+      return isSupported;
+    });
+    
+    if (supportedFiles.length === 0) return;
+    
     // If we already have files, check if the formats match
-    if (imageFiles.length > 0 && uploadedFiles.length > 0) {
+    if (imageFiles.length > 0 && supportedFiles.length > 0) {
       const existingFormat = imageFiles[0].file.type;
-      const newFormats = new Set(uploadedFiles.map(file => file.type));
+      const newFormats = new Set(supportedFiles.map(file => file.type));
       
       if (newFormats.size > 1 || !newFormats.has(existingFormat)) {
         toast({
@@ -87,13 +103,13 @@ export const useImageConverter = (maxImages = 2) => {
       }
     }
 
-    const newImageFiles = uploadedFiles.map(file => {
+    const newImageFiles = supportedFiles.map(file => {
       // Create URL for preview
       const imageUrl = URL.createObjectURL(file);
       
       // Determine default format based on uploaded file type
       let format: FormatOption = 'png';
-      if (file.type === 'image/jpeg') format = 'png';
+      if (file.type === 'image/jpeg' || file.type === 'image/jfif') format = 'png';
       else if (file.type === 'image/png') format = 'jpg';
       else if (file.type === 'image/webp') format = 'png';
       
@@ -140,70 +156,59 @@ export const useImageConverter = (maxImages = 2) => {
     try {
       const updatedImageFiles = [...imageFiles];
       
-      // If all images should be converted (batch conversion)
+      // Process one image at a time to prevent memory issues
       for (let i = 0; i < updatedImageFiles.length; i++) {
         const imageFile = updatedImageFiles[i];
         
-        // Use cropResult URL if available and active image index matches
-        const sourceUrl = (cropResult && i === activeImageIndex) ? 
-          cropResult : imageFile.originalUrl;
-        
-        // Create canvas for image conversion
-        const img = new Image();
-        img.crossOrigin = "anonymous"; // Handle CORS issues
-        img.src = sourceUrl;
-        
-        await new Promise<void>((resolve, reject) => {
-          img.onload = () => resolve();
-          img.onerror = () => reject(new Error("Failed to load image"));
-        });
+        try {
+          // Use cropResult URL if available and active image index matches
+          const sourceUrl = (cropResult && i === activeImageIndex) ? 
+            cropResult : imageFile.originalUrl;
+          
+          // Create canvas for image conversion
+          const img = new Image();
+          img.crossOrigin = "anonymous"; // Handle CORS issues
+          img.src = sourceUrl;
+          
+          await new Promise<void>((resolve, reject) => {
+            img.onload = () => resolve();
+            img.onerror = (e) => reject(new Error(`Failed to load image: ${e}`));
+          });
 
-        const canvas = document.createElement('canvas');
-        
-        // Set canvas dimensions, respecting resize if specified
-        if (i === activeImageIndex && (resizeDimensions.width || resizeDimensions.height)) {
-          // Apply resize dimensions
-          if (maintainResizeAspectRatio) {
-            const aspectRatio = img.width / img.height;
-            
-            if (resizeDimensions.width && !resizeDimensions.height) {
-              canvas.width = resizeDimensions.width;
-              canvas.height = Math.round(resizeDimensions.width / aspectRatio);
-            } else if (!resizeDimensions.width && resizeDimensions.height) {
-              canvas.height = resizeDimensions.height;
-              canvas.width = Math.round(resizeDimensions.height * aspectRatio);
-            } else if (resizeDimensions.width && resizeDimensions.height) {
-              canvas.width = resizeDimensions.width;
-              canvas.height = resizeDimensions.height;
-            }
-          } else {
-            canvas.width = resizeDimensions.width || img.width;
-            canvas.height = resizeDimensions.height || img.height;
-          }
-        } else {
+          const canvas = document.createElement('canvas');
+          
+          // Set canvas dimensions to original image size (no resize)
           canvas.width = img.width;
           canvas.height = img.height;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) throw new Error("Failed to create canvas context");
+          
+          // Draw image on canvas
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          
+          // Set quality options (only for JPG and WebP)
+          const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
+          const qualityOption = !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat) ? quality / 100 : undefined;
+          
+          // Convert to new format
+          const convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
+          
+          // Update the file entry
+          updatedImageFiles[i] = {
+            ...imageFile,
+            convertedUrl: convertedImageUrl,
+            convertedFileName: getConvertedFileName(imageFile.file, selectedFormat),
+          };
+        } catch (error) {
+          console.error(`Error converting image ${i}:`, error);
+          toast({
+            title: `Error with image ${i + 1}`,
+            description: `Could not convert "${imageFile.file.name}". Skipping this file.`,
+            variant: "destructive"
+          });
+          // Continue with next image instead of failing the whole batch
         }
-        
-        const ctx = canvas.getContext('2d');
-        if (!ctx) throw new Error("Failed to create canvas context");
-        
-        // Draw image on canvas
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
-        // Set quality options (only for JPG and WebP)
-        const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
-        const qualityOption = !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat) ? quality / 100 : undefined;
-        
-        // Convert to new format
-        const convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
-        
-        // Update the file entry
-        updatedImageFiles[i] = {
-          ...imageFile,
-          convertedUrl: convertedImageUrl,
-          convertedFileName: getConvertedFileName(imageFile.file, selectedFormat),
-        };
       }
       
       setImageFiles(updatedImageFiles);
@@ -211,10 +216,19 @@ export const useImageConverter = (maxImages = 2) => {
       setCropResult(null);
       setCropData(null);
 
-      toast({
-        title: "Conversion successful",
-        description: `${updatedImageFiles.length} image(s) converted to ${selectedFormat.toUpperCase()}`,
-      });
+      const convertedCount = updatedImageFiles.filter(img => img.convertedUrl).length;
+      if (convertedCount > 0) {
+        toast({
+          title: "Conversion successful",
+          description: `${convertedCount} image(s) converted to ${selectedFormat.toUpperCase()}`,
+        });
+      } else {
+        toast({
+          title: "Conversion failed",
+          description: "No images could be converted. Please try again with different images.",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
       console.error("Conversion error:", error);
       toast({

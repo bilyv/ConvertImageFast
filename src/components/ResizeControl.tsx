@@ -12,14 +12,18 @@ interface ResizeControlProps {
   setResizeDimensions: (dimensions: {width?: number; height?: number}) => void;
   maintainAspectRatio: boolean;
   setMaintainAspectRatio: (maintain: boolean) => void;
+  show?: boolean;
 }
 
 const ResizeControl: React.FC<ResizeControlProps> = ({
   resizeDimensions,
   setResizeDimensions,
   maintainAspectRatio,
-  setMaintainAspectRatio
+  setMaintainAspectRatio,
+  show = false // Default to not showing
 }) => {
+  if (!show) return null;
+  
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newWidth = e.target.value ? parseInt(e.target.value) : undefined;
     setResizeDimensions({

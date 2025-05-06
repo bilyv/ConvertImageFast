@@ -84,20 +84,12 @@ const ImageConverter: React.FC = () => {
                         className="flex items-center"
                       >
                         <Crop className="h-4 w-4 mr-1" />
-                        Crop & Resize
+                        Crop Image
                       </Button>
                     </div>
                   </div>
                   
                   <div className="mt-6 space-y-4">
-                    <h2 className="text-xl font-semibold">Resize Options</h2>
-                    <ResizeControl
-                      resizeDimensions={resizeDimensions}
-                      setResizeDimensions={setResizeDimensions}
-                      maintainAspectRatio={maintainResizeAspectRatio}
-                      setMaintainAspectRatio={setMaintainResizeAspectRatio}
-                    />
-                    
                     <h2 className="text-xl font-semibold">Conversion Options</h2>
                     <ConversionOptions
                       currentFileType={imageFiles[activeImageIndex].file.type}
