@@ -2,11 +2,8 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { getRecommendedFormat, isFormatSupported } from '../utils/imageUtils';
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle } from 'lucide-react';
 
-export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico' | 'heic';
+export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico';
 
 interface ConversionOptionsProps {
   currentFileType: string | null;
@@ -25,7 +22,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
 }) => {
   // Get available formats based on current file type (excluding current format)
   const getAvailableFormats = () => {
-    const allFormats: FormatOption[] = ['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'heic'];
+    const allFormats: FormatOption[] = ['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico'];
     
     // Determine current format from file type
     let currentFormat: FormatOption | null = null;
@@ -37,7 +34,6 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
     if (currentFileType === 'image/tiff') currentFormat = 'tiff';
     if (currentFileType === 'image/avif') currentFormat = 'avif';
     if (currentFileType === 'image/x-icon') currentFormat = 'ico';
-    if (currentFileType === 'image/heic') currentFormat = 'heic';
 
     // Return all formats if no file uploaded yet
     if (!currentFormat) return allFormats;
@@ -47,8 +43,6 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   };
 
   const availableFormats = getAvailableFormats();
-  const isCurrentFormatSupported = currentFileType ? isFormatSupported(selectedFormat) : true;
-  const showFormatWarning = !isCurrentFormatSupported && !!currentFileType;
 
   // Helper function to get readable format name
   const getFormatName = (format: FormatOption): string => {
@@ -61,14 +55,13 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       case 'tiff': return 'TIFF';
       case 'avif': return 'AVIF';
       case 'ico': return 'ICO';
-      case 'heic': return 'HEIC';
     }
   };
 
   // Handle format selection
   const handleFormatChange = (value: string) => {
     // Ensure value is a valid FormatOption before passing it to onFormatChange
-    if (['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'heic'].includes(value)) {
+    if (['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico'].includes(value)) {
       onFormatChange(value as FormatOption);
     }
   };
@@ -99,15 +92,6 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
             ))}
           </SelectContent>
         </Select>
-
-        {showFormatWarning && (
-          <Alert variant="warning" className="mt-2 bg-amber-50 text-amber-700 border-amber-200">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              Browser-based conversion for this format may have limited support. For best results, consider a common format like JPG, PNG, or WebP.
-            </AlertDescription>
-          </Alert>
-        )}
       </div>
 
       {showQualitySettings && (
