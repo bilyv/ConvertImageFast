@@ -1,8 +1,8 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { ImageFile, getFileTypeDisplay, getConvertedFileName } from '../utils/imageUtils';
 import { FormatOption } from '../components/ConversionOptions';
+import { CropArea, cropAndResizeImage } from '../utils/cropUtils';
 
 export const useImageConverter = (maxImages = 2) => {
   const [imageFiles, setImageFiles] = useState<ImageFile[]>([]);
@@ -12,6 +12,11 @@ export const useImageConverter = (maxImages = 2) => {
   const [activeImageIndex, setActiveImageIndex] = useState<number>(-1);
   const [hasMultipleFormats, setHasMultipleFormats] = useState(false);
   const [formatMismatchError, setFormatMismatchError] = useState(false);
+  const [isCropping, setIsCropping] = useState<boolean>(false);
+  const [cropResult, setCropResult] = useState<string | null>(null);
+  const [cropData, setCropData] = useState<CropArea | null>(null);
+  const [resizeDimensions, setResizeDimensions] = useState<{width?: number; height?: number}>({});
+  const [maintainResizeAspectRatio, setMaintainResizeAspectRatio] = useState<boolean>(true);
   const { toast } = useToast();
 
   // Check if uploaded images have multiple formats
@@ -139,9 +144,14 @@ export const useImageConverter = (maxImages = 2) => {
       for (let i = 0; i < updatedImageFiles.length; i++) {
         const imageFile = updatedImageFiles[i];
         
+        // Use cropResult URL if available and active image index matches
+        const sourceUrl = (cropResult && i === activeImageIndex) ? 
+          cropResult : imageFile.originalUrl;
+        
         // Create canvas for image conversion
         const img = new Image();
-        img.src = imageFile.originalUrl;
+        img.crossOrigin = "anonymous"; // Handle CORS issues
+        img.src = sourceUrl;
         
         await new Promise<void>((resolve, reject) => {
           img.onload = () => resolve();
@@ -149,14 +159,37 @@ export const useImageConverter = (maxImages = 2) => {
         });
 
         const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+        
+        // Set canvas dimensions, respecting resize if specified
+        if (i === activeImageIndex && (resizeDimensions.width || resizeDimensions.height)) {
+          // Apply resize dimensions
+          if (maintainResizeAspectRatio) {
+            const aspectRatio = img.width / img.height;
+            
+            if (resizeDimensions.width && !resizeDimensions.height) {
+              canvas.width = resizeDimensions.width;
+              canvas.height = Math.round(resizeDimensions.width / aspectRatio);
+            } else if (!resizeDimensions.width && resizeDimensions.height) {
+              canvas.height = resizeDimensions.height;
+              canvas.width = Math.round(resizeDimensions.height * aspectRatio);
+            } else if (resizeDimensions.width && resizeDimensions.height) {
+              canvas.width = resizeDimensions.width;
+              canvas.height = resizeDimensions.height;
+            }
+          } else {
+            canvas.width = resizeDimensions.width || img.width;
+            canvas.height = resizeDimensions.height || img.height;
+          }
+        } else {
+          canvas.width = img.width;
+          canvas.height = img.height;
+        }
         
         const ctx = canvas.getContext('2d');
         if (!ctx) throw new Error("Failed to create canvas context");
         
         // Draw image on canvas
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         
         // Set quality options (only for JPG and WebP)
         const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
@@ -174,6 +207,9 @@ export const useImageConverter = (maxImages = 2) => {
       }
       
       setImageFiles(updatedImageFiles);
+      // Reset crop data after conversion is complete
+      setCropResult(null);
+      setCropData(null);
 
       toast({
         title: "Conversion successful",
@@ -190,6 +226,42 @@ export const useImageConverter = (maxImages = 2) => {
       setIsConverting(false);
     }
   };
+
+  // Handle cropping actions
+  const handleStartCropping = () => {
+    if (activeImageIndex < 0 || !imageFiles[activeImageIndex]) {
+      toast({
+        title: "No image selected",
+        description: "Please upload and select an image first.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsCropping(true);
+  };
+  
+  const handleCropComplete = (croppedImageUrl: string, cropArea: CropArea) => {
+    setCropResult(croppedImageUrl);
+    setCropData(cropArea);
+    setIsCropping(false);
+    
+    toast({
+      title: "Image cropped",
+      description: "The image has been cropped successfully. You can now convert it.",
+    });
+  };
+  
+  const handleCancelCrop = () => {
+    setIsCropping(false);
+  };
+
+  // Reset crop when changing active image
+  useEffect(() => {
+    setCropResult(null);
+    setCropData(null);
+    setResizeDimensions({});
+  }, [activeImageIndex]);
 
   // Batch download all converted images
   const handleBatchDownload = () => {
@@ -267,9 +339,18 @@ export const useImageConverter = (maxImages = 2) => {
     setActiveImageIndex,
     hasMultipleFormats,
     formatMismatchError,
+    isCropping,
+    cropResult,
+    resizeDimensions,
+    setResizeDimensions,
+    maintainResizeAspectRatio,
+    setMaintainResizeAspectRatio,
     handleFileUpload,
     handleConvert,
     handleBatchDownload,
-    handleRemoveImage
+    handleRemoveImage,
+    handleStartCropping,
+    handleCropComplete,
+    handleCancelCrop
   };
 };

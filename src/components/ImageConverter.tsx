@@ -6,9 +6,11 @@ import ImagePreview from './ImagePreview';
 import ConvertedImage from './ConvertedImage';
 import ImageThumbnails from './ImageThumbnails';
 import ImageTypeDisplay from './ImageTypeDisplay';
+import ImageCropper from './ImageCropper';
+import ResizeControl from './ResizeControl';
 import FormatMismatchAlert from './FormatMismatchAlert';
 import { Button } from '@/components/ui/button';
-import { Download, ArrowRight } from 'lucide-react';
+import { Download, ArrowRight, Crop } from 'lucide-react';
 import { useImageConverter } from '../hooks/useImageConverter';
 
 const MAX_IMAGES = 2;
@@ -25,10 +27,19 @@ const ImageConverter: React.FC = () => {
     setActiveImageIndex,
     hasMultipleFormats,
     formatMismatchError,
+    isCropping,
+    cropResult,
+    resizeDimensions,
+    setResizeDimensions,
+    maintainResizeAspectRatio,
+    setMaintainResizeAspectRatio,
     handleFileUpload,
     handleConvert,
     handleBatchDownload,
-    handleRemoveImage
+    handleRemoveImage,
+    handleStartCropping,
+    handleCropComplete,
+    handleCancelCrop
   } = useImageConverter(MAX_IMAGES);
 
   return (
@@ -58,16 +69,35 @@ const ImageConverter: React.FC = () => {
                 handleRemoveImage={handleRemoveImage}
               />
 
-              {activeImageIndex >= 0 && activeImageIndex < imageFiles.length && (
+              {activeImageIndex >= 0 && activeImageIndex < imageFiles.length && !isCropping && (
                 <>
                   <div className="mt-4">
                     <ImagePreview 
-                      originalImage={imageFiles[activeImageIndex].originalUrl} 
+                      originalImage={cropResult || imageFiles[activeImageIndex].originalUrl} 
                       fileName={imageFiles[activeImageIndex].file.name} 
                     />
+                    <div className="mt-2 flex justify-end">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleStartCropping}
+                        className="flex items-center"
+                      >
+                        <Crop className="h-4 w-4 mr-1" />
+                        Crop & Resize
+                      </Button>
+                    </div>
                   </div>
                   
                   <div className="mt-6 space-y-4">
+                    <h2 className="text-xl font-semibold">Resize Options</h2>
+                    <ResizeControl
+                      resizeDimensions={resizeDimensions}
+                      setResizeDimensions={setResizeDimensions}
+                      maintainAspectRatio={maintainResizeAspectRatio}
+                      setMaintainAspectRatio={setMaintainResizeAspectRatio}
+                    />
+                    
                     <h2 className="text-xl font-semibold">Conversion Options</h2>
                     <ConversionOptions
                       currentFileType={imageFiles[activeImageIndex].file.type}
@@ -87,6 +117,17 @@ const ImageConverter: React.FC = () => {
                     </Button>
                   </div>
                 </>
+              )}
+              
+              {isCropping && activeImageIndex >= 0 && activeImageIndex < imageFiles.length && (
+                <div className="mt-4 space-y-4">
+                  <h2 className="text-xl font-semibold">Crop Image</h2>
+                  <ImageCropper 
+                    imageUrl={imageFiles[activeImageIndex].originalUrl}
+                    onCropComplete={handleCropComplete}
+                    onCancel={handleCancelCrop}
+                  />
+                </div>
               )}
             </>
           )}
