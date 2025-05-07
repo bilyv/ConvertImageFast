@@ -3,7 +3,7 @@ import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 
-export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico';
+export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico' | 'jfif';
 
 interface ConversionOptionsProps {
   currentFileType: string | null;
@@ -22,11 +22,11 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
 }) => {
   // Get available formats based on current file type (excluding current format)
   const getAvailableFormats = () => {
-    const allFormats: FormatOption[] = ['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico'];
+    const allFormats: FormatOption[] = ['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif'];
     
     // Determine current format from file type
     let currentFormat: FormatOption | null = null;
-    if (currentFileType === 'image/jpeg') currentFormat = 'jpg';
+    if (currentFileType === 'image/jpeg' || currentFileType === 'image/jfif') currentFormat = 'jpg';
     if (currentFileType === 'image/png') currentFormat = 'png';
     if (currentFileType === 'image/webp') currentFormat = 'webp';
     if (currentFileType === 'image/bmp') currentFormat = 'bmp';
@@ -55,13 +55,14 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       case 'tiff': return 'TIFF';
       case 'avif': return 'AVIF';
       case 'ico': return 'ICO';
+      case 'jfif': return 'JFIF';
     }
   };
 
   // Handle format selection
   const handleFormatChange = (value: string) => {
     // Ensure value is a valid FormatOption before passing it to onFormatChange
-    if (['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico'].includes(value)) {
+    if (['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif'].includes(value)) {
       onFormatChange(value as FormatOption);
     }
   };
