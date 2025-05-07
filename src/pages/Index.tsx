@@ -4,21 +4,8 @@ import { Helmet } from 'react-helmet-async';
 import ImageConverter from '../components/ImageConverter';
 import BreadcrumbNav from '../components/BreadcrumbNav';
 import { GooeyText } from '@/components/ui/gooey-text';
-import FormatCarousel from '@/components/FormatCarousel';
 
 const Index = () => {
-  // All 8 format conversion types
-  const formatTypes = [
-    "PNG to JPG",
-    "JPG to PNG", 
-    "WebP to JPG", 
-    "PNG to WebP",
-    "BMP to PNG",
-    "GIF to PNG",
-    "TIFF to JPG",
-    "AVIF to PNG"
-  ];
-  
   return (
     <div className="min-h-screen bg-app-background">
       {/* SEO Metadata with enhanced information */}
@@ -75,9 +62,16 @@ const Index = () => {
             No signup required, and your images never leave your browser for maximum privacy and security.
           </p>
           
-          {/* Animated format options */}
+          {/* SEO-friendly format options */}
           <div className="flex flex-wrap justify-center gap-3 mb-8">
-            <FormatCarousel formats={formatTypes} className="py-2" />
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">PNG to JPG Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">JPG to PNG Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">WebP to JPG Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">PNG to WebP Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">JPG to BMP Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">PNG to AVIF Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">WebP to ICO Converter</span>
+            <span className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm">JPG to TIFF Converter</span>
           </div>
         </div>
       </section>

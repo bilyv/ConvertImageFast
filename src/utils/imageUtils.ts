@@ -12,7 +12,6 @@ export const getFileTypeDisplay = (mimeType: string): string => {
     case 'image/tiff': return 'TIFF';
     case 'image/avif': return 'AVIF';
     case 'image/x-icon': return 'ICO';
-    case 'image/jfif': return 'JFIF';
     default: return 'Unknown';
   }
 };
