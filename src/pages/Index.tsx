@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import ImageConverter from '../components/ImageConverter';
 import BreadcrumbNav from '../components/BreadcrumbNav';
 import { GooeyText } from '@/components/ui/gooey-text';
+import ConversionAnimation from '../components/ConversionAnimation';
 
 const Index = () => {
   return (
@@ -50,12 +50,12 @@ const Index = () => {
         `}</script>
       </Helmet>
 
-      {/* Header Navigation - Removed links and kept only the logo/title */}
+      {/* Header Navigation with Animation */}
       <header className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col items-center justify-center">
           <div className="flex items-center space-x-1">
             <img src="/logo.png" alt="ImageConvert Logo - Online Image Format Converter" className="h-8 w-8" onError={(e) => e.currentTarget.style.display = 'none'} />
-            <div className="h-10 w-64"> {/* Fixed height and width for the title */}
+            <div className="h-10 w-64">
               <GooeyText 
                 texts={["ImageConvert", "Image Format Converter"]} 
                 morphTime={1.5}
@@ -65,13 +65,18 @@ const Index = () => {
               />
             </div>
           </div>
+          
+          {/* Add the animation component here */}
+          <div className="w-full mt-2">
+            <ConversionAnimation />
+          </div>
         </div>
       </header>
 
       {/* Breadcrumb Navigation */}
       <BreadcrumbNav />
 
-      {/* Hero Section with SEO optimized content and cropping mentioned */}
+      {/* Hero Section */}
       <section className="pt-12 pb-8 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-app-text mb-3">
