@@ -3,12 +3,12 @@ import React from 'react';
 import FileUploader from './FileUploader';
 import ConversionOptions from './ConversionOptions';
 import ImagePreview from './ImagePreview';
-import ConvertedImage from './ConvertedImage';
 import ImageTypeDisplay from './ImageTypeDisplay';
 import ImageCropper from './ImageCropper';
-import FormatMismatchAlert from './FormatMismatchAlert';
+import ResizeControl from './ResizeControl';
+import PlatformResize from './PlatformResize';
 import { Button } from '@/components/ui/button';
-import { Download, ArrowRight, Crop } from 'lucide-react';
+import { ArrowRight, Crop } from 'lucide-react';
 import { useImageConverter } from '../hooks/useImageConverter';
 
 const ImageConverter: React.FC = () => {
@@ -21,20 +21,27 @@ const ImageConverter: React.FC = () => {
     isConverting,
     isCropping,
     cropResult,
+    resizeDimensions,
+    setResizeDimensions,
+    maintainResizeAspectRatio,
+    setMaintainResizeAspectRatio,
     handleFileUpload,
     handleConvert,
-    handleDownload,
     handleRemoveImage,
     handleStartCropping,
     handleCropComplete,
     handleCancelCrop
   } = useImageConverter();
 
+  const handlePlatformSizeSelect = (width: number, height: number) => {
+    setResizeDimensions({ width, height });
+  };
+
   return (
-    <div className="w-full max-w-6xl mx-auto p-4">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+    <div className="w-full max-w-4xl mx-auto p-4">
+      <div className="space-y-8">
         <div>
-          <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
+          <h2 className="text-xl font-semibold mb-4">Upload & Convert Image</h2>
           <FileUploader 
             onFileUpload={handleFileUpload} 
             hasExistingFile={!!imageFile}
@@ -72,22 +79,40 @@ const ImageConverter: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="mt-6 space-y-4">
-                    <h2 className="text-xl font-semibold">Conversion Options</h2>
-                    <ConversionOptions
-                      currentFileType={imageFile.file.type}
-                      selectedFormat={selectedFormat}
-                      quality={quality}
-                      onFormatChange={setSelectedFormat}
-                      onQualityChange={setQuality}
-                    />
+                  <div className="mt-6 space-y-6">
+                    <div className="p-4 border border-border rounded-lg bg-card space-y-4">
+                      <h2 className="text-lg font-semibold">Resize Options</h2>
+                      <PlatformResize onSelectSize={handlePlatformSizeSelect} />
+                      
+                      <div className="mt-4">
+                        <h3 className="text-sm font-medium mb-2">Custom size:</h3>
+                        <ResizeControl 
+                          resizeDimensions={resizeDimensions}
+                          setResizeDimensions={setResizeDimensions}
+                          maintainAspectRatio={maintainResizeAspectRatio}
+                          setMaintainAspectRatio={setMaintainResizeAspectRatio}
+                          show={true}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 border border-border rounded-lg bg-card">
+                      <h2 className="text-lg font-semibold mb-4">Conversion Options</h2>
+                      <ConversionOptions
+                        currentFileType={imageFile.file.type}
+                        selectedFormat={selectedFormat}
+                        quality={quality}
+                        onFormatChange={setSelectedFormat}
+                        onQualityChange={setQuality}
+                      />
+                    </div>
                     
                     <Button 
-                      className="w-full bg-app-primary hover:bg-app-primary/90 text-white mt-4"
+                      className="w-full bg-app-primary hover:bg-app-primary/90 text-white"
                       onClick={handleConvert}
                       disabled={isConverting}
                     >
-                      {isConverting ? 'Converting...' : 'Convert Image'}
+                      {isConverting ? 'Converting...' : 'Convert & Download Image'}
                       {!isConverting && <ArrowRight className="ml-2 h-4 w-4" />}
                     </Button>
                   </div>
@@ -105,34 +130,6 @@ const ImageConverter: React.FC = () => {
                 </div>
               )}
             </>
-          )}
-        </div>
-        
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Output</h2>
-            {imageFile?.convertedUrl && (
-              <Button 
-                variant="outline"
-                onClick={handleDownload}
-                className="bg-app-accent hover:bg-app-accent/90 text-white border-none"
-              >
-                <Download className="h-4 w-4 mr-1" />
-                Download
-              </Button>
-            )}
-          </div>
-
-          {imageFile ? (
-            <ConvertedImage
-              convertedImage={imageFile.convertedUrl}
-              convertedFileName={imageFile.convertedFileName}
-              isConverting={isConverting}
-            />
-          ) : (
-            <div className="rounded-lg overflow-hidden border border-border h-64 flex items-center justify-center bg-muted/30">
-              <p className="text-muted-foreground text-sm">Upload an image to convert</p>
-            </div>
           )}
         </div>
       </div>

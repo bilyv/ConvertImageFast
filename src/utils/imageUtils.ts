@@ -14,7 +14,7 @@ export type ImageFormat = 'jpg' | 'png' | 'webp' | 'jfif';
 
 // Check if a file type is supported
 export const isSupportedFileType = (fileType: string): boolean => {
-  const supportedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jfif'];
+  const supportedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jfif', 'image/bmp', 'image/gif'];
   return supportedTypes.includes(fileType);
 };
 

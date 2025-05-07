@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { ImageFile, getFileTypeDisplay, getConvertedFileName, isSupportedFileType } from '../utils/imageUtils';
 import { FormatOption } from '../components/ConversionOptions';
-import { CropArea, cropAndResizeImage } from '../utils/cropUtils';
+import { CropArea, cropAndResizeImage, calculateDimensionsWithAspectRatio } from '../utils/cropUtils';
 import { useNavigate } from 'react-router-dom';
 
 export const useImageConverter = () => {
@@ -142,15 +143,32 @@ export const useImageConverter = () => {
 
       const canvas = document.createElement('canvas');
       
-      // Set canvas dimensions to original image size (no resize)
-      canvas.width = img.width;
-      canvas.height = img.height;
+      // Apply resizing if dimensions are provided
+      let finalWidth = img.width;
+      let finalHeight = img.height;
+      
+      if (resizeDimensions.width || resizeDimensions.height) {
+        const dimensions = calculateDimensionsWithAspectRatio(
+          img.width, 
+          img.height,
+          resizeDimensions.width,
+          resizeDimensions.height,
+          maintainResizeAspectRatio
+        );
+        
+        finalWidth = dimensions.width;
+        finalHeight = dimensions.height;
+      }
+      
+      // Set canvas dimensions to resized dimensions
+      canvas.width = finalWidth;
+      canvas.height = finalHeight;
       
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error("Failed to create canvas context");
       
-      // Draw image on canvas
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      // Draw image on canvas with resizing if needed
+      ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
       
       // Set quality options (only for JPG and WebP)
       const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
