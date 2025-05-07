@@ -1,9 +1,9 @@
-
 import { useState, useEffect } from 'react';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ImageFile, getFileTypeDisplay, getConvertedFileName, isSupportedFileType } from '../utils/imageUtils';
 import { FormatOption } from '../components/ConversionOptions';
 import { CropArea, cropAndResizeImage } from '../utils/cropUtils';
+import { useNavigate } from 'react-router-dom';
 
 export const useImageConverter = () => {
   const [imageFile, setImageFile] = useState<ImageFile | null>(null);
@@ -16,6 +16,7 @@ export const useImageConverter = () => {
   const [resizeDimensions, setResizeDimensions] = useState<{width?: number; height?: number}>({});
   const [maintainResizeAspectRatio, setMaintainResizeAspectRatio] = useState<boolean>(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // When component unmounts, clean up object URL
   useEffect(() => {
@@ -159,11 +160,12 @@ export const useImageConverter = () => {
       const convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
       
       // Update the file
-      setImageFile({
+      const updatedImageFile = {
         ...imageFile,
         convertedUrl: convertedImageUrl,
         convertedFileName: getConvertedFileName(imageFile.file, selectedFormat),
-      });
+      };
+      setImageFile(updatedImageFile);
 
       // Reset crop data after conversion is complete
       setCropResult(null);
@@ -173,6 +175,9 @@ export const useImageConverter = () => {
         title: "Conversion successful",
         description: `Image converted to ${selectedFormat.toUpperCase()}`,
       });
+      
+      // Navigate to thank you page with the converted image data
+      navigate('/thank-you', { state: { imageData: updatedImageFile } });
     } catch (error) {
       console.error("Conversion error:", error);
       toast({
