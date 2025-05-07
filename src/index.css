@@ -77,4 +77,40 @@
       opacity: 0.7;
     }
   }
+  
+  .animate-format-move {
+    animation: format-move 2s forwards;
+  }
+  
+  @keyframes format-move {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    
+    40% {
+      transform: translateX(20px);
+      opacity: 0.8;
+    }
+    
+    50% {
+      transform: translateX(30px);
+      opacity: 0;
+    }
+    
+    51% {
+      transform: translateX(-30px);
+      opacity: 0;
+    }
+    
+    60% {
+      transform: translateX(-20px);
+      opacity: 0.8;
+    }
+    
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
 }
