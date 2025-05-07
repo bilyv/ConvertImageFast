@@ -1,8 +1,7 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { CropArea, calculateDimensionsWithAspectRatio } from '../utils/cropUtils';
 import { Button } from '@/components/ui/button';
-import { Crop, Grid3x3, Grid2X2, GridSquare } from 'lucide-react';
+import { Crop, Grid3x3, Grid2X2 } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
@@ -576,7 +575,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
               <Grid2X2 className="h-4 w-4" />
             </ToggleGroupItem>
             <ToggleGroupItem value="center" aria-label="Center Point">
-              <GridSquare className="h-4 w-4" />
+              <Crop className="h-4 w-4" />
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
