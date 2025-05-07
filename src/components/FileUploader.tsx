@@ -5,14 +5,12 @@ import { FileImage } from 'lucide-react';
 
 interface FileUploaderProps {
   onFileUpload: (files: File[]) => void;
-  currentFileCount: number;
-  maxFiles?: number;
+  hasExistingFile?: boolean;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({ 
   onFileUpload, 
-  currentFileCount, 
-  maxFiles = 2 
+  hasExistingFile = false
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -41,80 +39,43 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     setIsDragging(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const droppedFiles = Array.from(e.dataTransfer.files);
-      validateAndProcessFiles(droppedFiles);
+      const droppedFile = e.dataTransfer.files[0]; // Take only the first file
+      validateAndProcessFile(droppedFile);
     }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const selectedFiles = Array.from(e.target.files);
-      validateAndProcessFiles(selectedFiles);
+      const selectedFile = e.target.files[0]; // Take only the first file
+      validateAndProcessFile(selectedFile);
     }
   };
 
-  const validateAndProcessFiles = (files: File[]) => {
-    // Check if adding these files would exceed the maximum
-    const remainingSlots = maxFiles - currentFileCount;
+  const validateAndProcessFile = (file: File) => {
+    // Filter valid image types (now including JFIF)
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jfif'];
     
-    if (remainingSlots <= 0) {
+    if (!validImageTypes.includes(file.type)) {
       toast({
-        title: "Maximum images reached",
-        description: `You can only upload a maximum of ${maxFiles} images.`,
+        title: "Unsupported file format",
+        description: "Only JPG, PNG, WebP, and JFIF images are supported.",
         variant: "destructive"
       });
       return;
     }
     
-    // Limit to the remaining slots
-    const filesToProcess = files.slice(0, remainingSlots);
-    
-    if (filesToProcess.length < files.length) {
-      toast({
-        title: "Some files were skipped",
-        description: `Only ${remainingSlots} more image${remainingSlots !== 1 ? 's' : ''} can be uploaded (maximum ${maxFiles}).`,
-        variant: "destructive"
-      });
-    }
-    
-    // Filter valid image types
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    const validFiles = filesToProcess.filter(file => validImageTypes.includes(file.type));
-    
-    // Check if any files were invalid
-    if (validFiles.length < filesToProcess.length) {
-      toast({
-        title: "Some files were skipped",
-        description: "Only JPG, PNG, and WebP images are supported.",
-        variant: "destructive"
-      });
-    }
-    
-    // Check file size for each valid file (max 10MB)
+    // Check file size (max 10MB)
     const maxSizeMB = 10;
-    const sizeValidFiles = validFiles.filter(file => file.size <= maxSizeMB * 1024 * 1024);
-    
-    if (sizeValidFiles.length < validFiles.length) {
+    if (file.size > maxSizeMB * 1024 * 1024) {
       toast({
-        title: "Some files were skipped",
-        description: `Files must be smaller than ${maxSizeMB}MB.`,
+        title: "File too large",
+        description: `File must be smaller than ${maxSizeMB}MB.`,
         variant: "destructive"
       });
+      return;
     }
 
-    if (sizeValidFiles.length > 0) {
-      onFileUpload(sizeValidFiles);
-      toast({
-        title: "Upload successful",
-        description: `${sizeValidFiles.length} image${sizeValidFiles.length > 1 ? 's' : ''} uploaded.`,
-      });
-    } else {
-      toast({
-        title: "No valid images",
-        description: "Please upload JPG, PNG, or WebP images smaller than 10MB.",
-        variant: "destructive"
-      });
-    }
+    onFileUpload([file]);
   };
 
   const handleButtonClick = () => {
@@ -123,7 +84,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     }
   };
 
-  const isUploadDisabled = currentFileCount >= maxFiles;
+  const isUploadDisabled = hasExistingFile;
 
   return (
     <div
@@ -140,20 +101,19 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         type="file"
         ref={fileInputRef}
         onChange={!isUploadDisabled ? handleFileInputChange : undefined}
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/jpeg,image/png,image/webp,image/jfif"
         className="hidden"
-        multiple
         disabled={isUploadDisabled}
       />
       <div className="flex flex-col items-center justify-center">
         <FileImage className={`h-12 w-12 ${isUploadDisabled ? 'text-muted-foreground/50' : 'text-app-primary'} mb-3`} />
         {isUploadDisabled ? (
-          <p className="text-lg font-medium mb-1">Maximum images reached</p>
+          <p className="text-lg font-medium mb-1">Image already uploaded</p>
         ) : (
           <>
-            <p className="text-lg font-medium mb-1">Drag & drop images here</p>
+            <p className="text-lg font-medium mb-1">Drag & drop image here</p>
             <p className="text-sm text-muted-foreground mb-3">
-              or click to browse (JPG, PNG, WebP)
+              or click to browse (JPG, PNG, WebP, JFIF)
             </p>
           </>
         )}
@@ -170,10 +130,10 @@ const FileUploader: React.FC<FileUploaderProps> = ({
           }}
           disabled={isUploadDisabled}
         >
-          {isUploadDisabled ? 'Maximum Reached' : 'Select Images'}
+          {isUploadDisabled ? 'Replace Image' : 'Select Image'}
         </button>
         <p className="text-xs text-muted-foreground mt-2">
-          Maximum {maxFiles} images • Multiple files supported • Max 10MB per file
+          Maximum 1 image • Max 10MB per file
         </p>
       </div>
     </div>
