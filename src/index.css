@@ -77,42 +77,4 @@
       opacity: 0.7;
     }
   }
-  
-  /* Image conversion animation */
-  .animate-convert {
-    animation: convert 3s ease-in-out infinite;
-  }
-
-  @keyframes convert {
-    0% {
-      transform: translateX(0) scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: translateX(15px) scale(0.95);
-      opacity: 0.7;
-    }
-    100% {
-      transform: translateX(30px) scale(1);
-      opacity: 1;
-    }
-  }
-
-  .animate-arrow {
-    animation: arrow-move 1.5s linear infinite;
-  }
-
-  @keyframes arrow-move {
-    0% {
-      transform: translateX(-10px);
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(10px);
-      opacity: 0;
-    }
-  }
 }
