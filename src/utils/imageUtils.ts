@@ -12,7 +12,6 @@ export const getFileTypeDisplay = (mimeType: string): string => {
     case 'image/tiff': return 'TIFF';
     case 'image/avif': return 'AVIF';
     case 'image/x-icon': return 'ICO';
-    case 'image/jfif': return 'JFIF';
     default: return 'Unknown';
   }
 };
@@ -22,22 +21,6 @@ export const getConvertedFileName = (file: File, format: string): string => {
   // Extract name without extension
   const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
   return `${originalName}.${format}`;
-};
-
-// Check if file type is supported
-export const isSupportedFileType = (mimeType: string): boolean => {
-  const supportedTypes = [
-    'image/jpeg', 
-    'image/png', 
-    'image/webp', 
-    'image/bmp', 
-    'image/gif', 
-    'image/tiff', 
-    'image/avif', 
-    'image/x-icon',
-    'image/jfif'
-  ];
-  return supportedTypes.includes(mimeType);
 };
 
 export interface ImageFile {
