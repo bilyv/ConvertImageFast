@@ -10,11 +10,18 @@ export interface ImageFile {
   fileTypeDisplay: string;
 }
 
-export type ImageFormat = 'jpg' | 'png' | 'webp' | 'jfif';
+export type ImageFormat = 'jpg' | 'png' | 'webp' | 'jfif' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico' | 
+                         'heic' | 'raw' | 'psd' | 'ai' | 'svg' | 'jp2' | 'cr2' | 'nef' | 'arw' | 'dng' | 
+                         'exr' | 'pbm' | 'pcx';
 
 // Check if a file type is supported
 export const isSupportedFileType = (fileType: string): boolean => {
-  const supportedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jfif', 'image/bmp', 'image/gif'];
+  const supportedTypes = [
+    'image/jpeg', 'image/png', 'image/webp', 'image/jfif', 'image/bmp', 'image/gif',
+    'image/tiff', 'image/avif', 'image/x-icon', 'image/heic', 'image/raw',
+    'image/psd', 'image/ai', 'image/svg+xml', 'image/jp2', 'image/cr2',
+    'image/nef', 'image/arw', 'image/dng', 'image/exr', 'image/pbm', 'image/pcx'
+  ];
   return supportedTypes.includes(fileType);
 };
 
@@ -33,6 +40,38 @@ export const getFileTypeDisplay = (fileType: string): string => {
       return 'Bitmap Image (.bmp)';
     case 'image/gif':
       return 'GIF Image (.gif)';
+    case 'image/tiff':
+      return 'TIFF Image (.tiff)';
+    case 'image/avif':
+      return 'AVIF Image (.avif)';
+    case 'image/x-icon':
+      return 'Icon (.ico)';
+    case 'image/heic':
+      return 'HEIC Image (.heic)';
+    case 'image/raw':
+      return 'RAW Image (.raw)';
+    case 'image/psd':
+      return 'Photoshop Document (.psd)';
+    case 'image/ai':
+      return 'Adobe Illustrator (.ai)';
+    case 'image/svg+xml':
+      return 'SVG Image (.svg)';
+    case 'image/jp2':
+      return 'JPEG 2000 (.jp2)';
+    case 'image/cr2':
+      return 'Canon Raw (.cr2)';
+    case 'image/nef':
+      return 'Nikon Raw (.nef)';
+    case 'image/arw':
+      return 'Sony Raw (.arw)';
+    case 'image/dng':
+      return 'Digital Negative (.dng)';
+    case 'image/exr':
+      return 'OpenEXR Image (.exr)';
+    case 'image/pbm':
+      return 'Portable Bitmap (.pbm)';
+    case 'image/pcx':
+      return 'PCX Image (.pcx)';
     default:
       return 'Unknown Image Format';
   }
@@ -72,6 +111,40 @@ export const getMimeType = (format: string): string => {
       return 'image/bmp';
     case 'gif':
       return 'image/gif';
+    case 'tiff':
+      return 'image/tiff';
+    case 'avif':
+      return 'image/avif';
+    case 'ico':
+      return 'image/x-icon';
+    case 'heic':
+      return 'image/heic';
+    case 'svg':
+      return 'image/svg+xml';
+    case 'jp2':
+      return 'image/jp2';
+    // These formats may not be supported for direct conversion in browser
+    // but we include them for completeness
+    case 'raw':
+      return 'image/raw';
+    case 'psd':
+      return 'image/psd';
+    case 'ai':
+      return 'image/ai';
+    case 'cr2':
+      return 'image/cr2';
+    case 'nef':
+      return 'image/nef';
+    case 'arw':
+      return 'image/arw';
+    case 'dng':
+      return 'image/dng';
+    case 'exr':
+      return 'image/exr';
+    case 'pbm':
+      return 'image/pbm';
+    case 'pcx':
+      return 'image/pcx';
     default:
       return 'image/jpeg';
   }

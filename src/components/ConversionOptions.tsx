@@ -4,7 +4,7 @@ import { Search } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Slider } from "@/components/ui/slider";
 
-export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico' | 'jfif';
+export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico' | 'jfif' | 'heic' | 'raw' | 'psd' | 'ai' | 'svg' | 'jp2' | 'cr2' | 'nef' | 'arw' | 'dng' | 'exr' | 'pbm' | 'pcx';
 
 interface ConversionOptionsProps {
   currentFileType: string | null;
@@ -23,7 +23,10 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
 }) => {
   // Get available formats based on current file type (excluding current format)
   const getAvailableFormats = () => {
-    const allFormats: FormatOption[] = ['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif'];
+    const allFormats: FormatOption[] = [
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif', 
+      'heic', 'raw', 'psd', 'ai', 'svg', 'jp2', 'cr2', 'nef', 'arw', 'dng', 'exr', 'pbm', 'pcx'
+    ];
     
     // Determine current format from file type
     let currentFormat: FormatOption | null = null;
@@ -57,6 +60,19 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       case 'avif': return 'AVIF';
       case 'ico': return 'ICO';
       case 'jfif': return 'JFIF';
+      case 'heic': return 'HEIC';
+      case 'raw': return 'RAW';
+      case 'psd': return 'PSD';
+      case 'ai': return 'AI';
+      case 'svg': return 'SVG';
+      case 'jp2': return 'JP2';
+      case 'cr2': return 'CR2';
+      case 'nef': return 'NEF';
+      case 'arw': return 'ARW';
+      case 'dng': return 'DNG';
+      case 'exr': return 'EXR';
+      case 'pbm': return 'PBM';
+      case 'pcx': return 'PCX';
     }
   };
 
@@ -66,8 +82,8 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   // Filter formats based on search query
   const filteredFormats = useMemo(() => {
     if (!searchQuery.trim()) {
-      // Show just two example formats when no search
-      return availableFormats.slice(0, 2);
+      // Show no examples when no search
+      return [];
     }
     
     return availableFormats.filter(format => 
@@ -79,7 +95,10 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   // Handle format selection
   const handleFormatSelect = (value: string) => {
     // Ensure value is a valid FormatOption before passing it to onFormatChange
-    if (['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif'].includes(value)) {
+    if ([
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif',
+      'heic', 'raw', 'psd', 'ai', 'svg', 'jp2', 'cr2', 'nef', 'arw', 'dng', 'exr', 'pbm', 'pcx'
+    ].includes(value)) {
       onFormatChange(value as FormatOption);
       setSearchQuery(''); // Clear search after selection
     }
@@ -105,7 +124,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
             <div className="flex items-center border-b px-3">
               <Search className="h-4 w-4 shrink-0 opacity-50 mr-2" />
               <CommandInput 
-                placeholder="Search formats..." 
+                placeholder="Search formats png or tiff" 
                 value={searchQuery}
                 onValueChange={setSearchQuery}
                 className="flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
