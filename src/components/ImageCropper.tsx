@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { CropArea, calculateDimensionsWithAspectRatio } from '../utils/cropUtils';
+import { CropArea, calculateDimensionsWithAspectRatio, getPointerCoordinates } from '../utils/cropUtils';
 import { Button } from '@/components/ui/button';
-import { Crop, Grid3x3, Grid2X2 } from 'lucide-react';
+import { Crop } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
@@ -11,7 +11,7 @@ interface ImageCropperProps {
   onCancel: () => void;
 }
 
-type GridType = 'none' | '3x3' | '2x2' | 'center';
+type GridType = 'none' | 'center';
 
 const ImageCropper: React.FC<ImageCropperProps> = ({
   imageUrl,
@@ -30,7 +30,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [scale, setScale] = useState(1);
   const [aspectRatio, setAspectRatio] = useState<number | null>(null); // null means free form
-  const [gridType, setGridType] = useState<GridType>('3x3');
+  const [gridType, setGridType] = useState<GridType>('center');
 
   // Load image and setup canvas
   useEffect(() => {
@@ -110,11 +110,11 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     // Draw the image
     ctx.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height);
     
-    // Draw semi-transparent overlay for the non-cropped area
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    // Draw semi-transparent overlay for the non-cropped area (more transparent)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Clear the crop area (make it transparent)
+    // Clear the crop area (make it completely transparent)
     ctx.clearRect(crop.x, crop.y, crop.width, crop.height);
     
     // Draw crop border
@@ -127,30 +127,8 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
       ctx.lineWidth = 1;
       
-      if (gridType === '3x3' || gridType === 'center') {
-        // Draw rule of thirds grid
-        // Vertical lines
-        for (let i = 1; i <= 2; i++) {
-          const x = crop.x + (crop.width / 3) * i;
-          ctx.beginPath();
-          ctx.moveTo(x, crop.y);
-          ctx.lineTo(x, crop.y + crop.height);
-          ctx.stroke();
-        }
-        
-        // Horizontal lines
-        for (let i = 1; i <= 2; i++) {
-          const y = crop.y + (crop.height / 3) * i;
-          ctx.beginPath();
-          ctx.moveTo(crop.x, y);
-          ctx.lineTo(crop.x + crop.width, y);
-          ctx.stroke();
-        }
-      } 
-      
-      if (gridType === '2x2' || gridType === 'center') {
-        // Draw 2x2 grid
-        // Vertical line
+      if (gridType === 'center') {
+        // Draw center lines
         const xCenter = crop.x + crop.width / 2;
         ctx.beginPath();
         ctx.moveTo(xCenter, crop.y);
@@ -163,9 +141,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
         ctx.moveTo(crop.x, yCenter);
         ctx.lineTo(crop.x + crop.width, yCenter);
         ctx.stroke();
-      }
-      
-      if (gridType === 'center') {
+        
         // Draw center point
         const centerX = crop.x + crop.width / 2;
         const centerY = crop.y + crop.height / 2;
@@ -179,7 +155,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     }
     
     // Draw resize handles
-    const handleSize = 8;
+    const handleSize = 10; // Slightly larger for better touch targets
     ctx.fillStyle = '#ffffff';
     
     // Corner handles
@@ -187,42 +163,30 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     ctx.fillRect(crop.x + crop.width - handleSize/2, crop.y - handleSize/2, handleSize, handleSize); // Top-right
     ctx.fillRect(crop.x - handleSize/2, crop.y + crop.height - handleSize/2, handleSize, handleSize); // Bottom-left
     ctx.fillRect(crop.x + crop.width - handleSize/2, crop.y + crop.height - handleSize/2, handleSize, handleSize); // Bottom-right
-    
-    // Edge handles
-    ctx.fillRect(crop.x + crop.width/2 - handleSize/2, crop.y - handleSize/2, handleSize, handleSize); // Top-center
-    ctx.fillRect(crop.x + crop.width/2 - handleSize/2, crop.y + crop.height - handleSize/2, handleSize, handleSize); // Bottom-center
-    ctx.fillRect(crop.x - handleSize/2, crop.y + crop.height/2 - handleSize/2, handleSize, handleSize); // Middle-left
-    ctx.fillRect(crop.x + crop.width - handleSize/2, crop.y + crop.height/2 - handleSize/2, handleSize, handleSize); // Middle-right
   };
 
   // Check if a point is on a resize handle
   const getResizeHandle = (x: number, y: number): string | null => {
-    const handleSize = 8;
-    const handleHitArea = handleSize * 2; // Slightly larger hit area for better UX
+    const handleSize = 20; // Larger hit area for better touch experience
     
     // Check corner handles
-    if (Math.abs(x - crop.x) <= handleHitArea && Math.abs(y - crop.y) <= handleHitArea) return 'tl';
-    if (Math.abs(x - (crop.x + crop.width)) <= handleHitArea && Math.abs(y - crop.y) <= handleHitArea) return 'tr';
-    if (Math.abs(x - crop.x) <= handleHitArea && Math.abs(y - (crop.y + crop.height)) <= handleHitArea) return 'bl';
-    if (Math.abs(x - (crop.x + crop.width)) <= handleHitArea && Math.abs(y - (crop.y + crop.height)) <= handleHitArea) return 'br';
-    
-    // Check edge handles
-    if (Math.abs(x - (crop.x + crop.width/2)) <= handleHitArea && Math.abs(y - crop.y) <= handleHitArea) return 't';
-    if (Math.abs(x - (crop.x + crop.width/2)) <= handleHitArea && Math.abs(y - (crop.y + crop.height)) <= handleHitArea) return 'b';
-    if (Math.abs(x - crop.x) <= handleHitArea && Math.abs(y - (crop.y + crop.height/2)) <= handleHitArea) return 'l';
-    if (Math.abs(x - (crop.x + crop.width)) <= handleHitArea && Math.abs(y - (crop.y + crop.height/2)) <= handleHitArea) return 'r';
+    if (Math.abs(x - crop.x) <= handleSize && Math.abs(y - crop.y) <= handleSize) return 'tl';
+    if (Math.abs(x - (crop.x + crop.width)) <= handleSize && Math.abs(y - crop.y) <= handleSize) return 'tr';
+    if (Math.abs(x - crop.x) <= handleSize && Math.abs(y - (crop.y + crop.height)) <= handleSize) return 'bl';
+    if (Math.abs(x - (crop.x + crop.width)) <= handleSize && Math.abs(y - (crop.y + crop.height)) <= handleSize) return 'br';
     
     return null;
   };
 
-  // Handle mouse events for cropping
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  // Unified event handlers for both mouse and touch
+  const handlePointerDown = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
     
+    // Prevent default behavior to avoid page scrolling on touch devices
+    e.preventDefault();
+    
     const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getPointerCoordinates(e, canvas);
     
     // Check if we're on a handle or inside the crop area
     const handle = getResizeHandle(x, y);
@@ -237,13 +201,14 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handlePointerMove = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (!dragStart || !canvasRef.current || !dragMode) return;
     
+    // Prevent default behavior to avoid page scrolling on touch devices
+    e.preventDefault();
+    
     const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getPointerCoordinates(e, canvas);
     
     // Calculate movement
     const deltaX = x - dragStart.x;
@@ -276,18 +241,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
           break;
         case 'br': // Bottom-right
           resizeBottomRight(newCrop, deltaX, deltaY);
-          break;
-        case 't': // Top-center
-          resizeTop(newCrop, deltaY);
-          break;
-        case 'b': // Bottom-center
-          resizeBottom(newCrop, deltaY);
-          break;
-        case 'l': // Middle-left
-          resizeLeft(newCrop, deltaX);
-          break;
-        case 'r': // Middle-right
-          resizeRight(newCrop, deltaX);
           break;
       }
       
@@ -343,30 +296,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     crop.height = Math.max(20, crop.height + deltaY);
   };
   
-  const resizeTop = (crop: CropArea, deltaY: number) => {
-    const maxY = crop.y + crop.height - 20;
-    const newY = Math.min(maxY, crop.y + deltaY);
-    
-    crop.height = crop.height - (newY - crop.y);
-    crop.y = newY;
-  };
-  
-  const resizeBottom = (crop: CropArea, deltaY: number) => {
-    crop.height = Math.max(20, crop.height + deltaY);
-  };
-  
-  const resizeLeft = (crop: CropArea, deltaX: number) => {
-    const maxX = crop.x + crop.width - 20;
-    const newX = Math.min(maxX, crop.x + deltaX);
-    
-    crop.width = crop.width - (newX - crop.x);
-    crop.x = newX;
-  };
-  
-  const resizeRight = (crop: CropArea, deltaX: number) => {
-    crop.width = Math.max(20, crop.width + deltaX);
-  };
-  
   const applyAspectRatioConstraint = (crop: CropArea, handle: string) => {
     if (!aspectRatio) return;
     
@@ -390,13 +319,13 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     }
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = () => {
     setDragStart(null);
     setDragMode(null);
     setResizeHandle(null);
   };
 
-  const handleMouseOut = () => {
+  const handlePointerOut = () => {
     setDragStart(null);
     setDragMode(null);
     setResizeHandle(null);
@@ -551,35 +480,21 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
         <div className="relative">
           <canvas
             ref={canvasRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseOut}
-            className="cursor-move"
+            onMouseDown={handlePointerDown}
+            onMouseMove={handlePointerMove}
+            onMouseUp={handlePointerUp}
+            onMouseLeave={handlePointerOut}
+            onTouchStart={handlePointerDown}
+            onTouchMove={handlePointerMove}
+            onTouchEnd={handlePointerUp}
+            onTouchCancel={handlePointerOut}
+            className="cursor-move touch-manipulation"
             style={{ maxWidth: '100%', display: 'block', margin: '0 auto' }}
           />
         </div>
       </div>
       
-      <div className="space-y-4 bg-muted/30 p-4 rounded-lg border border-border">
-        <div>
-          <h3 className="text-sm font-medium mb-2">Grid Overlay</h3>
-          <ToggleGroup type="single" value={gridType} onValueChange={(value) => setGridType(value as GridType || 'none')}>
-            <ToggleGroupItem value="none" aria-label="No Grid">
-              None
-            </ToggleGroupItem>
-            <ToggleGroupItem value="3x3" aria-label="Rule of Thirds Grid">
-              <Grid3x3 className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="2x2" aria-label="2x2 Grid">
-              <Grid2X2 className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="center" aria-label="Center Point">
-              <Crop className="h-4 w-4" />
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </div>
-        
+      <div className="space-y-4 bg-muted/20 p-4 rounded-lg border border-border">
         <div>
           <h3 className="text-sm font-medium mb-2">Aspect Ratio</h3>
           <div className="flex flex-wrap gap-2">

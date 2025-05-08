@@ -129,3 +129,26 @@ export const calculateDimensionsWithAspectRatio = (
   // Default: return original dimensions
   return { width: originalWidth, height: originalHeight };
 };
+
+// Helper for handling both mouse and touch events in a unified way
+export const getPointerCoordinates = (
+  event: React.MouseEvent | React.TouchEvent | TouchEvent | MouseEvent,
+  canvas: HTMLCanvasElement
+): { x: number; y: number } => {
+  const rect = canvas.getBoundingClientRect();
+  
+  // Handle touch events
+  if ('touches' in event) {
+    const touch = event.touches[0] || event.changedTouches[0];
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    };
+  }
+  
+  // Handle mouse events
+  return {
+    x: (event as MouseEvent).clientX - rect.left,
+    y: (event as MouseEvent).clientY - rect.top
+  };
+};
