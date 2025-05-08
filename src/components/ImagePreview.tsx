@@ -4,7 +4,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import PlatformResize from './PlatformResize';
 import ResizeControl from './ResizeControl';
 import { Button } from '@/components/ui/button';
-import { Search, Resize } from 'lucide-react';
+import { Search, Maximize } from 'lucide-react';
 
 interface ImagePreviewProps {
   originalImage: string;
@@ -39,7 +39,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
                 size="icon"
                 className="bg-background/80 backdrop-blur-sm hover:bg-background rounded-full w-8 h-8"
               >
-                <Resize className="h-4 w-4" />
+                <Maximize className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80 p-4" side="bottom" align="end">
