@@ -5,8 +5,6 @@ import ConversionOptions from './ConversionOptions';
 import ImagePreview from './ImagePreview';
 import ImageTypeDisplay from './ImageTypeDisplay';
 import ImageCropper from './ImageCropper';
-import ResizeControl from './ResizeControl';
-import PlatformResize from './PlatformResize';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Crop } from 'lucide-react';
 import { useImageConverter } from '../hooks/useImageConverter';
@@ -32,10 +30,6 @@ const ImageConverter: React.FC = () => {
     handleCropComplete,
     handleCancelCrop
   } = useImageConverter();
-
-  const handlePlatformSizeSelect = (width: number, height: number) => {
-    setResizeDimensions({ width, height });
-  };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
@@ -80,22 +74,6 @@ const ImageConverter: React.FC = () => {
                   </div>
                   
                   <div className="mt-6 space-y-6">
-                    <div className="p-4 border border-border rounded-lg bg-card space-y-4">
-                      <h2 className="text-lg font-semibold">Resize Options</h2>
-                      <PlatformResize onSelectSize={handlePlatformSizeSelect} />
-                      
-                      <div className="mt-4">
-                        <h3 className="text-sm font-medium mb-2">Custom size:</h3>
-                        <ResizeControl 
-                          resizeDimensions={resizeDimensions}
-                          setResizeDimensions={setResizeDimensions}
-                          maintainAspectRatio={maintainResizeAspectRatio}
-                          setMaintainAspectRatio={setMaintainResizeAspectRatio}
-                          show={true}
-                        />
-                      </div>
-                    </div>
-                    
                     <div className="p-4 border border-border rounded-lg bg-card">
                       <h2 className="text-lg font-semibold mb-4">Conversion Options</h2>
                       <ConversionOptions
