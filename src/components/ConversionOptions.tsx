@@ -1,6 +1,8 @@
 
-import React from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import React, { useState } from 'react';
+import { Search } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Slider } from "@/components/ui/slider";
 
 export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico' | 'jfif';
@@ -59,11 +61,15 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
     }
   };
 
+  // State for search input
+  const [searchQuery, setSearchQuery] = useState('');
+
   // Handle format selection
-  const handleFormatChange = (value: string) => {
+  const handleFormatSelect = (value: string) => {
     // Ensure value is a valid FormatOption before passing it to onFormatChange
     if (['jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif'].includes(value)) {
       onFormatChange(value as FormatOption);
+      setSearchQuery(''); // Clear search after selection
     }
   };
 
@@ -81,18 +87,42 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
         <label htmlFor="format-select" className="text-sm font-medium">
           Convert to:
         </label>
-        <Select onValueChange={handleFormatChange} value={selectedFormat}>
-          <SelectTrigger id="format-select" className="w-full">
-            <SelectValue placeholder="Select format" />
-          </SelectTrigger>
-          <SelectContent>
-            {availableFormats.map((format) => (
-              <SelectItem key={format} value={format}>
-                {getFormatName(format)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        
+        <div className="relative">
+          <Command className="rounded-lg border shadow-sm">
+            <div className="flex items-center border-b px-3">
+              <Search className="h-4 w-4 shrink-0 opacity-50 mr-2" />
+              <CommandInput 
+                placeholder="Search formats..." 
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+                className="flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            </div>
+            <CommandList>
+              <CommandEmpty>No format found.</CommandEmpty>
+              <CommandGroup>
+                {availableFormats.map((format) => (
+                  <CommandItem
+                    key={format}
+                    value={format}
+                    onSelect={handleFormatSelect}
+                    className="cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 rounded-full bg-app-primary/20 flex items-center justify-center">
+                        {selectedFormat === format && (
+                          <div className="h-2 w-2 rounded-full bg-app-primary" />
+                        )}
+                      </div>
+                      <span>{getFormatName(format)}</span>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </div>
       </div>
 
       {showQualitySettings && (
