@@ -1,7 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Search } from 'lucide-react';
-import { Input } from "@/components/ui/input";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Slider } from "@/components/ui/slider";
 
@@ -63,6 +62,19 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
 
   // State for search input
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Filter formats based on search query
+  const filteredFormats = useMemo(() => {
+    if (!searchQuery.trim()) {
+      // Show just two example formats when no search
+      return availableFormats.slice(0, 2);
+    }
+    
+    return availableFormats.filter(format => 
+      format.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      getFormatName(format).toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, availableFormats]);
 
   // Handle format selection
   const handleFormatSelect = (value: string) => {
@@ -97,12 +109,18 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
                 value={searchQuery}
                 onValueChange={setSearchQuery}
                 className="flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                showSearchIcon={false}
               />
             </div>
             <CommandList>
-              <CommandEmpty>No format found.</CommandEmpty>
+              {searchQuery.trim() === '' && (
+                <CommandEmpty>Type to search for image formats</CommandEmpty>
+              )}
+              {searchQuery.trim() !== '' && filteredFormats.length === 0 && (
+                <CommandEmpty>No format found</CommandEmpty>
+              )}
               <CommandGroup>
-                {availableFormats.map((format) => (
+                {filteredFormats.map((format) => (
                   <CommandItem
                     key={format}
                     value={format}
