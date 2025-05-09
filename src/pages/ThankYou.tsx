@@ -38,7 +38,7 @@ const ThankYou: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center">
           <div className="flex items-center space-x-3">
             <img src="/green-file-icon.png" alt="ConvertImageFast Logo" className="h-10 w-10" />
-            <h1 className="text-xl font-bold text-app-primary">ConvertImageFast</h1>
+            <span className="text-xl font-bold text-app-primary">ConvertImageFast</span>
           </div>
         </div>
       </header>
@@ -53,7 +53,7 @@ const ThankYou: React.FC = () => {
               </svg>
             </div>
 
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Success!</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-2" id="success-heading">Success! Your Image is Ready</h1>
             <p className="text-gray-600 mb-6">Your image has been successfully converted.</p>
 
             {imageData.convertedUrl && (
@@ -62,14 +62,21 @@ const ThankYou: React.FC = () => {
                   <img
                     src={imageData.convertedUrl}
                     alt="Converted image"
-                    className="object-contain max-h-full max-w-full"
+                    className={`object-contain max-h-full max-w-full ${imageData.isCircularMode ? 'rounded-full' : ''}`}
                   />
                 </div>
 
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className="text-sm text-muted-foreground mb-2">
                   {imageData.convertedFileName}
                   {imageData.format && <span className="ml-1">• {imageData.format.toUpperCase()}</span>}
                 </p>
+                {imageData.resizeDimensions && (
+                  <p className="text-xs text-muted-foreground mb-4">
+                    {imageData.isCircularMode
+                      ? `Circular image • ${imageData.resizeDimensions.width}×${imageData.resizeDimensions.height} px`
+                      : `Dimensions: ${imageData.resizeDimensions.width}×${imageData.resizeDimensions.height} px`}
+                  </p>
+                )}
 
                 <Button
                   onClick={handleDownload}

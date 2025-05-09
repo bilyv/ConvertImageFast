@@ -105,7 +105,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center">
           <div className="flex items-center space-x-3">
             <img src="/green-file-icon.png" alt="ConvertImageFast Logo" className="h-10 w-10" />
-            <h1 className="text-xl font-bold text-app-primary">ConvertImageFast</h1>
+            <span className="text-xl font-bold text-app-primary">ConvertImageFast</span>
           </div>
         </div>
       </header>
