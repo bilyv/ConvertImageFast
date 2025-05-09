@@ -84,10 +84,16 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
     selectedFormat ? getFormatName(selectedFormat) : ''
   );
 
+  // State to track animation when format is selected
+  const [isFormatSelected, setIsFormatSelected] = useState<boolean>(!!selectedFormat);
+
   // Update display value when selected format changes
   useEffect(() => {
     if (selectedFormat) {
       setDisplayValue(getFormatName(selectedFormat));
+      setIsFormatSelected(true);
+    } else {
+      setIsFormatSelected(false);
     }
   }, [selectedFormat]);
 
@@ -111,9 +117,16 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       'jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif',
       'heic', 'raw', 'psd', 'ai', 'svg', 'jp2', 'cr2', 'nef', 'arw', 'dng', 'exr', 'pbm', 'pcx'
     ].includes(value)) {
-      onFormatChange(value as FormatOption);
-      setDisplayValue(getFormatName(value as FormatOption));
-      setSearchQuery(''); // Clear search query but keep display value
+      // First set animation state to false to reset animation
+      setIsFormatSelected(false);
+
+      // Use setTimeout to create a small delay for the animation reset
+      setTimeout(() => {
+        onFormatChange(value as FormatOption);
+        setDisplayValue(getFormatName(value as FormatOption));
+        setSearchQuery(''); // Clear search query but keep display value
+        setIsFormatSelected(true); // Trigger animation
+      }, 50);
     }
   };
 
@@ -136,24 +149,56 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
           <Command className="rounded-lg border shadow-sm">
             <div className="flex items-center border-b px-3">
               <Search className="h-4 w-4 shrink-0 opacity-50 mr-2" />
-              <CommandInput
-                placeholder={displayValue || "Type to search for image formats"}
-                value={searchQuery}
-                onValueChange={(value) => {
-                  setSearchQuery(value);
-                  if (value === '') {
-                    // When user clears the search, restore the display value
-                    setDisplayValue(selectedFormat ? getFormatName(selectedFormat) : '');
-                  }
-                }}
-                className="flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-                showSearchIcon={false}
-              />
+              {isFormatSelected && displayValue && searchQuery === '' ? (
+                <div className="flex items-center">
+                  <div
+                    className={`
+                      flex items-center px-2 py-1 rounded-md border border-app-primary/60
+                      bg-app-primary/10 text-sm font-medium text-app-primary
+                      transition-all duration-300 ease-in-out animate-slide-in
+                    `}
+                  >
+                    {displayValue}
+                  </div>
+                  <CommandInput
+                    placeholder="Search for image formats..."
+                    value={searchQuery}
+                    onValueChange={(value) => {
+                      setSearchQuery(value);
+                      if (value === '') {
+                        // When user clears the search, restore the display value
+                        setDisplayValue(selectedFormat ? getFormatName(selectedFormat) : '');
+                      }
+                    }}
+                    className="flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-none
+                      placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 ml-2"
+                    showSearchIcon={false}
+                  />
+                </div>
+              ) : (
+                <CommandInput
+                  placeholder="Search for image formats..."
+                  value={searchQuery}
+                  onValueChange={(value) => {
+                    setSearchQuery(value);
+                    if (value === '') {
+                      // When user clears the search, restore the display value
+                      setDisplayValue(selectedFormat ? getFormatName(selectedFormat) : '');
+                    }
+                  }}
+                  className="flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-none
+                    placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                  showSearchIcon={false}
+                />
+              )}
             </div>
             <CommandList>
               {searchQuery.trim() === '' && (
                 <CommandEmpty>
-                  {displayValue ? `Selected: ${displayValue}` : "Type to search for image formats"}
+                  {displayValue
+                    ? <span className="text-app-primary">Selected: <strong>{displayValue}</strong></span>
+                    : "Type to search for image formats..."
+                  }
                 </CommandEmpty>
               )}
               {searchQuery.trim() !== '' && filteredFormats.length === 0 && (
