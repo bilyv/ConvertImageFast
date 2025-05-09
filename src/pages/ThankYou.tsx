@@ -29,9 +29,19 @@ const ThankYou: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-app-background">
       <Helmet>
-        <title>Conversion Complete | ImageConvert</title>
+        <title>Conversion Complete | ConvertImageFast</title>
         <meta name="description" content="Your image has been successfully converted. Download your converted image now." />
       </Helmet>
+
+      {/* Header Navigation */}
+      <header className="border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center">
+          <div className="flex items-center space-x-3">
+            <img src="/green-file-icon.png" alt="ConvertImageFast Logo" className="h-10 w-10" />
+            <h1 className="text-xl font-bold text-app-primary">ConvertImageFast</h1>
+          </div>
+        </div>
+      </header>
 
       <main className="flex-1 flex flex-col items-center justify-center p-6">
         <div className="max-w-md w-full bg-white shadow-lg rounded-lg overflow-hidden border border-border">
