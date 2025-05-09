@@ -34,20 +34,58 @@ const ImageResizePopover: React.FC<ImageResizePopoverProps> = ({
   const { toast } = useToast();
 
   const handlePlatformSizeSelect = (width: number, height: number) => {
+    // Set dimensions first
     setResizeDimensions({ width, height });
+
+    // Disable circular mode when selecting platform size
     setIsCircularMode(false);
+
+    // Apply the resize immediately
+    setTimeout(() => {
+      applyResize();
+      setResizePopoverOpen(false);
+
+      toast({
+        title: "Platform size applied",
+        description: `Image will be resized to ${width} × ${height}px`,
+      });
+    }, 50); // Small timeout to ensure state is updated
   };
 
   const handleApplyResize = () => {
-    applyResize();
-    setResizePopoverOpen(false);
-    
-    toast({
-      title: "Resize applied",
-      description: isCircularMode 
-        ? `Circular mode with diameter ${circleDiameter}px` 
-        : `Custom size ${resizeDimensions.width || 'auto'} x ${resizeDimensions.height || 'auto'}`,
-    });
+    // Make sure we have valid dimensions before applying
+    if (isCircularMode && (!circleDiameter || circleDiameter <= 0)) {
+      toast({
+        title: "Invalid dimensions",
+        description: "Please specify a valid diameter for circular mode",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!isCircularMode &&
+        (!resizeDimensions.width || resizeDimensions.width <= 0) &&
+        (!resizeDimensions.height || resizeDimensions.height <= 0)) {
+      toast({
+        title: "Invalid dimensions",
+        description: "Please specify at least one valid dimension",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Apply the resize with a small timeout to ensure state is updated
+    setTimeout(() => {
+      applyResize();
+      setResizePopoverOpen(false);
+
+      toast({
+        title: "Resize applied",
+        description: isCircularMode
+          ? `Circular mode with diameter ${circleDiameter}px`
+          : `Custom size ${resizeDimensions.width || 'auto'} × ${resizeDimensions.height || 'auto'}`,
+      });
+    }, 50);
   };
 
   const handleCancelResize = () => {
@@ -70,10 +108,10 @@ const ImageResizePopover: React.FC<ImageResizePopoverProps> = ({
           <div className="space-y-4">
             <h4 className="text-sm font-medium">Resize for platforms</h4>
             <PlatformResize onSelectSize={handlePlatformSizeSelect} />
-            
+
             <div className="pt-2 border-t border-border">
               <h4 className="text-sm font-medium mb-2">Size options:</h4>
-              <ResizeControl 
+              <ResizeControl
                 resizeDimensions={resizeDimensions}
                 setResizeDimensions={setResizeDimensions}
                 maintainAspectRatio={maintainResizeAspectRatio}

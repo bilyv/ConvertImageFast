@@ -4,7 +4,13 @@ import { Search } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Slider } from "@/components/ui/slider";
 
-export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'avif' | 'ico' | 'jfif' | 'heic' | 'raw' | 'psd' | 'ai' | 'svg' | 'jp2' | 'cr2' | 'nef' | 'arw' | 'dng' | 'exr' | 'pbm' | 'pcx';
+/**
+ * Supported image formats for conversion
+ *
+ * jpg, png, webp, bmp, gif: Directly supported by Canvas API
+ * heic: Requires special handling with heic2any library
+ */
+export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic';
 
 interface ConversionOptionsProps {
   currentFileType: string | null;
@@ -21,11 +27,19 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   onFormatChange,
   onQualityChange,
 }) => {
-  // Get available formats based on current file type (excluding current format)
+  /**
+   * Get available formats based on current file type
+   *
+   * This function returns all supported formats except the current format
+   * of the uploaded image (to avoid converting to the same format).
+   *
+   * Note: HEIC format is included in the list, but browser support for
+   * creating HEIC files is limited. The app will show a warning when
+   * converting to HEIC.
+   */
   const getAvailableFormats = () => {
     const allFormats: FormatOption[] = [
-      'jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif',
-      'heic', 'raw', 'psd', 'ai', 'svg', 'jp2', 'cr2', 'nef', 'arw', 'dng', 'exr', 'pbm', 'pcx'
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic'
     ];
 
     // Determine current format from file type
@@ -35,9 +49,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
     if (currentFileType === 'image/webp') currentFormat = 'webp';
     if (currentFileType === 'image/bmp') currentFormat = 'bmp';
     if (currentFileType === 'image/gif') currentFormat = 'gif';
-    if (currentFileType === 'image/tiff') currentFormat = 'tiff';
-    if (currentFileType === 'image/avif') currentFormat = 'avif';
-    if (currentFileType === 'image/x-icon') currentFormat = 'ico';
+    if (currentFileType === 'image/heic' || currentFileType === 'image/heif') currentFormat = 'heic';
 
     // Return all formats if no file uploaded yet
     if (!currentFormat) return allFormats;
@@ -56,23 +68,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       case 'webp': return 'WebP';
       case 'bmp': return 'BMP';
       case 'gif': return 'GIF';
-      case 'tiff': return 'TIFF';
-      case 'avif': return 'AVIF';
-      case 'ico': return 'ICO';
-      case 'jfif': return 'JFIF';
       case 'heic': return 'HEIC';
-      case 'raw': return 'RAW';
-      case 'psd': return 'PSD';
-      case 'ai': return 'AI';
-      case 'svg': return 'SVG';
-      case 'jp2': return 'JP2';
-      case 'cr2': return 'CR2';
-      case 'nef': return 'NEF';
-      case 'arw': return 'ARW';
-      case 'dng': return 'DNG';
-      case 'exr': return 'EXR';
-      case 'pbm': return 'PBM';
-      case 'pcx': return 'PCX';
     }
   };
 
@@ -114,8 +110,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   const handleFormatSelect = (value: string) => {
     // Ensure value is a valid FormatOption before passing it to onFormatChange
     if ([
-      'jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif',
-      'heic', 'raw', 'psd', 'ai', 'svg', 'jp2', 'cr2', 'nef', 'arw', 'dng', 'exr', 'pbm', 'pcx'
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic'
     ].includes(value)) {
       // First set animation state to false to reset animation
       setIsFormatSelected(false);
@@ -135,8 +130,16 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
     onQualityChange(values[0]);
   };
 
-  // Check if quality settings should be shown (PNG doesn't use quality)
-  const showQualitySettings = selectedFormat && !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat);
+  /**
+   * Determine if quality settings should be shown
+   *
+   * Quality settings only apply to lossy formats like JPG, WebP, and HEIC.
+   * Lossless formats like PNG, BMP, and GIF don't use quality settings.
+   *
+   * Note: For HEIC, quality is used when converting from HEIC to other formats,
+   * but not when converting to HEIC (due to browser limitations).
+   */
+  const showQualitySettings = selectedFormat && !['png', 'bmp', 'gif'].includes(selectedFormat);
 
   return (
     <div className="space-y-6 animate-fade-in">

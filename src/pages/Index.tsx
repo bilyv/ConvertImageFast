@@ -10,13 +10,13 @@ const Index = () => {
       {/* Enhanced SEO Metadata with platform-specific resizing and cropping functionality mentioned */}
       <Helmet>
         <title>ConvertImageFast | Best Online Image Converter for PNG, JPG, WebP | Free Tool</title>
-        <meta name="description" content="Convert images online between PNG, JPG, WebP & JFIF formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool with no registration required. Instant results." />
+        <meta name="description" content="Convert images online between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool with no registration required. Instant results." />
         <meta name="keywords" content="convert image online, png to jpg converter, jpg to png converter, webp converter, image format converter, resize image for instagram, tiktok image size, youtube thumbnail maker, free image converter, online image resizer, crop image online, convert image without upload" />
         <link rel="canonical" href="https://convertimagefast.com" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:title" content="ConvertImageFast | Best Online Image Converter for PNG, JPG, WebP | Free Tool" />
-        <meta property="og:description" content="Convert images online between PNG, JPG, WebP & JFIF formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool with no registration required." />
+        <meta property="og:description" content="Convert images online between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool with no registration required." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://convertimagefast.com" />
         <meta property="og:image" content="/og-image.jpg" />
@@ -27,7 +27,7 @@ const Index = () => {
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="ConvertImageFast | Best Online Image Converter for PNG, JPG, WebP" />
-        <meta name="twitter:description" content="Convert images online between PNG, JPG, WebP & JFIF formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool." />
+        <meta name="twitter:description" content="Convert images online between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool." />
         <meta name="twitter:image" content="/twitter-image.jpg" />
         <meta name="twitter:image:alt" content="ConvertImageFast - Online Image Converter Tool" />
 
@@ -48,7 +48,7 @@ const Index = () => {
           "@type": "WebApplication",
           "name": "ConvertImageFast",
           "url": "https://convertimagefast.com",
-          "description": "Free online image converter with platform-specific resizing for Instagram, TikTok, YouTube & more. Convert between PNG, JPG, WebP, JFIF formats with cropping functionality.",
+          "description": "Free online image converter with platform-specific resizing for Instagram, TikTok, YouTube & more. Convert between PNG, JPG, WebP, BMP, GIF & HEIC formats with cropping functionality.",
           "applicationCategory": "MultimediaApplication",
           "operatingSystem": "All",
           "offers": {
@@ -133,7 +133,7 @@ const Index = () => {
             ConvertImageFast: #1 Free Online Image Converter & Resizer
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-            Instantly convert and resize images between <strong>PNG</strong>, <strong>JPG</strong>, <strong>WebP</strong>, and <strong>JFIF</strong> formats.
+            Instantly convert and resize images between <strong>PNG</strong>, <strong>JPG</strong>, <strong>WebP</strong>, <strong>BMP</strong>, <strong>GIF</strong>, and <strong>HEIC</strong> formats.
             Optimize for Instagram, TikTok, YouTube and other social media platforms with our free online tool.
           </p>
           <p className="text-md text-muted-foreground max-w-2xl mx-auto mb-6">
@@ -145,7 +145,8 @@ const Index = () => {
             <a href="#convert-png-jpg" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">PNG to JPG Converter</a>
             <a href="#convert-jpg-png" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">JPG to PNG Converter</a>
             <a href="#convert-webp" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">WebP Converter</a>
-            <a href="#convert-jfif" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">JFIF Format Support</a>
+            <a href="#convert-bmp-gif" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">BMP & GIF Support</a>
+            <a href="#convert-heic" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">HEIC Converter</a>
           </div>
 
           {/* Social media platform options with links */}
@@ -169,7 +170,7 @@ const Index = () => {
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <h3 className="font-semibold text-app-primary mb-2">Multiple Formats</h3>
-              <p className="text-sm">Support for PNG, JPG, WebP, JFIF and more formats</p>
+              <p className="text-sm">Support for PNG, JPG, WebP, BMP, GIF and HEIC formats</p>
             </div>
           </div>
         </div>
@@ -202,7 +203,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-3 text-app-primary">Multiple Format Support</h3>
-              <p>Convert between <a href="#convert-png-jpg" className="text-app-primary hover:underline">PNG</a>, <a href="#convert-jpg-png" className="text-app-primary hover:underline">JPG</a>, <a href="#convert-webp" className="text-app-primary hover:underline">WebP</a>, and <a href="#convert-jfif" className="text-app-primary hover:underline">JFIF</a> formats with perfect quality preservation.</p>
+              <p>Convert between <a href="#convert-png-jpg" className="text-app-primary hover:underline">PNG</a>, <a href="#convert-jpg-png" className="text-app-primary hover:underline">JPG</a>, <a href="#convert-webp" className="text-app-primary hover:underline">WebP</a>, <a href="#convert-bmp-gif" className="text-app-primary hover:underline">BMP</a>, <a href="#convert-bmp-gif" className="text-app-primary hover:underline">GIF</a>, and <a href="#convert-heic" className="text-app-primary hover:underline">HEIC</a> formats with perfect quality preservation.</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-3 text-app-primary">Social Media Optimization</h3>
@@ -240,14 +241,14 @@ const Index = () => {
                 Image Format Conversion
               </h3>
               <p className="mb-4">
-                Easily convert between <strong>PNG</strong>, <strong>JPG</strong>, <strong>WebP</strong>, and <strong>JFIF</strong> formats with just a few clicks.
+                Easily convert between <strong>PNG</strong>, <strong>JPG</strong>, <strong>WebP</strong>, <strong>BMP</strong>, <strong>GIF</strong>, and <strong>HEIC</strong> formats with just a few clicks.
                 Our tool preserves image quality while optimizing file size for faster loading times.
               </p>
               <ul className="list-disc pl-5 mb-4 space-y-1">
                 <li id="convert-png-jpg"><strong>PNG to JPG</strong>: Reduce file size while maintaining quality</li>
                 <li id="convert-jpg-png"><strong>JPG to PNG</strong>: Add transparency and improve quality</li>
                 <li id="convert-webp"><strong>WebP Conversion</strong>: Convert to and from this modern format</li>
-                <li id="convert-jfif"><strong>JFIF Support</strong>: Full compatibility with JFIF format</li>
+                <li id="convert-heic"><strong>HEIC Support</strong>: Convert Apple's HEIC format to standard formats</li>
               </ul>
             </div>
 

@@ -40,6 +40,7 @@ export interface UseImageConversionReturn {
   setQuality: React.Dispatch<React.SetStateAction<number>>;
   handleConvert: () => Promise<void>;
   handleDownload: () => void;
+  cleanupObjectUrls: () => void;
 }
 
 export interface UseImageConverterReturn extends

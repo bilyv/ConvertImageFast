@@ -17,41 +17,48 @@ interface PlatformResizeProps {
 }
 
 const PlatformResize: React.FC<PlatformResizeProps> = ({ onSelectSize }) => {
-  // Popular platform dimensions (removed TikTok)
+  // Popular platform dimensions
   const platformSizes: PlatformSize[] = [
-    { 
-      id: 'instagram-post', 
-      name: 'Instagram Post', 
-      width: 1080, 
-      height: 1080, 
+    {
+      id: 'instagram-post',
+      name: 'Instagram Post',
+      width: 1080,
+      height: 1080,
       description: 'Square 1:1 format for Instagram feed posts'
     },
-    { 
-      id: 'instagram-story', 
-      name: 'Instagram Story', 
-      width: 1080, 
-      height: 1920, 
+    {
+      id: 'instagram-story',
+      name: 'Instagram Story',
+      width: 1080,
+      height: 1920,
       description: 'Vertical 9:16 format for Instagram stories'
     },
-    { 
-      id: 'youtube-thumbnail', 
-      name: 'YouTube Thumbnail', 
-      width: 1280, 
-      height: 720, 
+    {
+      id: 'tiktok-video',
+      name: 'TikTok Video',
+      width: 1080,
+      height: 1920,
+      description: 'Vertical 9:16 format for TikTok videos'
+    },
+    {
+      id: 'youtube-thumbnail',
+      name: 'YouTube Thumbnail',
+      width: 1280,
+      height: 720,
       description: '16:9 format for YouTube video thumbnails'
     },
-    { 
-      id: 'facebook-post', 
-      name: 'Facebook Post', 
-      width: 1200, 
-      height: 630, 
+    {
+      id: 'facebook-post',
+      name: 'Facebook Post',
+      width: 1200,
+      height: 630,
       description: 'Rectangular format for Facebook posts'
     },
-    { 
-      id: 'twitter-post', 
-      name: 'X/Twitter Post', 
-      width: 1200, 
-      height: 675, 
+    {
+      id: 'twitter-post',
+      name: 'X/Twitter Post',
+      width: 1200,
+      height: 675,
       description: '16:9 format for Twitter image posts'
     }
   ];
@@ -63,9 +70,9 @@ const PlatformResize: React.FC<PlatformResizeProps> = ({ onSelectSize }) => {
         {platformSizes.map((platform) => (
           <Tooltip key={platform.id}>
             <TooltipTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="border-app-primary/30 hover:border-app-primary hover:bg-app-primary/5"
                 onClick={() => onSelectSize(platform.width, platform.height)}
               >

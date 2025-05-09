@@ -49,7 +49,8 @@ export const useImageConverter = (): UseImageConverterReturn => {
     setSelectedFormat,
     setQuality,
     handleConvert,
-    handleDownload
+    handleDownload,
+    cleanupObjectUrls
   } = useImageConversion(
     imageFile,
     cropResult,
@@ -105,7 +106,8 @@ export const useImageConverter = (): UseImageConverterReturn => {
     setSelectedFormat,
     setQuality,
     handleConvert,
-    handleDownload
+    handleDownload,
+    cleanupObjectUrls
   };
 };
 

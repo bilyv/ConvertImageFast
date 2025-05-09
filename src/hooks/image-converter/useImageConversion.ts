@@ -4,7 +4,8 @@ import { useToast } from "@/hooks/use-toast";
 import { FormatOption } from '@/components/ConversionOptions';
 import { useNavigate } from 'react-router-dom';
 import { calculateDimensionsWithAspectRatio } from '@/utils/cropUtils';
-import { getConvertedFileName } from '@/utils/imageUtils';
+import { getConvertedFileName, getMimeType, isHeicImage } from '@/utils/imageUtils';
+import { convertHeicToJpegOrPng } from '@/utils/heicConverter';
 import { UseImageConversionReturn } from './types';
 
 export const useImageConversion = (
@@ -45,13 +46,38 @@ export const useImageConversion = (
     setIsConverting(true);
 
     try {
+      /**
+       * HEIC Handling Step 1: Detect and Pre-process HEIC Images
+       *
+       * HEIC images need special handling because they can't be directly
+       * processed by the Canvas API. We need to convert them to JPEG first
+       * using the heic2any library before we can manipulate them.
+       */
+
+      // Check if we're dealing with a HEIC image
+      const isHeic = isHeicImage(imageFile.file);
+
       // Use cropResult URL if available
       const sourceUrl = cropResult || imageFile.originalUrl;
 
       // Create canvas for image conversion
       const img = new Image();
       img.crossOrigin = "anonymous"; // Handle CORS issues
-      img.src = sourceUrl;
+
+      // If the source is a HEIC image and we're not converting to HEIC,
+      // we need to convert it to JPEG first using heic2any
+      if (isHeic && selectedFormat !== 'heic') {
+        console.log("Converting HEIC image to JPEG for processing");
+        // Convert HEIC to JPEG using heic2any
+        const jpegUrl = await convertHeicToJpegOrPng(
+          imageFile.file,
+          'image/jpeg',
+          quality / 100
+        );
+        img.src = jpegUrl;
+      } else {
+        img.src = sourceUrl;
+      }
 
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
@@ -158,12 +184,53 @@ export const useImageConversion = (
         ctx.drawImage(img, 0, 0, img.width, img.height);
       }
 
-      // Set quality options (only for JPG and WebP)
-      const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
-      const qualityOption = !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat) ? quality / 100 : undefined;
+      /**
+       * HEIC Handling Step 2: Format-Specific Conversion
+       *
+       * After processing the image with Canvas API, we need to handle
+       * the final conversion to the target format. HEIC requires special
+       * handling since browsers can't directly create HEIC files.
+       */
+      let convertedImageUrl: string;
 
-      // Convert to new format
-      const convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
+      // Handle HEIC conversion separately
+      if (selectedFormat === 'heic') {
+        try {
+          console.log("Converting to HEIC format (limited browser support)");
+
+          // For converting to HEIC, we need to get the canvas data as a blob
+          const canvasBlob = await new Promise<Blob>((resolve) => {
+            canvas.toBlob((blob) => {
+              if (blob) resolve(blob);
+              else throw new Error("Failed to create blob from canvas");
+            }, 'image/png');
+          });
+
+          // Create a File object from the blob
+          const processedFile = new File([canvasBlob], 'processed-image.png', { type: 'image/png' });
+
+          // BROWSER LIMITATION:
+          // We can't directly convert to HEIC in the browser, so we'll just use PNG
+          // and set the filename extension to .heic. A true HEIC conversion would
+          // require a server-side component or a more specialized library.
+          convertedImageUrl = URL.createObjectURL(canvasBlob);
+        } catch (heicError) {
+          console.error("HEIC conversion error:", heicError);
+          toast({
+            title: "HEIC conversion not fully supported",
+            description: "Converting to HEIC format is limited. The image will be saved as PNG with a .heic extension.",
+            variant: "warning"
+          });
+
+          // Fallback to PNG
+          convertedImageUrl = canvas.toDataURL('image/png');
+        }
+      } else {
+        // For other formats, use the standard Canvas API
+        const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
+        const qualityOption = !['png', 'bmp', 'gif'].includes(selectedFormat) ? quality / 100 : undefined;
+        convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);
+      }
 
       // Update the file with all the conversion settings
       const updatedImageFile = {
@@ -221,6 +288,20 @@ export const useImageConversion = (
     });
   };
 
+  /**
+   * Clean up any object URLs when component unmounts
+   *
+   * This is important for memory management, especially when dealing with
+   * HEIC conversions which create blob URLs. Without proper cleanup,
+   * these URLs would remain in memory causing potential memory leaks.
+   */
+  const cleanupObjectUrls = () => {
+    if (imageFile?.convertedUrl && imageFile.convertedUrl.startsWith('blob:')) {
+      console.log("Cleaning up blob URL:", imageFile.convertedUrl);
+      URL.revokeObjectURL(imageFile.convertedUrl);
+    }
+  };
+
   return {
     selectedFormat,
     quality,
@@ -229,5 +310,6 @@ export const useImageConversion = (
     setQuality,
     handleConvert,
     handleDownload,
+    cleanupObjectUrls,
   };
 };

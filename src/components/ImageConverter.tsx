@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import FileUploader from './FileUploader';
 import ConversionOptions from './ConversionOptions';
 import ImagePreview from './ImagePreview';
@@ -35,19 +35,36 @@ const ImageConverter: React.FC = () => {
     handleRemoveImage,
     handleStartCropping,
     handleCropComplete,
-    handleCancelCrop
+    handleCancelCrop,
+    cleanupObjectUrls
   } = useImageConverter();
+
+  /**
+   * Clean up object URLs when component unmounts
+   *
+   * This effect ensures that any blob URLs created during HEIC conversion
+   * are properly cleaned up when the component unmounts. This prevents
+   * memory leaks that could occur if these URLs remain in memory.
+   *
+   * The cleanup function is called from the useImageConverter hook,
+   * which manages the state of converted images.
+   */
+  useEffect(() => {
+    return () => {
+      cleanupObjectUrls();
+    };
+  }, [cleanupObjectUrls]);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
       <div className="space-y-8">
         <div>
           <h2 className="text-xl font-semibold mb-4">Upload & Convert Image</h2>
-          <FileUploader 
-            onFileUpload={handleFileUpload} 
+          <FileUploader
+            onFileUpload={handleFileUpload}
             hasExistingFile={!!imageFile}
           />
-          
+
           {imageFile && (
             <>
               <ImageTypeDisplay imageFile={imageFile} />
@@ -55,13 +72,13 @@ const ImageConverter: React.FC = () => {
               {!isCropping && (
                 <>
                   <div className="mt-4">
-                    <ImagePreview 
-                      originalImage={cropResult || imageFile.originalUrl} 
-                      fileName={imageFile.file.name} 
+                    <ImagePreview
+                      originalImage={cropResult || imageFile.originalUrl}
+                      fileName={imageFile.file.name}
                     />
                     <div className="mt-2 flex justify-between">
                       <Button
-                        variant="outline" 
+                        variant="outline"
                         size="sm"
                         onClick={handleRemoveImage}
                         className="text-destructive hover:text-destructive"
@@ -79,7 +96,7 @@ const ImageConverter: React.FC = () => {
                       </Button>
                     </div>
                   </div>
-                  
+
                   <div className="mt-6 space-y-6">
                     <div className="p-4 border border-border rounded-lg bg-card">
                       <h2 className="text-lg font-semibold mb-4">Conversion Options</h2>
@@ -91,8 +108,8 @@ const ImageConverter: React.FC = () => {
                         onQualityChange={setQuality}
                       />
                     </div>
-                    
-                    <Button 
+
+                    <Button
                       className="w-full bg-app-primary hover:bg-app-primary/90 text-white"
                       onClick={handleConvert}
                       disabled={isConverting}
@@ -103,11 +120,11 @@ const ImageConverter: React.FC = () => {
                   </div>
                 </>
               )}
-              
+
               {isCropping && (
                 <div className="mt-4 space-y-4">
                   <h2 className="text-xl font-semibold">Crop Image</h2>
-                  <ImageCropper 
+                  <ImageCropper
                     imageUrl={imageFile.originalUrl}
                     onCropComplete={handleCropComplete}
                     onCancel={handleCancelCrop}
