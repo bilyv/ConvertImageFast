@@ -1,12 +1,8 @@
 
 import { useImageUploader } from './useImageUploader';
 import { useImageCrop } from './useImageCrop';
-import { useImageResize } from './useImageResize';
 import { useImageConversion } from './useImageConversion';
 import { UseImageConverterReturn } from './types';
-import { useState } from 'react';
-import { FormatOption } from '@/components/ConversionOptions';
-import { getConvertedFileName } from '@/utils/imageUtils';
 
 export const useImageConverter = (): UseImageConverterReturn => {
   // Initialize the uploader hook
@@ -26,21 +22,6 @@ export const useImageConverter = (): UseImageConverterReturn => {
     handleCancelCrop
   } = useImageCrop(imageFile);
 
-  // Initialize the resize hook
-  const {
-    resizeDimensions,
-    maintainResizeAspectRatio,
-    isCircularMode,
-    circleDiameter,
-    resizeApplied,
-    setResizeDimensions,
-    setMaintainResizeAspectRatio,
-    setIsCircularMode,
-    setCircleDiameter,
-    applyResize,
-    resetResize
-  } = useImageResize();
-
   // Initialize the conversion hook with necessary dependencies
   const {
     selectedFormat,
@@ -53,12 +34,7 @@ export const useImageConverter = (): UseImageConverterReturn => {
     cleanupObjectUrls
   } = useImageConversion(
     imageFile,
-    cropResult,
-    cropData,
-    resizeDimensions,
-    maintainResizeAspectRatio,
-    isCircularMode,
-    resizeApplied
+    cropResult
   );
 
   // Wrapper for file upload
@@ -85,19 +61,6 @@ export const useImageConverter = (): UseImageConverterReturn => {
     handleStartCropping,
     handleCropComplete,
     handleCancelCrop,
-
-    // From useImageResize
-    resizeDimensions,
-    maintainResizeAspectRatio,
-    isCircularMode,
-    circleDiameter,
-    resizeApplied,
-    setResizeDimensions,
-    setMaintainResizeAspectRatio,
-    setIsCircularMode,
-    setCircleDiameter,
-    applyResize,
-    resetResize,
 
     // From useImageConversion
     selectedFormat,
