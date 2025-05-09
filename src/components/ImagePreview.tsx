@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useImageConverter } from '@/hooks/useImageConverter';
 import { useToast } from '@/hooks/use-toast';
-import SimilarImagesSearch from './image-preview/SimilarImagesSearch';
 import ImageResizePopover from './image-preview/ImageResizePopover';
 import { generateResizedPreviewImage } from './image-preview/previewUtils';
 
@@ -18,8 +17,8 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
   const { toast } = useToast();
 
   // Get the global resize state from the hook context
-  const { 
-    resizeDimensions: globalResizeDimensions, 
+  const {
+    resizeDimensions: globalResizeDimensions,
     setResizeDimensions: setGlobalResizeDimensions,
     maintainResizeAspectRatio: globalMaintainResizeAspectRatio,
     setMaintainResizeAspectRatio: setGlobalMaintainResizeAspectRatio,
@@ -43,8 +42,8 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
     setIsCircularMode(globalIsCircularMode);
     setCircleDiameter(globalCircleDiameter);
   }, [
-    globalResizeDimensions, 
-    globalMaintainResizeAspectRatio, 
+    globalResizeDimensions,
+    globalMaintainResizeAspectRatio,
     globalIsCircularMode,
     globalCircleDiameter
   ]);
@@ -80,7 +79,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
     setGlobalMaintainResizeAspectRatio(maintainResizeAspectRatio);
     setGlobalIsCircularMode(isCircularMode);
     setGlobalCircleDiameter(circleDiameter);
-    
+
     // Mark resize as applied
     applyResize();
   };
@@ -94,10 +93,10 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
           alt="Original"
           className={`object-contain max-h-full max-w-full ${isCircularMode ? 'rounded-full' : ''}`}
         />
-        
+
         {/* Hidden canvas for processing */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
-        
+
         {/* Resize button - top right */}
         <ImageResizePopover
           resizeDimensions={resizeDimensions}
@@ -110,9 +109,8 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
           setCircleDiameter={setCircleDiameter}
           applyResize={handleApplyResize}
         />
-        
-        {/* Search button - top left */}
-        <SimilarImagesSearch />
+
+
       </div>
       <div className="p-3 bg-card">
         <p className="text-sm font-medium truncate" title={fileName}>
