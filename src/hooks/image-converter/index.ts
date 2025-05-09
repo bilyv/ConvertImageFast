@@ -15,7 +15,7 @@ export const useImageConverter = (): UseImageConverterReturn => {
     handleFileUpload: rawHandleFileUpload,
     handleRemoveImage
   } = useImageUploader();
-  
+
   // Initialize the crop hook with the image file
   const {
     isCropping,
@@ -25,7 +25,7 @@ export const useImageConverter = (): UseImageConverterReturn => {
     handleCropComplete,
     handleCancelCrop
   } = useImageCrop(imageFile);
-  
+
   // Initialize the resize hook
   const {
     resizeDimensions,
@@ -40,7 +40,7 @@ export const useImageConverter = (): UseImageConverterReturn => {
     applyResize,
     resetResize
   } = useImageResize();
-  
+
   // Initialize the conversion hook with necessary dependencies
   const {
     selectedFormat,
@@ -60,23 +60,15 @@ export const useImageConverter = (): UseImageConverterReturn => {
     resizeApplied
   );
 
-  // Wrapper for file upload to set the format
+  // Wrapper for file upload
   const handleFileUpload = (uploadedFiles: File[]) => {
     if (uploadedFiles.length === 0) return;
-    
-    const file = uploadedFiles[0];
-    
+
     // Call the original handler
     rawHandleFileUpload(uploadedFiles);
-    
-    // Determine default format based on uploaded file type
-    let format: FormatOption = 'png';
-    if (file.type === 'image/jpeg' || file.type === 'image/jfif') format = 'png';
-    else if (file.type === 'image/png') format = 'jpg';
-    else if (file.type === 'image/webp') format = 'png';
-    
-    // Set format for the next conversion
-    setSelectedFormat(format);
+
+    // Don't set a default format - let the user choose
+    setSelectedFormat(null);
   };
 
   return {
@@ -84,7 +76,7 @@ export const useImageConverter = (): UseImageConverterReturn => {
     imageFile,
     handleFileUpload,
     handleRemoveImage,
-    
+
     // From useImageCrop
     isCropping,
     cropResult,
@@ -92,7 +84,7 @@ export const useImageConverter = (): UseImageConverterReturn => {
     handleStartCropping,
     handleCropComplete,
     handleCancelCrop,
-    
+
     // From useImageResize
     resizeDimensions,
     maintainResizeAspectRatio,
@@ -105,7 +97,7 @@ export const useImageConverter = (): UseImageConverterReturn => {
     setCircleDiameter,
     applyResize,
     resetResize,
-    
+
     // From useImageConversion
     selectedFormat,
     quality,

@@ -8,7 +8,7 @@ export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'tiff' | 'av
 
 interface ConversionOptionsProps {
   currentFileType: string | null;
-  selectedFormat: FormatOption;
+  selectedFormat: FormatOption | null;
   quality: number;
   onFormatChange: (format: FormatOption) => void;
   onQualityChange: (quality: number) => void;
@@ -136,7 +136,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   };
 
   // Check if quality settings should be shown (PNG doesn't use quality)
-  const showQualitySettings = !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat);
+  const showQualitySettings = selectedFormat && !['png', 'bmp', 'gif', 'ico'].includes(selectedFormat);
 
   return (
     <div className="space-y-6 animate-fade-in">

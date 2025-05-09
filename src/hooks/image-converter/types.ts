@@ -33,10 +33,10 @@ export interface UseImageResizeReturn {
 }
 
 export interface UseImageConversionReturn {
-  selectedFormat: FormatOption;
+  selectedFormat: FormatOption | null;
   quality: number;
   isConverting: boolean;
-  setSelectedFormat: React.Dispatch<React.SetStateAction<FormatOption>>;
+  setSelectedFormat: React.Dispatch<React.SetStateAction<FormatOption | null>>;
   setQuality: React.Dispatch<React.SetStateAction<number>>;
   handleConvert: () => Promise<void>;
   handleDownload: () => void;

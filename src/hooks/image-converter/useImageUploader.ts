@@ -39,9 +39,9 @@ export const useImageUploader = (): UseImageUploaderReturn => {
   const handleFileUpload = (uploadedFiles: File[]) => {
     // Only process the first file
     if (uploadedFiles.length === 0) return;
-    
+
     const file = uploadedFiles[0];
-    
+
     // Check if file type is supported
     if (!isSupportedFileType(file.type)) {
       toast({
@@ -70,24 +70,15 @@ export const useImageUploader = (): UseImageUploaderReturn => {
         URL.revokeObjectURL(imageFile.convertedUrl);
       }
     }
-    
+
     // Create URL for preview
     const imageUrl = URL.createObjectURL(file);
-    
-    // Determine default format based on uploaded file type
-    let format: FormatOption = 'png';
-    if (file.type === 'image/jpeg' || file.type === 'image/jfif') format = 'png';
-    else if (file.type === 'image/png') format = 'jpg';
-    else if (file.type === 'image/webp') format = 'png';
-    
-    // Set format for the next conversion
-    setSelectedFormat(format);
-    
+
     setImageFile({
       file,
       originalUrl: imageUrl,
       convertedUrl: null,
-      convertedFileName: getConvertedFileName(file, format),
+      convertedFileName: file.name, // Just use the original filename for now
       fileType: file.type,
       fileTypeDisplay: getFileTypeDisplay(file.type),
     });
@@ -113,7 +104,7 @@ export const useImageUploader = (): UseImageUploaderReturn => {
       if (imageFile.convertedUrl && imageFile.convertedUrl.startsWith('blob:')) {
         URL.revokeObjectURL(imageFile.convertedUrl);
       }
-      
+
       setImageFile(null);
       setCropResult(null);
       setCropData(null);
