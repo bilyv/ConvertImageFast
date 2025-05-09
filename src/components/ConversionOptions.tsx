@@ -24,10 +24,10 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   // Get available formats based on current file type (excluding current format)
   const getAvailableFormats = () => {
     const allFormats: FormatOption[] = [
-      'jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif', 
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'tiff', 'avif', 'ico', 'jfif',
       'heic', 'raw', 'psd', 'ai', 'svg', 'jp2', 'cr2', 'nef', 'arw', 'dng', 'exr', 'pbm', 'pcx'
     ];
-    
+
     // Determine current format from file type
     let currentFormat: FormatOption | null = null;
     if (currentFileType === 'image/jpeg' || currentFileType === 'image/jfif') currentFormat = 'jpg';
@@ -41,7 +41,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
 
     // Return all formats if no file uploaded yet
     if (!currentFormat) return allFormats;
-    
+
     // Filter out the current format
     return allFormats.filter(format => format !== currentFormat);
   };
@@ -78,16 +78,28 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
 
   // State for search input
   const [searchQuery, setSearchQuery] = useState('');
-  
+
+  // State for display value in the input field
+  const [displayValue, setDisplayValue] = useState<string>(
+    selectedFormat ? getFormatName(selectedFormat) : ''
+  );
+
+  // Update display value when selected format changes
+  useEffect(() => {
+    if (selectedFormat) {
+      setDisplayValue(getFormatName(selectedFormat));
+    }
+  }, [selectedFormat]);
+
   // Filter formats based on search query
   const filteredFormats = useMemo(() => {
     if (!searchQuery.trim()) {
       // Show no examples when no search
       return [];
     }
-    
-    return availableFormats.filter(format => 
-      format.toLowerCase().includes(searchQuery.toLowerCase()) || 
+
+    return availableFormats.filter(format =>
+      format.toLowerCase().includes(searchQuery.toLowerCase()) ||
       getFormatName(format).toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery, availableFormats]);
@@ -100,7 +112,8 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       'heic', 'raw', 'psd', 'ai', 'svg', 'jp2', 'cr2', 'nef', 'arw', 'dng', 'exr', 'pbm', 'pcx'
     ].includes(value)) {
       onFormatChange(value as FormatOption);
-      setSearchQuery(''); // Clear search after selection
+      setDisplayValue(getFormatName(value as FormatOption));
+      setSearchQuery(''); // Clear search query but keep display value
     }
   };
 
@@ -118,22 +131,30 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
         <label htmlFor="format-select" className="text-sm font-medium">
           Convert to:
         </label>
-        
+
         <div className="relative">
           <Command className="rounded-lg border shadow-sm">
             <div className="flex items-center border-b px-3">
               <Search className="h-4 w-4 shrink-0 opacity-50 mr-2" />
-              <CommandInput 
-                placeholder="Search formats png or tiff" 
+              <CommandInput
+                placeholder={displayValue || "Type to search for image formats"}
                 value={searchQuery}
-                onValueChange={setSearchQuery}
+                onValueChange={(value) => {
+                  setSearchQuery(value);
+                  if (value === '') {
+                    // When user clears the search, restore the display value
+                    setDisplayValue(selectedFormat ? getFormatName(selectedFormat) : '');
+                  }
+                }}
                 className="flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
                 showSearchIcon={false}
               />
             </div>
             <CommandList>
               {searchQuery.trim() === '' && (
-                <CommandEmpty>Type to search for image formats</CommandEmpty>
+                <CommandEmpty>
+                  {displayValue ? `Selected: ${displayValue}` : "Type to search for image formats"}
+                </CommandEmpty>
               )}
               {searchQuery.trim() !== '' && filteredFormats.length === 0 && (
                 <CommandEmpty>No format found</CommandEmpty>
