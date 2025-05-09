@@ -102,11 +102,24 @@ const Index = () => {
 
       {/* Header Navigation */}
       <header className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center">
-          <div className="flex items-center space-x-3">
-            <img src="/green-file-icon.png" alt="ConvertImageFast Logo" className="h-10 w-10" />
-            <span className="text-xl font-bold text-app-primary">ConvertImageFast</span>
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between">
+          <div className="flex items-center space-x-3 mb-4 md:mb-0">
+            <a href="/" className="flex items-center space-x-3">
+              <img src="/green-file-icon.png" alt="ConvertImageFast Logo" className="h-10 w-10" />
+              <span className="text-xl font-bold text-app-primary">ConvertImageFast</span>
+            </a>
           </div>
+
+          {/* Main Navigation */}
+          <nav aria-label="Main Navigation">
+            <ul className="flex flex-wrap items-center justify-center gap-6">
+              <li><a href="#tools" className="text-app-text hover:text-app-primary transition-colors">Image Converter</a></li>
+              <li><a href="#features" className="text-app-text hover:text-app-primary transition-colors">Features</a></li>
+              <li><a href="#about" className="text-app-text hover:text-app-primary transition-colors">About</a></li>
+              <li><a href="#faq-heading" className="text-app-text hover:text-app-primary transition-colors">FAQ</a></li>
+              <li><a href="#contact" className="text-app-text hover:text-app-primary transition-colors">Contact</a></li>
+            </ul>
+          </nav>
         </div>
       </header>
 
@@ -164,16 +177,52 @@ const Index = () => {
 
       {/* Main Content / Tool Section */}
       <main className="pb-12" id="tools">
+        <div className="max-w-5xl mx-auto px-4 mb-8">
+          <h2 id="converter-heading" className="text-2xl md:text-3xl font-bold text-center text-app-text mb-6 pt-4">
+            Free Online Image Converter Tool
+          </h2>
+          <p className="text-center max-w-3xl mx-auto mb-4">
+            Select your image, choose your desired format, and customize settings as needed.
+            Your converted image will be ready to download in seconds.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            <a href="#convert-png-jpg" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert PNG to JPG</a>
+            <a href="#convert-jpg-png" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert JPG to PNG</a>
+            <a href="#convert-webp" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert WebP</a>
+            <a href="#instagram-size" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Resize for Instagram</a>
+          </div>
+        </div>
         <ImageConverter />
+
+        {/* Features Section */}
+        <div id="features" className="max-w-5xl mx-auto px-4 mt-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-app-text mb-8 pt-4">
+            Key Features of Our Image Converter
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">Multiple Format Support</h3>
+              <p>Convert between <a href="#convert-png-jpg" className="text-app-primary hover:underline">PNG</a>, <a href="#convert-jpg-png" className="text-app-primary hover:underline">JPG</a>, <a href="#convert-webp" className="text-app-primary hover:underline">WebP</a>, and <a href="#convert-jfif" className="text-app-primary hover:underline">JFIF</a> formats with perfect quality preservation.</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">Social Media Optimization</h3>
+              <p>Resize images for <a href="#instagram-size" className="text-app-primary hover:underline">Instagram</a>, <a href="#tiktok-format" className="text-app-primary hover:underline">TikTok</a>, <a href="#youtube-thumbnail" className="text-app-primary hover:underline">YouTube</a>, and other platforms with optimal dimensions.</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">Privacy First</h3>
+              <p>Your images never leave your browser. Learn more about our <a href="#about" className="text-app-primary hover:underline">privacy-focused approach</a> to image conversion.</p>
+            </div>
+          </div>
+        </div>
       </main>
 
       {/* About Section with enhanced design and social media resize information */}
       <section id="about" className="py-12 bg-muted/20" aria-labelledby="about-heading">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="relative flex items-center justify-center mb-8">
-            <div className="h-0.5 bg-gradient-to-r from-transparent via-app-primary/50 to-transparent w-full"></div>
-            <h2 id="about-heading" className="text-2xl md:text-3xl font-bold text-center text-app-text bg-muted/20 px-6 absolute">
+          <div className="text-center mb-8">
+            <h2 id="about-heading" className="text-2xl md:text-3xl font-bold text-app-text mb-4 inline-block relative">
               About ConvertImageFast
+              <div className="h-1 bg-app-primary/50 w-full absolute bottom-0 left-0 rounded-full"></div>
             </h2>
           </div>
 
@@ -258,13 +307,16 @@ const Index = () => {
       </section>
 
       {/* FAQ Section with improved design and platform-specific information */}
-      <section className="py-12" aria-labelledby="faq-heading">
+      <section id="faq" className="py-12" aria-labelledby="faq-heading">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="relative flex items-center justify-center mb-10">
-            <div className="h-0.5 bg-gradient-to-r from-transparent via-app-accent/50 to-transparent w-full"></div>
-            <h2 id="faq-heading" className="text-2xl md:text-3xl font-bold text-center text-app-text bg-app-background px-6 absolute">
+          <div className="text-center mb-10">
+            <h2 id="faq-heading" className="text-2xl md:text-3xl font-bold text-app-text mb-4 inline-block relative">
               Frequently Asked Questions
+              <div className="h-1 bg-app-accent/50 w-full absolute bottom-0 left-0 rounded-full"></div>
             </h2>
+            <p className="max-w-3xl mx-auto">
+              Find answers to common questions about our image conversion and resizing tools. Can't find what you're looking for? <a href="#contact" className="text-app-primary hover:underline">Contact us</a>.
+            </p>
           </div>
 
           <div className="space-y-6">
@@ -422,15 +474,29 @@ const Index = () => {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-12 bg-muted/20">
+      <section id="contact" className="py-12 bg-muted/20" aria-labelledby="contact-heading">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-app-text mb-4">Have Questions?</h2>
-          <p className="mb-6">
-            Feel free to reach out if you have any questions about our image conversion and resizing tools.
+          <h2 id="contact-heading" className="text-2xl md:text-3xl font-bold text-app-text mb-4 inline-block relative">
+            Contact Us
+            <div className="h-1 bg-app-primary/50 w-full absolute bottom-0 left-0 rounded-full"></div>
+          </h2>
+          <p className="mb-6 max-w-2xl mx-auto">
+            Have questions about our <a href="#tools" className="text-app-primary hover:underline">image converter</a>,
+            <a href="#instagram-size" className="text-app-primary hover:underline">social media resizing</a>, or
+            <a href="#convert-png-jpg" className="text-app-primary hover:underline">format conversion</a>?
+            We're here to help! Reach out to our team for assistance.
           </p>
-          <a href="mailto:contact@convertimagefast.com" className="text-app-primary hover:underline">
-            contact@convertimagefast.com
-          </a>
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <a href="mailto:contact@convertimagefast.com" className="text-app-primary hover:underline flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              contact@convertimagefast.com
+            </a>
+            <p className="text-sm text-muted-foreground">
+              We typically respond within 24 hours.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -495,7 +561,20 @@ const Index = () => {
           </div>
 
           <div className="mt-4 text-xs text-center text-muted-foreground/70">
-            <p>Convert and resize images between PNG, JPG, WebP, JFIF formats. Optimize for Instagram, TikTok, YouTube, Twitter, Facebook and more - all for free, with no sign-up required.</p>
+            <p>
+              <a href="#tools" className="hover:text-app-primary transition-colors">Convert</a> and
+              <a href="#instagram-size" className="hover:text-app-primary transition-colors"> resize</a> images between
+              <a href="#convert-png-jpg" className="hover:text-app-primary transition-colors"> PNG</a>,
+              <a href="#convert-jpg-png" className="hover:text-app-primary transition-colors"> JPG</a>,
+              <a href="#convert-webp" className="hover:text-app-primary transition-colors"> WebP</a>,
+              <a href="#convert-jfif" className="hover:text-app-primary transition-colors"> JFIF</a> formats.
+              Optimize for <a href="#instagram-size" className="hover:text-app-primary transition-colors">Instagram</a>,
+              <a href="#tiktok-format" className="hover:text-app-primary transition-colors"> TikTok</a>,
+              <a href="#youtube-thumbnail" className="hover:text-app-primary transition-colors"> YouTube</a>,
+              <a href="#twitter-size" className="hover:text-app-primary transition-colors"> Twitter</a>,
+              <a href="#facebook-format" className="hover:text-app-primary transition-colors"> Facebook</a> and more -
+              all for free, with no sign-up required.
+            </p>
           </div>
         </div>
       </footer>
