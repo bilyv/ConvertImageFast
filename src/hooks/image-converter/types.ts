@@ -21,8 +21,12 @@ export interface UseImageCropReturn {
 export interface UseImageResizeReturn {
   resizeDimensions: {width?: number; height?: number};
   maintainResizeAspectRatio: boolean;
+  isCircularMode: boolean;
+  circleDiameter: number;
   setResizeDimensions: React.Dispatch<React.SetStateAction<{width?: number; height?: number}>>;
   setMaintainResizeAspectRatio: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsCircularMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setCircleDiameter: (diameter: number) => void;
 }
 
 export interface UseImageConversionReturn {

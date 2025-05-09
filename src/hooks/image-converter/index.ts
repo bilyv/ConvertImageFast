@@ -30,8 +30,12 @@ export const useImageConverter = (): UseImageConverterReturn => {
   const {
     resizeDimensions,
     maintainResizeAspectRatio,
+    isCircularMode,
+    circleDiameter,
     setResizeDimensions,
-    setMaintainResizeAspectRatio
+    setMaintainResizeAspectRatio,
+    setIsCircularMode,
+    setCircleDiameter
   } = useImageResize();
   
   // Initialize the conversion hook with necessary dependencies
@@ -87,8 +91,12 @@ export const useImageConverter = (): UseImageConverterReturn => {
     // From useImageResize
     resizeDimensions,
     maintainResizeAspectRatio,
+    isCircularMode,
+    circleDiameter,
     setResizeDimensions,
     setMaintainResizeAspectRatio,
+    setIsCircularMode,
+    setCircleDiameter,
     
     // From useImageConversion
     selectedFormat,

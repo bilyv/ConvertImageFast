@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import PlatformResize from './PlatformResize';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Search, Maximize } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { calculateDimensionsWithAspectRatio } from '@/utils/cropUtils';
 
 interface ImagePreviewProps {
   originalImage: string;
@@ -24,16 +25,100 @@ interface SimilarImage {
 const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) => {
   const [resizeDimensions, setResizeDimensions] = useState<{width?: number; height?: number}>({});
   const [maintainResizeAspectRatio, setMaintainResizeAspectRatio] = useState<boolean>(true);
+  const [isCircularMode, setIsCircularMode] = useState<boolean>(false);
+  const [circleDiameter, setCircleDiameter] = useState<number>(300);
   const [searchModalOpen, setSearchModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [formatFilter, setFormatFilter] = useState<string>('all');
   const [similarImages, setSimilarImages] = useState<SimilarImage[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  
+  const imageRef = useRef<HTMLImageElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [previewImage, setPreviewImage] = useState<string>(originalImage);
+
+  // Update preview when resize dimensions or circular mode changes
+  useEffect(() => {
+    if (!originalImage) return;
+    
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = originalImage;
+    
+    img.onload = () => {
+      // Get original dimensions
+      const originalWidth = img.width;
+      const originalHeight = img.height;
+      
+      // Skip if no resize is needed
+      if (!resizeDimensions.width && !resizeDimensions.height && !isCircularMode) {
+        setPreviewImage(originalImage);
+        return;
+      }
+      
+      // Create canvas for preview
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      let finalWidth = originalWidth;
+      let finalHeight = originalHeight;
+      
+      // Calculate dimensions based on resize options
+      if (resizeDimensions.width || resizeDimensions.height) {
+        const dimensions = calculateDimensionsWithAspectRatio(
+          originalWidth,
+          originalHeight,
+          resizeDimensions.width,
+          resizeDimensions.height,
+          maintainResizeAspectRatio
+        );
+        
+        finalWidth = dimensions.width;
+        finalHeight = dimensions.height;
+      }
+      
+      // Set canvas size
+      canvas.width = finalWidth;
+      canvas.height = finalHeight;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      if (isCircularMode) {
+        // For circular mode, we need to create a circular clipping path
+        const centerX = finalWidth / 2;
+        const centerY = finalHeight / 2;
+        const radius = Math.min(finalWidth, finalHeight) / 2;
+        
+        // Create circular clipping path
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
+        
+        // Draw the image
+        ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
+        
+        // Add circle border
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else {
+        // Draw the image normally
+        ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
+      }
+      
+      // Update the preview
+      setPreviewImage(canvas.toDataURL('image/png'));
+    };
+  }, [originalImage, resizeDimensions, maintainResizeAspectRatio, isCircularMode, circleDiameter]);
 
   const handlePlatformSizeSelect = (width: number, height: number) => {
     setResizeDimensions({ width, height });
-    // Here you would typically update the parent component with these dimensions
-    // This is just a UI change for now - full functionality would require lifting state up
+    setIsCircularMode(false);
   };
 
   const handleSearch = () => {
@@ -92,10 +177,14 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
     <div className="rounded-lg overflow-hidden border border-border animate-slide-in">
       <div className="aspect-video flex items-center justify-center bg-muted/30 overflow-hidden relative">
         <img
-          src={originalImage}
+          ref={imageRef}
+          src={previewImage}
           alt="Original"
-          className="object-contain max-h-full max-w-full"
+          className={`object-contain max-h-full max-w-full ${isCircularMode ? 'rounded-full' : ''}`}
         />
+        
+        {/* Hidden canvas for processing */}
+        <canvas ref={canvasRef} style={{ display: 'none' }} />
         
         {/* Resize button - top right */}
         <div className="absolute top-2 right-2">
@@ -115,12 +204,16 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
                 <PlatformResize onSelectSize={handlePlatformSizeSelect} />
                 
                 <div className="pt-2 border-t border-border">
-                  <h4 className="text-sm font-medium mb-2">Custom size:</h4>
+                  <h4 className="text-sm font-medium mb-2">Size options:</h4>
                   <ResizeControl 
                     resizeDimensions={resizeDimensions}
                     setResizeDimensions={setResizeDimensions}
                     maintainAspectRatio={maintainResizeAspectRatio}
                     setMaintainAspectRatio={setMaintainResizeAspectRatio}
+                    isCircularMode={isCircularMode}
+                    setIsCircularMode={setIsCircularMode}
+                    circleDiameter={circleDiameter}
+                    setCircleDiameter={setCircleDiameter}
                     show={true}
                   />
                 </div>
@@ -158,7 +251,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
                 <Input 
-                  placeholder="Search by file name or format" 
+                  placeholder="Search formats png or tiff" 
                   value={searchQuery} 
                   onChange={e => setSearchQuery(e.target.value)} 
                 />

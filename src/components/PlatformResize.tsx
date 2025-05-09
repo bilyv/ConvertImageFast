@@ -17,7 +17,7 @@ interface PlatformResizeProps {
 }
 
 const PlatformResize: React.FC<PlatformResizeProps> = ({ onSelectSize }) => {
-  // Popular platform dimensions
+  // Popular platform dimensions (removed TikTok)
   const platformSizes: PlatformSize[] = [
     { 
       id: 'instagram-post', 
@@ -32,13 +32,6 @@ const PlatformResize: React.FC<PlatformResizeProps> = ({ onSelectSize }) => {
       width: 1080, 
       height: 1920, 
       description: 'Vertical 9:16 format for Instagram stories'
-    },
-    { 
-      id: 'tiktok', 
-      name: 'TikTok Video', 
-      width: 1080, 
-      height: 1920, 
-      description: 'Vertical 9:16 format for TikTok videos'
     },
     { 
       id: 'youtube-thumbnail', 
