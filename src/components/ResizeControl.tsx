@@ -5,6 +5,8 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CircularResize from './CircularResize';
+import { Button } from '@/components/ui/button';
+import { Check, X } from 'lucide-react';
 
 interface ResizeControlProps {
   resizeDimensions: {
@@ -18,6 +20,8 @@ interface ResizeControlProps {
   setIsCircularMode: (isCircular: boolean) => void;
   circleDiameter: number;
   setCircleDiameter: (diameter: number) => void;
+  onApply: () => void;
+  onCancel: () => void;
   show?: boolean;
 }
 
@@ -30,6 +34,8 @@ const ResizeControl: React.FC<ResizeControlProps> = ({
   setIsCircularMode,
   circleDiameter,
   setCircleDiameter,
+  onApply,
+  onCancel,
   show = false // Default to not showing
 }) => {
   if (!show) return null;
@@ -118,6 +124,27 @@ const ResizeControl: React.FC<ResizeControlProps> = ({
           />
         </TabsContent>
       </Tabs>
+
+      <div className="flex justify-between pt-4 border-t border-border mt-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onCancel}
+          className="flex items-center"
+        >
+          <X className="h-4 w-4 mr-1" />
+          Cancel
+        </Button>
+        <Button
+          variant="default"
+          size="sm"
+          onClick={onApply}
+          className="flex items-center bg-app-primary hover:bg-app-primary/90"
+        >
+          <Check className="h-4 w-4 mr-1" />
+          Apply
+        </Button>
+      </div>
     </div>
   );
 };

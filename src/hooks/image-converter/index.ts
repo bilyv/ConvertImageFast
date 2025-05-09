@@ -32,10 +32,13 @@ export const useImageConverter = (): UseImageConverterReturn => {
     maintainResizeAspectRatio,
     isCircularMode,
     circleDiameter,
+    resizeApplied,
     setResizeDimensions,
     setMaintainResizeAspectRatio,
     setIsCircularMode,
-    setCircleDiameter
+    setCircleDiameter,
+    applyResize,
+    resetResize
   } = useImageResize();
   
   // Initialize the conversion hook with necessary dependencies
@@ -52,7 +55,9 @@ export const useImageConverter = (): UseImageConverterReturn => {
     cropResult,
     cropData,
     resizeDimensions,
-    maintainResizeAspectRatio
+    maintainResizeAspectRatio,
+    isCircularMode,
+    resizeApplied
   );
 
   // Wrapper for file upload to set the format
@@ -93,10 +98,13 @@ export const useImageConverter = (): UseImageConverterReturn => {
     maintainResizeAspectRatio,
     isCircularMode,
     circleDiameter,
+    resizeApplied,
     setResizeDimensions,
     setMaintainResizeAspectRatio,
     setIsCircularMode,
     setCircleDiameter,
+    applyResize,
+    resetResize,
     
     // From useImageConversion
     selectedFormat,

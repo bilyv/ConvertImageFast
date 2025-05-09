@@ -23,10 +23,13 @@ export interface UseImageResizeReturn {
   maintainResizeAspectRatio: boolean;
   isCircularMode: boolean;
   circleDiameter: number;
+  resizeApplied: boolean;
   setResizeDimensions: React.Dispatch<React.SetStateAction<{width?: number; height?: number}>>;
   setMaintainResizeAspectRatio: React.Dispatch<React.SetStateAction<boolean>>;
   setIsCircularMode: React.Dispatch<React.SetStateAction<boolean>>;
   setCircleDiameter: (diameter: number) => void;
+  applyResize: () => void;
+  resetResize: () => void;
 }
 
 export interface UseImageConversionReturn {

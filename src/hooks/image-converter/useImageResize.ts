@@ -7,6 +7,7 @@ export const useImageResize = (): UseImageResizeReturn => {
   const [maintainResizeAspectRatio, setMaintainResizeAspectRatio] = useState<boolean>(true);
   const [isCircularMode, setIsCircularMode] = useState<boolean>(false);
   const [circleDiameter, setCircleDiameter] = useState<number>(300);
+  const [resizeApplied, setResizeApplied] = useState<boolean>(false);
   
   const handleCircleDiameterChange = (diameter: number) => {
     setCircleDiameter(diameter);
@@ -14,14 +15,27 @@ export const useImageResize = (): UseImageResizeReturn => {
     setResizeDimensions({ width: diameter, height: diameter });
   };
 
+  const applyResize = () => {
+    setResizeApplied(true);
+  };
+
+  const resetResize = () => {
+    setResizeApplied(false);
+    setResizeDimensions({});
+    setIsCircularMode(false);
+  };
+
   return {
     resizeDimensions,
     maintainResizeAspectRatio,
     isCircularMode,
     circleDiameter,
+    resizeApplied,
     setResizeDimensions,
     setMaintainResizeAspectRatio,
     setIsCircularMode,
-    setCircleDiameter: handleCircleDiameterChange
+    setCircleDiameter: handleCircleDiameterChange,
+    applyResize,
+    resetResize
   };
 };

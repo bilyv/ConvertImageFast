@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,6 +8,8 @@ import { Search, Maximize } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { calculateDimensionsWithAspectRatio } from '@/utils/cropUtils';
+import { useImageConverter } from '@/hooks/useImageConverter';
+import { useToast } from '@/hooks/use-toast';
 
 interface ImagePreviewProps {
   originalImage: string;
@@ -32,10 +33,39 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
   const [formatFilter, setFormatFilter] = useState<string>('all');
   const [similarImages, setSimilarImages] = useState<SimilarImage[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [resizePopoverOpen, setResizePopoverOpen] = useState<boolean>(false);
   
+  const { toast } = useToast();
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [previewImage, setPreviewImage] = useState<string>(originalImage);
+
+  // Get the global resize state from the hook context
+  const { 
+    resizeDimensions: globalResizeDimensions, 
+    setResizeDimensions: setGlobalResizeDimensions,
+    maintainResizeAspectRatio: globalMaintainResizeAspectRatio,
+    setMaintainResizeAspectRatio: setGlobalMaintainResizeAspectRatio,
+    isCircularMode: globalIsCircularMode,
+    setIsCircularMode: setGlobalIsCircularMode,
+    circleDiameter: globalCircleDiameter,
+    setCircleDiameter: setGlobalCircleDiameter,
+    applyResize,
+    resetResize
+  } = useImageConverter();
+
+  // Initialize local state from global state
+  useEffect(() => {
+    setResizeDimensions(globalResizeDimensions);
+    setMaintainResizeAspectRatio(globalMaintainResizeAspectRatio);
+    setIsCircularMode(globalIsCircularMode);
+    setCircleDiameter(globalCircleDiameter);
+  }, [
+    globalResizeDimensions, 
+    globalMaintainResizeAspectRatio, 
+    globalIsCircularMode,
+    globalCircleDiameter
+  ]);
 
   // Update preview when resize dimensions or circular mode changes
   useEffect(() => {
@@ -173,6 +203,38 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
     setSearchModalOpen(true);
   };
 
+  const handleApplyResize = () => {
+    // Apply resize settings to global state
+    setGlobalResizeDimensions(resizeDimensions);
+    setGlobalMaintainResizeAspectRatio(maintainResizeAspectRatio);
+    setGlobalIsCircularMode(isCircularMode);
+    setGlobalCircleDiameter(circleDiameter);
+    
+    // Mark resize as applied
+    applyResize();
+    
+    // Close the popover
+    setResizePopoverOpen(false);
+    
+    toast({
+      title: "Resize applied",
+      description: isCircularMode 
+        ? `Circular mode with diameter ${circleDiameter}px` 
+        : `Custom size ${resizeDimensions.width || 'auto'} x ${resizeDimensions.height || 'auto'}`,
+    });
+  };
+
+  const handleCancelResize = () => {
+    // Reset to global state
+    setResizeDimensions(globalResizeDimensions);
+    setMaintainResizeAspectRatio(globalMaintainResizeAspectRatio);
+    setIsCircularMode(globalIsCircularMode);
+    setCircleDiameter(globalCircleDiameter);
+    
+    // Close the popover
+    setResizePopoverOpen(false);
+  };
+
   return (
     <div className="rounded-lg overflow-hidden border border-border animate-slide-in">
       <div className="aspect-video flex items-center justify-center bg-muted/30 overflow-hidden relative">
@@ -188,7 +250,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
         
         {/* Resize button - top right */}
         <div className="absolute top-2 right-2">
-          <Popover>
+          <Popover open={resizePopoverOpen} onOpenChange={setResizePopoverOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
@@ -214,6 +276,8 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName }) 
                     setIsCircularMode={setIsCircularMode}
                     circleDiameter={circleDiameter}
                     setCircleDiameter={setCircleDiameter}
+                    onApply={handleApplyResize}
+                    onCancel={handleCancelResize}
                     show={true}
                   />
                 </div>

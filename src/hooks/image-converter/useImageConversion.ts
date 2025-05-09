@@ -12,7 +12,9 @@ export const useImageConversion = (
   cropResult: ReturnType<typeof import('./useImageCrop').useImageCrop>['cropResult'],
   cropData: ReturnType<typeof import('./useImageCrop').useImageCrop>['cropData'],
   resizeDimensions: ReturnType<typeof import('./useImageResize').useImageResize>['resizeDimensions'],
-  maintainResizeAspectRatio: ReturnType<typeof import('./useImageResize').useImageResize>['maintainResizeAspectRatio']
+  maintainResizeAspectRatio: ReturnType<typeof import('./useImageResize').useImageResize>['maintainResizeAspectRatio'],
+  isCircularMode: ReturnType<typeof import('./useImageResize').useImageResize>['isCircularMode'],
+  resizeApplied: ReturnType<typeof import('./useImageResize').useImageResize>['resizeApplied']
 ): UseImageConversionReturn => {
   const [selectedFormat, setSelectedFormat] = useState<FormatOption>('jpg');
   const [quality, setQuality] = useState<number>(85);
@@ -48,33 +50,60 @@ export const useImageConversion = (
       });
 
       const canvas = document.createElement('canvas');
-      
-      // Apply resizing if dimensions are provided
-      let finalWidth = img.width;
-      let finalHeight = img.height;
-      
-      if (resizeDimensions.width || resizeDimensions.height) {
-        const dimensions = calculateDimensionsWithAspectRatio(
-          img.width, 
-          img.height,
-          resizeDimensions.width,
-          resizeDimensions.height,
-          maintainResizeAspectRatio
-        );
-        
-        finalWidth = dimensions.width;
-        finalHeight = dimensions.height;
-      }
-      
-      // Set canvas dimensions to resized dimensions
-      canvas.width = finalWidth;
-      canvas.height = finalHeight;
-      
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error("Failed to create canvas context");
       
-      // Draw image on canvas with resizing if needed
-      ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
+      // Apply resizing if dimensions are provided and resize was applied
+      let finalWidth = img.width;
+      let finalHeight = img.height;
+      
+      if (resizeApplied) {
+        if (resizeDimensions.width || resizeDimensions.height) {
+          const dimensions = calculateDimensionsWithAspectRatio(
+            img.width, 
+            img.height,
+            resizeDimensions.width,
+            resizeDimensions.height,
+            maintainResizeAspectRatio
+          );
+          
+          finalWidth = dimensions.width;
+          finalHeight = dimensions.height;
+        }
+        
+        // Set canvas dimensions to resized dimensions
+        canvas.width = finalWidth;
+        canvas.height = finalHeight;
+        
+        if (isCircularMode) {
+          // Create circular clipping path
+          ctx.beginPath();
+          const centerX = finalWidth / 2;
+          const centerY = finalHeight / 2;
+          const radius = Math.min(finalWidth, finalHeight) / 2;
+          ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
+          ctx.closePath();
+          ctx.clip();
+          
+          // Draw image on canvas with resizing
+          ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
+          
+          // Add circle border
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else {
+          // Draw image on canvas with resizing
+          ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
+        }
+      } else {
+        // No resize applied, use original dimensions
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+      }
       
       // Set quality options (only for JPG and WebP)
       const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
@@ -90,10 +119,6 @@ export const useImageConversion = (
         convertedFileName: getConvertedFileName(imageFile.file, selectedFormat),
       };
       
-      // Reset crop data after conversion is complete
-      // Note: In the refactored hook, we won't modify crop state from here.
-      // Instead we'll return this information to the parent hook
-
       toast({
         title: "Conversion successful",
         description: `Image converted to ${selectedFormat.toUpperCase()}`,
