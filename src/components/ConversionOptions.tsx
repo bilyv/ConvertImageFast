@@ -9,8 +9,10 @@ import { Slider } from "@/components/ui/slider";
  *
  * jpg, png, webp, bmp, gif, jfif: Directly supported by Canvas API
  * heic: Requires special handling with heic2any library
+ * svg: Requires special handling with svg.js library
+ * pdf: Requires special handling with pdf.js library
  */
-export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif';
+export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif' | 'svg' | 'pdf';
 
 interface ConversionOptionsProps {
   currentFileType: string | null;
@@ -39,7 +41,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
    */
   const getAvailableFormats = () => {
     const allFormats: FormatOption[] = [
-      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif'
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif', 'svg', 'pdf'
     ];
 
     // Determine current format from file type
@@ -50,6 +52,8 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
     if (currentFileType === 'image/bmp') currentFormat = 'bmp';
     if (currentFileType === 'image/gif') currentFormat = 'gif';
     if (currentFileType === 'image/heic' || currentFileType === 'image/heif') currentFormat = 'heic';
+    if (currentFileType === 'image/svg+xml') currentFormat = 'svg';
+    if (currentFileType === 'application/pdf') currentFormat = 'pdf';
 
     // Return all formats if no file uploaded yet
     if (!currentFormat) return allFormats;
@@ -70,6 +74,8 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       case 'gif': return 'GIF';
       case 'heic': return 'HEIC';
       case 'jfif': return 'JFIF';
+      case 'svg': return 'SVG';
+      case 'pdf': return 'PDF';
     }
   };
 
@@ -111,7 +117,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   const handleFormatSelect = (value: string) => {
     // Ensure value is a valid FormatOption before passing it to onFormatChange
     if ([
-      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif'
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif', 'svg', 'pdf'
     ].includes(value)) {
       // First set animation state to false to reset animation
       setIsFormatSelected(false);

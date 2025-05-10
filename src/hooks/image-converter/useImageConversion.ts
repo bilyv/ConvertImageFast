@@ -16,6 +16,8 @@ import { FormatOption } from '@/components/ConversionOptions';
 import { useNavigate } from 'react-router-dom';
 import { getConvertedFileName, isHeicImage } from '@/utils/imageUtils';
 import { convertHeicToJpegOrPng } from '@/utils/heicConverter';
+import { convertToSvg, svgToDataUrl } from '@/utils/svgConverter';
+import { convertToPdf } from '@/utils/pdfConverter';
 import { UseImageConversionReturn } from './types';
 
 export const useImageConversion = (
@@ -149,11 +151,14 @@ export const useImageConversion = (
       ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
 
       /**
-       * HEIC Handling Step 2: Format-Specific Conversion
+       * Format-Specific Conversion
        *
        * After processing the image with Canvas API, we need to handle
-       * the final conversion to the target format. HEIC requires special
-       * handling since browsers can't directly create HEIC files.
+       * the final conversion to the target format. Some formats require
+       * special handling:
+       * - HEIC: Browsers can't directly create HEIC files
+       * - SVG: Requires the svg.js library
+       * - PDF: Requires the pdf.js library
        */
       let convertedImageUrl: string;
 
@@ -172,7 +177,7 @@ export const useImageConversion = (
 
           /**
            * BROWSER LIMITATION:
-           * We can't directly convert to HEIC in the browser, so we'll just use PNG
+           * We can't directly create HEIC files in the browser, so we'll just use PNG
            * and set the filename extension to .heic. A true HEIC conversion would
            * require a server-side component or a more specialized library.
            */
@@ -191,15 +196,69 @@ export const useImageConversion = (
           // Fallback to PNG format with .heic extension
           convertedImageUrl = canvas.toDataURL('image/png');
         }
-      } else {
+      }
+      // Special handling for SVG target format
+      else if (selectedFormat === 'svg') {
+        try {
+          console.log("Converting to SVG format using svg.js");
+
+          // First, get the canvas as a PNG data URL
+          const pngDataUrl = canvas.toDataURL('image/png');
+
+          // Convert the PNG to SVG using svg.js
+          const svgString = await convertToSvg(pngDataUrl, finalWidth, finalHeight);
+
+          // Convert the SVG string to a data URL
+          convertedImageUrl = svgToDataUrl(svgString);
+        } catch (svgError) {
+          // Log the error for debugging
+          console.error("SVG conversion error:", svgError);
+
+          // Notify the user of the error
+          toast({
+            title: "SVG conversion error",
+            description: "There was an error converting to SVG format. Using PNG as fallback.",
+            variant: "destructive"
+          });
+
+          // Fallback to PNG format
+          convertedImageUrl = canvas.toDataURL('image/png');
+        }
+      }
+      // Special handling for PDF target format
+      else if (selectedFormat === 'pdf') {
+        try {
+          console.log("Converting to PDF format using pdf.js");
+
+          // First, get the canvas as a PNG data URL
+          const pngDataUrl = canvas.toDataURL('image/png');
+
+          // Convert the PNG to PDF using pdf.js
+          convertedImageUrl = await convertToPdf(pngDataUrl, finalWidth, finalHeight);
+        } catch (pdfError) {
+          // Log the error for debugging
+          console.error("PDF conversion error:", pdfError);
+
+          // Notify the user of the error
+          toast({
+            title: "PDF conversion error",
+            description: "There was an error converting to PDF format. Using PNG as fallback.",
+            variant: "destructive"
+          });
+
+          // Fallback to PNG format
+          convertedImageUrl = canvas.toDataURL('image/png');
+        }
+      }
+      else {
         // For standard formats (JPG, PNG, WebP, etc.), use the Canvas API
 
         // Get the correct MIME type (note that 'jpg' needs to be converted to 'jpeg' for the MIME type)
         const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
 
         // Apply quality setting only for lossy formats (JPG, WebP, JFIF)
-        // PNG, BMP, and GIF don't use quality settings
-        const qualityOption = !['png', 'bmp', 'gif'].includes(selectedFormat) ? quality / 100 : undefined;
+        // PNG, BMP, GIF, SVG, and PDF don't use quality settings
+        const qualityOption = !['png', 'bmp', 'gif', 'svg', 'pdf'].includes(selectedFormat) ? quality / 100 : undefined;
 
         // Convert the canvas to a data URL with the specified format and quality
         convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);

@@ -10,7 +10,7 @@ export interface ImageFile {
   fileTypeDisplay: string;
 }
 
-export type ImageFormat = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif';
+export type ImageFormat = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif' | 'svg' | 'pdf';
 
 /**
  * Check if a file type is supported by the application
@@ -24,12 +24,14 @@ export type ImageFormat = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfi
  */
 export const isSupportedFileType = (fileType: string): boolean => {
   const supportedTypes = [
-    'image/jpeg', 'image/png', 'image/webp', 'image/bmp', 'image/gif', 'image/heic', 'image/heif', 'image/jfif'
+    'image/jpeg', 'image/png', 'image/webp', 'image/bmp', 'image/gif', 'image/heic', 'image/heif', 'image/jfif', 'image/svg+xml', 'application/pdf'
   ];
   return supportedTypes.includes(fileType) ||
          fileType.toLowerCase().endsWith('.heic') ||
          fileType.toLowerCase().endsWith('.heif') ||
-         fileType.toLowerCase().endsWith('.jfif');
+         fileType.toLowerCase().endsWith('.jfif') ||
+         fileType.toLowerCase().endsWith('.svg') ||
+         fileType.toLowerCase().endsWith('.pdf');
 };
 
 // Get human-readable file type description
@@ -50,6 +52,10 @@ export const getFileTypeDisplay = (fileType: string): string => {
       return 'HEIC Image (.heic)';
     case 'image/jfif':
       return 'JFIF Image (.jfif)';
+    case 'image/svg+xml':
+      return 'SVG Image (.svg)';
+    case 'application/pdf':
+      return 'PDF Document (.pdf)';
     default:
       // Check file extension for HEIC/HEIF
       if (fileType.toLowerCase().endsWith('.heic') || fileType.toLowerCase().endsWith('.heif')) {
@@ -58,6 +64,14 @@ export const getFileTypeDisplay = (fileType: string): string => {
       // Check file extension for JFIF
       if (fileType.toLowerCase().endsWith('.jfif')) {
         return 'JFIF Image (.jfif)';
+      }
+      // Check file extension for SVG
+      if (fileType.toLowerCase().endsWith('.svg')) {
+        return 'SVG Image (.svg)';
+      }
+      // Check file extension for PDF
+      if (fileType.toLowerCase().endsWith('.pdf')) {
+        return 'PDF Document (.pdf)';
       }
       return 'Unknown Image Format';
   }
@@ -131,6 +145,10 @@ export const getMimeType = (format: string): string => {
       return 'image/heic';
     case 'jfif':
       return 'image/jfif';
+    case 'svg':
+      return 'image/svg+xml';
+    case 'pdf':
+      return 'application/pdf';
     default:
       return 'image/jpeg'; // Default to JPEG
   }
