@@ -10,7 +10,7 @@ export interface ImageFile {
   fileTypeDisplay: string;
 }
 
-export type ImageFormat = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif' | 'svg' | 'pdf';
+export type ImageFormat = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif' | 'svg' | 'pdf' | 'tiff' | 'ico';
 
 /**
  * Check if a file type is supported by the application
@@ -24,14 +24,18 @@ export type ImageFormat = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfi
  */
 export const isSupportedFileType = (fileType: string): boolean => {
   const supportedTypes = [
-    'image/jpeg', 'image/png', 'image/webp', 'image/bmp', 'image/gif', 'image/heic', 'image/heif', 'image/jfif', 'image/svg+xml', 'application/pdf'
+    'image/jpeg', 'image/png', 'image/webp', 'image/bmp', 'image/gif', 'image/heic', 'image/heif',
+    'image/jfif', 'image/svg+xml', 'application/pdf', 'image/tiff', 'image/x-icon', 'image/vnd.microsoft.icon'
   ];
   return supportedTypes.includes(fileType) ||
          fileType.toLowerCase().endsWith('.heic') ||
          fileType.toLowerCase().endsWith('.heif') ||
          fileType.toLowerCase().endsWith('.jfif') ||
          fileType.toLowerCase().endsWith('.svg') ||
-         fileType.toLowerCase().endsWith('.pdf');
+         fileType.toLowerCase().endsWith('.pdf') ||
+         fileType.toLowerCase().endsWith('.tiff') ||
+         fileType.toLowerCase().endsWith('.tif') ||
+         fileType.toLowerCase().endsWith('.ico');
 };
 
 // Get human-readable file type description
@@ -56,6 +60,11 @@ export const getFileTypeDisplay = (fileType: string): string => {
       return 'SVG Image (.svg)';
     case 'application/pdf':
       return 'PDF Document (.pdf)';
+    case 'image/tiff':
+      return 'TIFF Image (.tiff)';
+    case 'image/x-icon':
+    case 'image/vnd.microsoft.icon':
+      return 'ICO Image (.ico)';
     default:
       // Check file extension for HEIC/HEIF
       if (fileType.toLowerCase().endsWith('.heic') || fileType.toLowerCase().endsWith('.heif')) {
@@ -72,6 +81,14 @@ export const getFileTypeDisplay = (fileType: string): string => {
       // Check file extension for PDF
       if (fileType.toLowerCase().endsWith('.pdf')) {
         return 'PDF Document (.pdf)';
+      }
+      // Check file extension for TIFF
+      if (fileType.toLowerCase().endsWith('.tiff') || fileType.toLowerCase().endsWith('.tif')) {
+        return 'TIFF Image (.tiff)';
+      }
+      // Check file extension for ICO
+      if (fileType.toLowerCase().endsWith('.ico')) {
+        return 'ICO Image (.ico)';
       }
       return 'Unknown Image Format';
   }
@@ -149,6 +166,11 @@ export const getMimeType = (format: string): string => {
       return 'image/svg+xml';
     case 'pdf':
       return 'application/pdf';
+    case 'tiff':
+    case 'tif':
+      return 'image/tiff';
+    case 'ico':
+      return 'image/x-icon';
     default:
       return 'image/jpeg'; // Default to JPEG
   }

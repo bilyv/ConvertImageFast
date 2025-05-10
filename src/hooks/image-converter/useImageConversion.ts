@@ -18,6 +18,7 @@ import { getConvertedFileName, isHeicImage } from '@/utils/imageUtils';
 import { convertHeicToJpegOrPng } from '@/utils/heicConverter';
 import { convertToSvg, svgToDataUrl } from '@/utils/svgConverter';
 import { convertToPdf } from '@/utils/pdfConverter';
+import { convertToTiff, convertToIco } from '@/utils/tiffIcoConverter';
 import { UseImageConversionReturn } from './types';
 
 export const useImageConversion = (
@@ -159,6 +160,8 @@ export const useImageConversion = (
        * - HEIC: Browsers can't directly create HEIC files
        * - SVG: Requires the svg.js library
        * - PDF: Requires the pdf.js library
+       * - TIFF: Handled using Canvas API with special processing
+       * - ICO: Handled using Canvas API with special processing
        */
       let convertedImageUrl: string;
 
@@ -250,6 +253,68 @@ export const useImageConversion = (
           convertedImageUrl = canvas.toDataURL('image/png');
         }
       }
+      // Special handling for TIFF target format
+      else if (selectedFormat === 'tiff') {
+        try {
+          console.log("Converting to TIFF format using Canvas API");
+
+          // First, get the canvas as a PNG data URL
+          const pngDataUrl = canvas.toDataURL('image/png');
+
+          // Convert the PNG to TIFF using our utility function
+          convertedImageUrl = await convertToTiff(pngDataUrl, finalWidth, finalHeight);
+
+          // Notify the user about the limitation
+          toast({
+            title: "TIFF conversion note",
+            description: "Browser support for TIFF is limited. The image will be saved as PNG with a .tiff extension.",
+          });
+        } catch (tiffError) {
+          // Log the error for debugging
+          console.error("TIFF conversion error:", tiffError);
+
+          // Notify the user of the error
+          toast({
+            title: "TIFF conversion error",
+            description: "There was an error converting to TIFF format. Using PNG as fallback.",
+            variant: "destructive"
+          });
+
+          // Fallback to PNG format
+          convertedImageUrl = canvas.toDataURL('image/png');
+        }
+      }
+      // Special handling for ICO target format
+      else if (selectedFormat === 'ico') {
+        try {
+          console.log("Converting to ICO format using Canvas API");
+
+          // First, get the canvas as a PNG data URL
+          const pngDataUrl = canvas.toDataURL('image/png');
+
+          // Convert the PNG to ICO using our utility function
+          convertedImageUrl = await convertToIco(pngDataUrl, finalWidth, finalHeight);
+
+          // Notify the user about the limitation
+          toast({
+            title: "ICO conversion note",
+            description: "Browser support for ICO is limited. The image will be saved as PNG with an .ico extension.",
+          });
+        } catch (icoError) {
+          // Log the error for debugging
+          console.error("ICO conversion error:", icoError);
+
+          // Notify the user of the error
+          toast({
+            title: "ICO conversion error",
+            description: "There was an error converting to ICO format. Using PNG as fallback.",
+            variant: "destructive"
+          });
+
+          // Fallback to PNG format
+          convertedImageUrl = canvas.toDataURL('image/png');
+        }
+      }
       else {
         // For standard formats (JPG, PNG, WebP, etc.), use the Canvas API
 
@@ -257,8 +322,8 @@ export const useImageConversion = (
         const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
 
         // Apply quality setting only for lossy formats (JPG, WebP, JFIF)
-        // PNG, BMP, GIF, SVG, and PDF don't use quality settings
-        const qualityOption = !['png', 'bmp', 'gif', 'svg', 'pdf'].includes(selectedFormat) ? quality / 100 : undefined;
+        // PNG, BMP, GIF, SVG, PDF, TIFF, and ICO don't use quality settings
+        const qualityOption = !['png', 'bmp', 'gif', 'svg', 'pdf', 'tiff', 'ico'].includes(selectedFormat) ? quality / 100 : undefined;
 
         // Convert the canvas to a data URL with the specified format and quality
         convertedImageUrl = canvas.toDataURL(mimeType, qualityOption);

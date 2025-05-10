@@ -11,8 +11,9 @@ import { Slider } from "@/components/ui/slider";
  * heic: Requires special handling with heic2any library
  * svg: Requires special handling with svg.js library
  * pdf: Requires special handling with pdf.js library
+ * tiff, ico: Handled using Canvas API with special processing
  */
-export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif' | 'svg' | 'pdf';
+export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif' | 'svg' | 'pdf' | 'tiff' | 'ico';
 
 interface ConversionOptionsProps {
   currentFileType: string | null;
@@ -41,7 +42,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
    */
   const getAvailableFormats = () => {
     const allFormats: FormatOption[] = [
-      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif', 'svg', 'pdf'
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif', 'svg', 'pdf', 'tiff', 'ico'
     ];
 
     // Determine current format from file type
@@ -54,6 +55,8 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
     if (currentFileType === 'image/heic' || currentFileType === 'image/heif') currentFormat = 'heic';
     if (currentFileType === 'image/svg+xml') currentFormat = 'svg';
     if (currentFileType === 'application/pdf') currentFormat = 'pdf';
+    if (currentFileType === 'image/tiff') currentFormat = 'tiff';
+    if (currentFileType === 'image/x-icon' || currentFileType === 'image/vnd.microsoft.icon') currentFormat = 'ico';
 
     // Return all formats if no file uploaded yet
     if (!currentFormat) return allFormats;
@@ -76,6 +79,8 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       case 'jfif': return 'JFIF';
       case 'svg': return 'SVG';
       case 'pdf': return 'PDF';
+      case 'tiff': return 'TIFF';
+      case 'ico': return 'ICO';
     }
   };
 
@@ -117,7 +122,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   const handleFormatSelect = (value: string) => {
     // Ensure value is a valid FormatOption before passing it to onFormatChange
     if ([
-      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif', 'svg', 'pdf'
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif', 'svg', 'pdf', 'tiff', 'ico'
     ].includes(value)) {
       // First set animation state to false to reset animation
       setIsFormatSelected(false);

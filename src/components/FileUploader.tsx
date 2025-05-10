@@ -107,13 +107,17 @@ const FileUploader: React.FC<FileUploaderProps> = ({
    */
   const validateAndProcessFile = (file: File) => {
     // Define supported image formats
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jfif', 'image/bmp', 'image/gif', 'image/heic', 'image/heif', 'image/svg+xml', 'application/pdf'];
+    const validImageTypes = [
+      'image/jpeg', 'image/png', 'image/webp', 'image/jfif', 'image/bmp', 'image/gif',
+      'image/heic', 'image/heif', 'image/svg+xml', 'application/pdf', 'image/tiff',
+      'image/x-icon', 'image/vnd.microsoft.icon'
+    ];
 
     // Validate file type
     if (!validImageTypes.includes(file.type)) {
       toast({
         title: "Unsupported file format",
-        description: "Only JPG, PNG, WebP, JFIF, BMP, GIF, HEIC, SVG, and PDF files are supported.",
+        description: "Only JPG, PNG, WebP, JFIF, BMP, GIF, HEIC, SVG, PDF, TIFF, and ICO files are supported.",
         variant: "destructive"
       });
       return;
@@ -170,7 +174,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         type="file"
         ref={fileInputRef}
         onChange={!isUploadDisabled ? handleFileInputChange : undefined}
-        accept="image/jpeg,image/png,image/webp,image/jfif,image/bmp,image/gif,image/heic,image/heif,image/svg+xml,application/pdf"
+        accept="image/jpeg,image/png,image/webp,image/jfif,image/bmp,image/gif,image/heic,image/heif,image/svg+xml,application/pdf,image/tiff,image/x-icon,image/vnd.microsoft.icon"
         className="hidden"
         disabled={isUploadDisabled}
         aria-label="Upload image file"
@@ -188,7 +192,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
           <>
             <p className="text-lg font-medium mb-1">Drag & drop image here</p>
             <p className="text-sm text-muted-foreground mb-3">
-              or click to browse (JPG, PNG, WebP, JFIF, BMP, GIF, HEIC, SVG, PDF)
+              or click to browse (JPG, PNG, WebP, JFIF, BMP, GIF, HEIC, SVG, PDF, TIFF, ICO)
             </p>
           </>
         )}
