@@ -7,10 +7,10 @@ import { Slider } from "@/components/ui/slider";
 /**
  * Supported image formats for conversion
  *
- * jpg, png, webp, bmp, gif: Directly supported by Canvas API
+ * jpg, png, webp, bmp, gif, jfif: Directly supported by Canvas API
  * heic: Requires special handling with heic2any library
  */
-export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic';
+export type FormatOption = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif';
 
 interface ConversionOptionsProps {
   currentFileType: string | null;
@@ -39,7 +39,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
    */
   const getAvailableFormats = () => {
     const allFormats: FormatOption[] = [
-      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic'
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif'
     ];
 
     // Determine current format from file type
@@ -69,6 +69,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
       case 'bmp': return 'BMP';
       case 'gif': return 'GIF';
       case 'heic': return 'HEIC';
+      case 'jfif': return 'JFIF';
     }
   };
 
@@ -110,7 +111,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   const handleFormatSelect = (value: string) => {
     // Ensure value is a valid FormatOption before passing it to onFormatChange
     if ([
-      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic'
+      'jpg', 'png', 'webp', 'bmp', 'gif', 'heic', 'jfif'
     ].includes(value)) {
       // First set animation state to false to reset animation
       setIsFormatSelected(false);
@@ -133,7 +134,7 @@ const ConversionOptions: React.FC<ConversionOptionsProps> = ({
   /**
    * Determine if quality settings should be shown
    *
-   * Quality settings only apply to lossy formats like JPG, WebP, and HEIC.
+   * Quality settings only apply to lossy formats like JPG, WebP, JFIF, and HEIC.
    * Lossless formats like PNG, BMP, and GIF don't use quality settings.
    *
    * Note: For HEIC, quality is used when converting from HEIC to other formats,

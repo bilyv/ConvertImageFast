@@ -10,7 +10,7 @@ export interface ImageFile {
   fileTypeDisplay: string;
 }
 
-export type ImageFormat = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic';
+export type ImageFormat = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic' | 'jfif';
 
 /**
  * Check if a file type is supported by the application
@@ -24,11 +24,12 @@ export type ImageFormat = 'jpg' | 'png' | 'webp' | 'bmp' | 'gif' | 'heic';
  */
 export const isSupportedFileType = (fileType: string): boolean => {
   const supportedTypes = [
-    'image/jpeg', 'image/png', 'image/webp', 'image/bmp', 'image/gif', 'image/heic', 'image/heif'
+    'image/jpeg', 'image/png', 'image/webp', 'image/bmp', 'image/gif', 'image/heic', 'image/heif', 'image/jfif'
   ];
   return supportedTypes.includes(fileType) ||
          fileType.toLowerCase().endsWith('.heic') ||
-         fileType.toLowerCase().endsWith('.heif');
+         fileType.toLowerCase().endsWith('.heif') ||
+         fileType.toLowerCase().endsWith('.jfif');
 };
 
 // Get human-readable file type description
@@ -47,10 +48,16 @@ export const getFileTypeDisplay = (fileType: string): string => {
     case 'image/heic':
     case 'image/heif':
       return 'HEIC Image (.heic)';
+    case 'image/jfif':
+      return 'JFIF Image (.jfif)';
     default:
       // Check file extension for HEIC/HEIF
       if (fileType.toLowerCase().endsWith('.heic') || fileType.toLowerCase().endsWith('.heif')) {
         return 'HEIC Image (.heic)';
+      }
+      // Check file extension for JFIF
+      if (fileType.toLowerCase().endsWith('.jfif')) {
+        return 'JFIF Image (.jfif)';
       }
       return 'Unknown Image Format';
   }
@@ -122,6 +129,8 @@ export const getMimeType = (format: string): string => {
     case 'heic':
     case 'heif':
       return 'image/heic';
+    case 'jfif':
+      return 'image/jfif';
     default:
       return 'image/jpeg'; // Default to JPEG
   }

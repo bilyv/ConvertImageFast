@@ -197,7 +197,7 @@ export const useImageConversion = (
         // Get the correct MIME type (note that 'jpg' needs to be converted to 'jpeg' for the MIME type)
         const mimeType = `image/${selectedFormat === 'jpg' ? 'jpeg' : selectedFormat}`;
 
-        // Apply quality setting only for lossy formats (JPG, WebP)
+        // Apply quality setting only for lossy formats (JPG, WebP, JFIF)
         // PNG, BMP, and GIF don't use quality settings
         const qualityOption = !['png', 'bmp', 'gif'].includes(selectedFormat) ? quality / 100 : undefined;
 
