@@ -61,7 +61,10 @@ import {
   PuzzlePiece,
   PuzzleConfig,
   DEFAULT_PUZZLE_CONFIG,
-  createPuzzlePieces
+  createPuzzlePieces,
+  createShareablePuzzleData,
+  parseShareablePuzzleData,
+  ShareablePuzzleData
 } from '@/utils/puzzleUtils';
 import Header from '@/components/Header';
 import AnimatedPromoLink from '@/components/AnimatedPromoLink';
@@ -103,8 +106,43 @@ const Puzzle: React.FC = () => {
   // Parse URL query parameters
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const configParam = searchParams.get('config');
 
+    // Check for shared puzzle data
+    const sharedPuzzleData = searchParams.get('puzzleData');
+    if (sharedPuzzleData) {
+      try {
+        // Parse the shared puzzle data
+        const puzzleData = parseShareablePuzzleData(sharedPuzzleData);
+
+        if (puzzleData) {
+          // Set the puzzle configuration
+          setConfig(puzzleData.config);
+
+          // Set the interaction mode
+          setInteractionMode(puzzleData.mode);
+
+          // Set the puzzle pieces directly
+          setPuzzlePieces(puzzleData.pieces as PuzzlePiece[]);
+
+          // Automatically show the puzzle
+          setPuzzleCreated(true);
+          setShowConfig(false);
+
+          toast({
+            title: 'Shared Puzzle Loaded',
+            description: 'A shared puzzle has been loaded. Try to solve it!',
+            variant: 'default'
+          });
+
+          return; // Skip the rest of the parsing if we have shared puzzle data
+        }
+      } catch (error) {
+        console.error('Failed to parse shared puzzle data:', error);
+      }
+    }
+
+    // Legacy URL parameter parsing (for backward compatibility)
+    const configParam = searchParams.get('config');
     if (configParam) {
       try {
         const parsedConfig = JSON.parse(decodeURIComponent(configParam));
@@ -121,7 +159,7 @@ const Puzzle: React.FC = () => {
     if (modeParam === 'click' || modeParam === 'drag') {
       setInteractionMode(modeParam);
     }
-  }, [location.search]);
+  }, [location.search, toast]);
 
   // Check if image data is provided
   // We no longer redirect if no image data is provided
@@ -454,8 +492,21 @@ const Puzzle: React.FC = () => {
 
   // Copy puzzle link to clipboard
   const handleCopyLink = () => {
-    // Create a URL with query parameters for puzzle configuration and interaction mode
-    const puzzleUrl = `${window.location.origin}/puzzle?config=${encodeURIComponent(JSON.stringify(config))}&mode=${interactionMode}`;
+    // Only proceed if we have puzzle pieces
+    if (puzzlePieces.length === 0) {
+      toast({
+        title: 'No Puzzle to Share',
+        description: 'Please create a puzzle first before sharing.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // Create a shareable puzzle data string
+    const shareableData = createShareablePuzzleData(puzzlePieces, config, interactionMode);
+
+    // Create a URL with the encoded puzzle data
+    const puzzleUrl = `${window.location.origin}/puzzle?puzzleData=${encodeURIComponent(shareableData)}`;
 
     // Use Web Share API if available
     if (navigator.share) {
@@ -477,7 +528,7 @@ const Puzzle: React.FC = () => {
       navigator.clipboard.writeText(puzzleUrl).then(() => {
         toast({
           title: 'Link Copied',
-          description: 'Puzzle link copied to clipboard!',
+          description: 'Puzzle link copied to clipboard! Share it with friends to let them try your puzzle.',
           variant: 'default'
         });
       }).catch(err => {
@@ -493,7 +544,22 @@ const Puzzle: React.FC = () => {
 
   // Share on social media
   const handleShare = (platform: 'facebook' | 'twitter' | 'linkedin' | 'email') => {
-    const puzzleUrl = `${window.location.origin}/puzzle?config=${encodeURIComponent(JSON.stringify(config))}&mode=${interactionMode}`;
+    // Only proceed if we have puzzle pieces
+    if (puzzlePieces.length === 0) {
+      toast({
+        title: 'No Puzzle to Share',
+        description: 'Please create a puzzle first before sharing.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // Create a shareable puzzle data string
+    const shareableData = createShareablePuzzleData(puzzlePieces, config, interactionMode);
+
+    // Create a URL with the encoded puzzle data
+    const puzzleUrl = `${window.location.origin}/puzzle?puzzleData=${encodeURIComponent(shareableData)}`;
+
     const title = 'Check out this image puzzle!';
     const description = 'I created this puzzle with ConvertImageFast. Try to solve it!';
 
@@ -516,6 +582,12 @@ const Puzzle: React.FC = () => {
 
     if (shareUrl) {
       window.open(shareUrl, '_blank');
+
+      toast({
+        title: `Shared on ${platform.charAt(0).toUpperCase() + platform.slice(1)}`,
+        description: 'Your puzzle has been shared successfully!',
+        variant: 'default'
+      });
     }
   };
 

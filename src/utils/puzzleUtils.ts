@@ -3,6 +3,8 @@
  *
  * This utility provides functions for creating puzzle games from images.
  * It supports JPEG, PNG, GIF, and HEIC formats.
+ *
+ * It also provides functions for sharing puzzles via URL-based sharing.
  */
 
 /**
@@ -83,6 +85,86 @@ export const isPuzzleSupportedFormat = (fileTypeOrName: string): boolean => {
  * @param config Puzzle configuration (rows, columns, difficulty)
  * @returns Promise that resolves to an array of puzzle pieces
  */
+/**
+ * Interface for shareable puzzle data
+ */
+export interface ShareablePuzzleData {
+  config: PuzzleConfig;
+  pieces: {
+    id: number;
+    x: number;
+    y: number;
+    correctX: number;
+    correctY: number;
+    width: number;
+    height: number;
+    imageUrl: string;
+  }[];
+  mode: 'drag' | 'click';
+  timestamp: number;
+}
+
+/**
+ * Create a shareable puzzle configuration
+ *
+ * @param pieces Array of puzzle pieces
+ * @param config Puzzle configuration
+ * @param mode Interaction mode (drag or click)
+ * @returns Base64 encoded string of the puzzle configuration
+ */
+export const createShareablePuzzleData = (
+  pieces: PuzzlePiece[],
+  config: PuzzleConfig,
+  mode: 'drag' | 'click'
+): string => {
+  // Create a shareable data object
+  const shareableData: ShareablePuzzleData = {
+    config,
+    pieces: pieces.map(piece => ({
+      id: piece.id,
+      x: piece.x,
+      y: piece.y,
+      correctX: piece.correctX,
+      correctY: piece.correctY,
+      width: piece.width,
+      height: piece.height,
+      imageUrl: piece.imageUrl
+    })),
+    mode,
+    timestamp: new Date().getTime()
+  };
+
+  // Convert to JSON and encode as Base64
+  const jsonString = JSON.stringify(shareableData);
+  return btoa(jsonString);
+};
+
+/**
+ * Parse a shareable puzzle configuration
+ *
+ * @param encodedData Base64 encoded string of the puzzle configuration
+ * @returns Decoded puzzle data or null if invalid
+ */
+export const parseShareablePuzzleData = (encodedData: string): ShareablePuzzleData | null => {
+  try {
+    // Decode Base64 string
+    const jsonString = atob(encodedData);
+
+    // Parse JSON
+    const puzzleData = JSON.parse(jsonString) as ShareablePuzzleData;
+
+    // Validate the data structure
+    if (!puzzleData.config || !puzzleData.pieces || !puzzleData.mode) {
+      return null;
+    }
+
+    return puzzleData;
+  } catch (error) {
+    console.error('Error parsing shareable puzzle data:', error);
+    return null;
+  }
+};
+
 export const createPuzzlePieces = async (
   imageUrl: string,
   config: PuzzleConfig = DEFAULT_PUZZLE_CONFIG
