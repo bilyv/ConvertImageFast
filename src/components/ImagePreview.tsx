@@ -14,7 +14,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Puzzle } from 'lucide-react';
 import { isPuzzleSupportedFormat } from '@/utils/puzzleUtils';
-import SocialMediaDropdown from './SocialMediaDropdown';
 
 interface ImagePreviewProps {
   /**
@@ -104,16 +103,6 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName, fi
 
             {/* Action buttons */}
             <div className="flex items-center gap-2">
-              {/* Social Media Dropdown */}
-              <SocialMediaDropdown
-                imageUrl={originalImage}
-                fileName={fileName}
-                onPlatformSelect={(platformId) => {
-                  // The platform selection is handled by the dropdown component
-                  // and saved in localStorage for use in the thank you page
-                }}
-              />
-
               {/* Create Puzzle button */}
               <Button
                 variant="outline"
