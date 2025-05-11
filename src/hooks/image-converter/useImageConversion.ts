@@ -347,6 +347,20 @@ export const useImageConversion = (
         description: `Image converted to ${selectedFormat.toUpperCase()}`,
       });
 
+      // Check if a social media platform was selected
+      const selectedPlatformId = localStorage.getItem('selectedSocialMediaPlatform');
+      const socialMediaOptimizedImage = localStorage.getItem('socialMediaOptimizedImage');
+      const socialMediaOptimizedFileName = localStorage.getItem('socialMediaOptimizedFileName');
+
+      // If a platform was selected, include that information in the state
+      if (selectedPlatformId && socialMediaOptimizedImage && socialMediaOptimizedFileName) {
+        updatedImageFile.socialMedia = {
+          platformId: selectedPlatformId,
+          optimizedUrl: socialMediaOptimizedImage,
+          optimizedFileName: socialMediaOptimizedFileName
+        };
+      }
+
       // Navigate to the thank-you page with the converted image data
       navigate('/thank-you', { state: { imageData: updatedImageFile } });
     } catch (error) {

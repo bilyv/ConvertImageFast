@@ -16,7 +16,22 @@ const ThankYou: React.FC = () => {
 
   // Function to handle image download
   const handleDownload = () => {
-    if (imageData.convertedUrl) {
+    // Check if there's a social media optimized image
+    if (imageData.socialMedia) {
+      const link = document.createElement('a');
+      link.href = imageData.socialMedia.optimizedUrl;
+      link.download = imageData.socialMedia.optimizedFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clear the social media data from localStorage after download
+      localStorage.removeItem('selectedSocialMediaPlatform');
+      localStorage.removeItem('socialMediaOptimizedImage');
+      localStorage.removeItem('socialMediaOptimizedFileName');
+    }
+    // Otherwise, download the regular converted image
+    else if (imageData.convertedUrl) {
       const link = document.createElement('a');
       link.href = imageData.convertedUrl;
       link.download = imageData.convertedFileName;
@@ -54,23 +69,42 @@ const ThankYou: React.FC = () => {
             </div>
 
             <h1 className="text-2xl font-bold text-gray-800 mb-2" id="success-heading">Success! Your Image is Ready</h1>
-            <p className="text-gray-600 mb-6">Your image has been successfully converted.</p>
+            <p className="text-gray-600 mb-6">
+              {imageData.socialMedia
+                ? 'Your image has been optimized for social media.'
+                : 'Your image has been successfully converted.'}
+            </p>
 
-            {imageData.convertedUrl && (
+            {(imageData.convertedUrl || imageData.socialMedia) && (
               <div className="mb-6">
                 <div className="aspect-video max-h-48 flex items-center justify-center mb-4 bg-muted/20 rounded-lg overflow-hidden">
                   <img
-                    src={imageData.convertedUrl}
+                    src={imageData.socialMedia ? imageData.socialMedia.optimizedUrl : imageData.convertedUrl}
                     alt="Converted image"
                     className={`object-contain max-h-full max-w-full ${imageData.isCircularMode ? 'rounded-full' : ''}`}
                   />
                 </div>
 
                 <p className="text-sm text-muted-foreground mb-2">
-                  {imageData.convertedFileName}
-                  {imageData.format && <span className="ml-1">• {imageData.format.toUpperCase()}</span>}
+                  {imageData.socialMedia
+                    ? imageData.socialMedia.optimizedFileName
+                    : imageData.convertedFileName}
+                  {!imageData.socialMedia && imageData.format &&
+                    <span className="ml-1">• {imageData.format.toUpperCase()}</span>}
                 </p>
-                {imageData.resizeDimensions && (
+
+                {imageData.socialMedia && (
+                  <p className="text-xs text-muted-foreground mb-2 flex items-center">
+                    <span className="inline-flex items-center justify-center bg-blue-500 text-white rounded-full h-4 w-4 mr-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                      </svg>
+                    </span>
+                    Optimized for social media
+                  </p>
+                )}
+
+                {imageData.resizeDimensions && !imageData.socialMedia && (
                   <p className="text-xs text-muted-foreground mb-4">
                     {imageData.isCircularMode
                       ? `Circular image • ${imageData.resizeDimensions.width}×${imageData.resizeDimensions.height} px`
@@ -83,7 +117,9 @@ const ThankYou: React.FC = () => {
                   className="bg-app-primary hover:bg-app-primary/90 text-white w-full"
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Download Image
+                  {imageData.socialMedia
+                    ? 'Download Optimized Image'
+                    : 'Download Converted Image'}
                 </Button>
               </div>
             )}

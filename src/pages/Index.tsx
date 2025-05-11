@@ -3,6 +3,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import ImageConverter from '../components/ImageConverter';
 import BreadcrumbNav from '../components/BreadcrumbNav';
+import Header from '../components/Header';
 
 const Index = () => {
   return (
@@ -101,27 +102,7 @@ const Index = () => {
       </Helmet>
 
       {/* Header Navigation */}
-      <header className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between">
-          <div className="flex items-center space-x-3 mb-4 md:mb-0">
-            <a href="/" className="flex items-center space-x-3">
-              <img src="/green-file-icon.png" alt="ConvertImageFast Logo" className="h-10 w-10" />
-              <span className="text-xl font-bold text-app-primary">ConvertImageFast</span>
-            </a>
-          </div>
-
-          {/* Main Navigation */}
-          <nav aria-label="Main Navigation">
-            <ul className="flex flex-wrap items-center justify-center gap-6">
-              <li><a href="#tools" className="text-app-text hover:text-app-primary transition-colors">Image Converter</a></li>
-              <li><a href="#features" className="text-app-text hover:text-app-primary transition-colors">Features</a></li>
-              <li><a href="#about" className="text-app-text hover:text-app-primary transition-colors">About</a></li>
-              <li><a href="#faq-heading" className="text-app-text hover:text-app-primary transition-colors">FAQ</a></li>
-              <li><a href="#contact" className="text-app-text hover:text-app-primary transition-colors">Contact</a></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       {/* Breadcrumb Navigation */}
       <BreadcrumbNav />

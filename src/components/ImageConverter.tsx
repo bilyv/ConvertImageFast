@@ -64,6 +64,7 @@ const ImageConverter: React.FC = () => {
                     <ImagePreview
                       originalImage={cropResult || imageFile.originalUrl}
                       fileName={imageFile.file.name}
+                      fileType={imageFile.file.type}
                     />
                     <div className="mt-2 flex justify-between">
                       <Button
