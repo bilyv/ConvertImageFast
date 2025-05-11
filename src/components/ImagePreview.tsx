@@ -58,7 +58,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName, fi
 
   /**
    * Handle the create puzzle button click
-   * Navigates to the puzzle page if the format is supported
+   * Saves the image data to localStorage and navigates to the puzzle page if the format is supported
    */
   const handleCreatePuzzle = () => {
     // Check both file type and file name to determine if the format is supported
@@ -71,16 +71,44 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName, fi
       return;
     }
 
-    // Navigate to the puzzle page with image data
-    navigate('/puzzle', {
-      state: {
-        imageData: {
-          imageUrl: originalImage,
-          fileName: fileName,
-          fileType: fileType
+    // Save image data to localStorage
+    const imageData = {
+      imageUrl: originalImage,
+      fileName: fileName,
+      fileType: fileType,
+      timestamp: new Date().getTime() // Add timestamp for cache busting if needed
+    };
+
+    try {
+      localStorage.setItem('puzzleImageData', JSON.stringify(imageData));
+
+      toast({
+        title: 'Image Saved',
+        description: 'Your image has been saved for puzzle creation.',
+        variant: 'default'
+      });
+
+      // Navigate to the puzzle page
+      navigate('/puzzle');
+    } catch (error) {
+      console.error('Error saving image to localStorage:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save image data. Falling back to direct navigation.',
+        variant: 'destructive'
+      });
+
+      // Fallback to direct navigation with state if localStorage fails
+      navigate('/puzzle', {
+        state: {
+          imageData: {
+            imageUrl: originalImage,
+            fileName: fileName,
+            fileType: fileType
+          }
         }
-      }
-    });
+      });
+    }
   };
 
   /**

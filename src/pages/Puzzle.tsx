@@ -73,13 +73,43 @@ const Puzzle: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Get image data from location state
-  const imageData = location.state?.imageData;
+  // Get image data from location state or localStorage
+  const [imageData, setImageData] = useState<any>(location.state?.imageData || null);
 
   // File upload state
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // Load image data from localStorage on component mount
+  useEffect(() => {
+    try {
+      const savedImageData = localStorage.getItem('puzzleImageData');
+      if (savedImageData) {
+        const parsedImageData = JSON.parse(savedImageData);
+        setImageData(parsedImageData);
+        setUploadedImageUrl(parsedImageData.imageUrl);
+
+        // Create a synthetic file object for display purposes
+        const fileName = parsedImageData.fileName || 'image.jpg';
+        const fileType = parsedImageData.fileType || 'image/jpeg';
+
+        // Automatically proceed to puzzle creation if image data is loaded from localStorage
+        setTimeout(() => {
+          setPuzzleCreated(true);
+          setShowConfig(true); // Show config first to let user customize
+
+          toast({
+            title: 'Image Loaded',
+            description: 'Your image has been loaded for puzzle creation.',
+            variant: 'default'
+          });
+        }, 500); // Small delay to ensure UI is ready
+      }
+    } catch (error) {
+      console.error('Error loading image data from localStorage:', error);
+    }
+  }, [toast]);
 
   // Puzzle state
   const [puzzlePieces, setPuzzlePieces] = useState<PuzzlePiece[]>([]);
@@ -214,6 +244,14 @@ const Puzzle: React.FC = () => {
 
     setPuzzleCreated(true);
     setShowConfig(false);
+
+    // Clear localStorage after creating the puzzle to avoid reusing the same image
+    // in future visits unless explicitly requested
+    try {
+      localStorage.removeItem('puzzleImageData');
+    } catch (error) {
+      console.error('Error clearing localStorage:', error);
+    }
   };
 
   // Check if puzzle is solved after each move
