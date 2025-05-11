@@ -1,23 +1,72 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Download, ArrowLeft } from 'lucide-react';
+import { Download, ArrowLeft, Share2 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import SocialMediaResizeButton from '@/components/SocialMediaResizeButton';
+import { useToast } from '@/hooks/use-toast';
 
 const ThankYou: React.FC = () => {
   const location = useLocation();
   const imageData = location.state?.imageData;
+  const { toast } = useToast();
+
+  // State for social media resized image
+  const [resizedImage, setResizedImage] = useState<{
+    url: string;
+    platform: {
+      id: string;
+      name: string;
+      width: number;
+      height: number;
+      format: string;
+    };
+  } | null>(null);
 
   // If no image data was passed, redirect to home
   if (!imageData) {
     return <Navigate to="/" replace />;
   }
 
+  // Handle when an image is resized for social media
+  const handleImageResized = (resizedImageUrl: string, platform: any) => {
+    setResizedImage({
+      url: resizedImageUrl,
+      platform: platform
+    });
+
+    toast({
+      title: 'Image Resized',
+      description: `Your image has been resized for ${platform.name}`,
+      variant: 'default'
+    });
+  };
+
   // Function to handle image download
   const handleDownload = () => {
+    // Check if there's a resized image
+    if (resizedImage) {
+      const fileExtension = resizedImage.platform.format === 'jpg' ? 'jpg' :
+                           resizedImage.platform.format === 'png' ? 'png' : 'webp';
+      const baseFileName = imageData.convertedFileName?.split('.')[0] || 'image';
+      const optimizedFileName = `${baseFileName}_${resizedImage.platform.id}.${fileExtension}`;
+
+      const link = document.createElement('a');
+      link.href = resizedImage.url;
+      link.download = optimizedFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast({
+        title: 'Image Downloaded',
+        description: `Your resized image has been downloaded as ${optimizedFileName}`,
+        variant: 'default'
+      });
+    }
     // Check if there's a social media optimized image
-    if (imageData.socialMedia) {
+    else if (imageData.socialMedia) {
       const link = document.createElement('a');
       link.href = imageData.socialMedia.optimizedUrl;
       link.download = imageData.socialMedia.optimizedFileName;
@@ -75,25 +124,41 @@ const ThankYou: React.FC = () => {
                 : 'Your image has been successfully converted.'}
             </p>
 
-            {(imageData.convertedUrl || imageData.socialMedia) && (
+            {(imageData.convertedUrl || imageData.socialMedia || resizedImage) && (
               <div className="mb-6">
                 <div className="aspect-video max-h-48 flex items-center justify-center mb-4 bg-muted/20 rounded-lg overflow-hidden">
                   <img
-                    src={imageData.socialMedia ? imageData.socialMedia.optimizedUrl : imageData.convertedUrl}
+                    src={resizedImage ? resizedImage.url :
+                         imageData.socialMedia ? imageData.socialMedia.optimizedUrl :
+                         imageData.convertedUrl}
                     alt="Converted image"
-                    className={`object-contain max-h-full max-w-full ${imageData.isCircularMode ? 'rounded-full' : ''}`}
+                    className={`object-contain max-h-full max-w-full ${imageData.isCircularMode && !resizedImage ? 'rounded-full' : ''}`}
                   />
                 </div>
 
                 <p className="text-sm text-muted-foreground mb-2">
-                  {imageData.socialMedia
-                    ? imageData.socialMedia.optimizedFileName
-                    : imageData.convertedFileName}
-                  {!imageData.socialMedia && imageData.format &&
+                  {resizedImage ?
+                    `${imageData.convertedFileName?.split('.')[0] || 'image'}_${resizedImage.platform.id}.${resizedImage.platform.format}` :
+                    imageData.socialMedia ?
+                      imageData.socialMedia.optimizedFileName :
+                      imageData.convertedFileName}
+                  {!resizedImage && !imageData.socialMedia && imageData.format &&
                     <span className="ml-1">• {imageData.format.toUpperCase()}</span>}
                 </p>
 
-                {imageData.socialMedia && (
+                {resizedImage && (
+                  <p className="text-xs text-muted-foreground mb-2 flex items-center">
+                    <span className="inline-flex items-center justify-center bg-green-500 text-white rounded-full h-4 w-4 mr-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                      </svg>
+                    </span>
+                    Resized for {resizedImage.platform.name}
+                  </p>
+                )}
+
+                {imageData.socialMedia && !resizedImage && (
                   <p className="text-xs text-muted-foreground mb-2 flex items-center">
                     <span className="inline-flex items-center justify-center bg-blue-500 text-white rounded-full h-4 w-4 mr-1">
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -104,7 +169,13 @@ const ThankYou: React.FC = () => {
                   </p>
                 )}
 
-                {imageData.resizeDimensions && !imageData.socialMedia && (
+                {resizedImage && (
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Dimensions: {resizedImage.platform.width}×{resizedImage.platform.height} px
+                  </p>
+                )}
+
+                {imageData.resizeDimensions && !imageData.socialMedia && !resizedImage && (
                   <p className="text-xs text-muted-foreground mb-4">
                     {imageData.isCircularMode
                       ? `Circular image • ${imageData.resizeDimensions.width}×${imageData.resizeDimensions.height} px`
@@ -112,15 +183,26 @@ const ThankYou: React.FC = () => {
                   </p>
                 )}
 
-                <Button
-                  onClick={handleDownload}
-                  className="bg-app-primary hover:bg-app-primary/90 text-white w-full"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  {imageData.socialMedia
-                    ? 'Download Optimized Image'
-                    : 'Download Converted Image'}
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <Button
+                    onClick={handleDownload}
+                    className="bg-app-primary hover:bg-app-primary/90 text-white w-full"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    {resizedImage
+                      ? 'Download Resized Image'
+                      : imageData.socialMedia
+                        ? 'Download Optimized Image'
+                        : 'Download Converted Image'}
+                  </Button>
+
+                  {/* Social Media Resize Button */}
+                  <SocialMediaResizeButton
+                    imageUrl={imageData.convertedUrl || imageData.originalUrl}
+                    fileName={imageData.convertedFileName || imageData.originalFileName || 'image.jpg'}
+                    onImageResized={handleImageResized}
+                  />
+                </div>
               </div>
             )}
 
