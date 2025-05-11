@@ -61,7 +61,8 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ originalImage, fileName, fi
    * Navigates to the puzzle page if the format is supported
    */
   const handleCreatePuzzle = () => {
-    if (!isPuzzleSupportedFormat(fileType)) {
+    // Check both file type and file name to determine if the format is supported
+    if (!isPuzzleSupportedFormat(fileType) && !isPuzzleSupportedFormat(fileName)) {
       toast({
         title: 'Unsupported Format',
         description: 'Puzzle creation is only supported for JPEG, PNG, GIF, and HEIC formats.',

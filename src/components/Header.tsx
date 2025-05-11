@@ -1,12 +1,12 @@
 /**
  * Header Component
- * 
+ *
  * This component provides a consistent header across all pages of the application.
  * It includes the site logo and main navigation links.
  */
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Puzzle } from 'lucide-react';
+import { Puzzle, FileDown } from 'lucide-react';
 
 interface HeaderProps {
   /**
@@ -17,10 +17,10 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ rightNav }) => {
   const location = useLocation();
-  
+
   // Determine if we're on the home page
   const isHomePage = location.pathname === '/';
-  
+
   return (
     <header className="border-b border-border">
       <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between">
@@ -41,12 +41,21 @@ const Header: React.FC<HeaderProps> = ({ rightNav }) => {
                 </a>
               </li>
               <li>
-                <Link 
-                  to="/puzzle" 
+                <Link
+                  to="/puzzle"
                   className="flex items-center gap-1 text-app-text hover:text-app-primary transition-colors"
                 >
                   <Puzzle className="h-4 w-4" />
                   Create Puzzle
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/compress"
+                  className="flex items-center gap-1 text-app-text hover:text-app-primary transition-colors"
+                >
+                  <FileDown className="h-4 w-4" />
+                  Image Compressor
                 </Link>
               </li>
               <li>
@@ -77,8 +86,8 @@ const Header: React.FC<HeaderProps> = ({ rightNav }) => {
             {rightNav ? (
               rightNav
             ) : (
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="text-app-text hover:text-app-primary transition-colors"
               >
                 Back to Home

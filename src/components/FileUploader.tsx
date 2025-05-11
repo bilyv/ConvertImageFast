@@ -13,6 +13,7 @@
 import React, { useState, useRef } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { FileImage } from 'lucide-react';
+import { isSupportedFileType } from '@/utils/imageUtils';
 
 interface FileUploaderProps {
   /**
@@ -106,15 +107,9 @@ const FileUploader: React.FC<FileUploaderProps> = ({
    * If validation passes, calls the onFileUpload callback
    */
   const validateAndProcessFile = (file: File) => {
-    // Define supported image formats
-    const validImageTypes = [
-      'image/jpeg', 'image/png', 'image/webp', 'image/jfif', 'image/bmp', 'image/gif',
-      'image/heic', 'image/heif', 'image/svg+xml', 'application/pdf', 'image/tiff',
-      'image/x-icon', 'image/vnd.microsoft.icon'
-    ];
-
-    // Validate file type
-    if (!validImageTypes.includes(file.type)) {
+    // Validate file type using the isSupportedFileType utility function
+    // This checks both MIME type and file extension for better compatibility
+    if (!isSupportedFileType(file.type) && !isSupportedFileType(file.name)) {
       toast({
         title: "Unsupported file format",
         description: "Only JPG, PNG, WebP, JFIF, BMP, GIF, HEIC, SVG, PDF, TIFF, and ICO files are supported.",

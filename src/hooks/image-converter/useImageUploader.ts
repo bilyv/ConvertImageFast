@@ -10,8 +10,47 @@
  */
 import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
-import { ImageFile, getFileTypeDisplay, isSupportedFileType } from '../../utils/imageUtils';
+import {
+  ImageFile,
+  getFileTypeDisplay,
+  isSupportedFileType,
+  isHeicImage,
+  isJfifImage
+} from '../../utils/imageUtils';
 import { UseImageUploaderReturn } from './types';
+
+/**
+ * Helper function to determine the correct file type display
+ *
+ * This function checks both the MIME type and file name to determine
+ * the correct display type, with special handling for JFIF and HEIC files
+ * which may not be correctly identified by browsers.
+ *
+ * @param file The file to check
+ * @returns The human-readable file type display string
+ */
+const determineFileTypeDisplay = (file: File): string => {
+  // First check for special formats that might be misidentified by browsers
+
+  // Check for JFIF files
+  if (isJfifImage(file)) {
+    return 'JFIF Image (.jfif)';
+  }
+
+  // Check for HEIC files
+  if (isHeicImage(file)) {
+    return 'HEIC Image (.heic)';
+  }
+
+  // For other file types, try the MIME type first, then fall back to the file name
+  const typeFromMime = getFileTypeDisplay(file.type);
+  if (typeFromMime !== 'Unknown Image Format') {
+    return typeFromMime;
+  }
+
+  // If MIME type didn't work, try the file name
+  return getFileTypeDisplay(file.name);
+};
 
 export const useImageUploader = (): UseImageUploaderReturn => {
   /**
@@ -83,8 +122,9 @@ export const useImageUploader = (): UseImageUploaderReturn => {
 
     const file = uploadedFiles[0];
 
-    // Validate file type
-    if (!isSupportedFileType(file.type)) {
+    // Validate file type - check both MIME type and file extension
+    // This is especially important for HEIC files which may not be correctly identified by MIME type
+    if (!isSupportedFileType(file.type) && !isSupportedFileType(file.name)) {
       toast({
         title: "Unsupported file format",
         description: `File "${file.name}" is not a supported image format.`,
@@ -124,7 +164,10 @@ export const useImageUploader = (): UseImageUploaderReturn => {
       convertedUrl: null,
       convertedFileName: file.name, // Initial value, will be updated during conversion
       fileType: file.type,
-      fileTypeDisplay: getFileTypeDisplay(file.type),
+      // Determine the file type display by checking both the MIME type and file name
+      // This ensures special formats like HEIC and JFIF are correctly identified
+      // even if the browser doesn't recognize the MIME type correctly
+      fileTypeDisplay: determineFileTypeDisplay(file),
     });
 
     // Reset editing state when a new image is uploaded

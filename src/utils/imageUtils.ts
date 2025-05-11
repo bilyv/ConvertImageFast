@@ -38,10 +38,31 @@ export const isSupportedFileType = (fileType: string): boolean => {
          fileType.toLowerCase().endsWith('.ico');
 };
 
-// Get human-readable file type description
-export const getFileTypeDisplay = (fileType: string): string => {
-  switch (fileType.toLowerCase()) {
+/**
+ * Get human-readable file type description
+ *
+ * This function determines the display name for a file type based on either
+ * the MIME type or the file extension. This is especially important for HEIC files
+ * which may not be correctly identified by MIME type in some browsers.
+ *
+ * @param fileTypeOrName The MIME type or filename to check
+ * @returns A human-readable description of the file type
+ */
+export const getFileTypeDisplay = (fileTypeOrName: string): string => {
+  const lowerCaseInput = fileTypeOrName.toLowerCase();
+
+  // First check for JFIF in the filename, as browsers often report JFIF as image/jpeg
+  if (lowerCaseInput.endsWith('.jfif') || lowerCaseInput.includes('jfif')) {
+    return 'JFIF Image (.jfif)';
+  }
+
+  // Then check MIME types
+  switch (lowerCaseInput) {
     case 'image/jpeg':
+      // Check if the input might be a filename with jfif in it
+      if (lowerCaseInput.includes('jfif')) {
+        return 'JFIF Image (.jfif)';
+      }
       return 'JPEG Image (.jpg)';
     case 'image/png':
       return 'PNG Image (.png)';
@@ -65,33 +86,51 @@ export const getFileTypeDisplay = (fileType: string): string => {
     case 'image/x-icon':
     case 'image/vnd.microsoft.icon':
       return 'ICO Image (.ico)';
-    default:
-      // Check file extension for HEIC/HEIF
-      if (fileType.toLowerCase().endsWith('.heic') || fileType.toLowerCase().endsWith('.heif')) {
-        return 'HEIC Image (.heic)';
-      }
-      // Check file extension for JFIF
-      if (fileType.toLowerCase().endsWith('.jfif')) {
-        return 'JFIF Image (.jfif)';
-      }
-      // Check file extension for SVG
-      if (fileType.toLowerCase().endsWith('.svg')) {
-        return 'SVG Image (.svg)';
-      }
-      // Check file extension for PDF
-      if (fileType.toLowerCase().endsWith('.pdf')) {
-        return 'PDF Document (.pdf)';
-      }
-      // Check file extension for TIFF
-      if (fileType.toLowerCase().endsWith('.tiff') || fileType.toLowerCase().endsWith('.tif')) {
-        return 'TIFF Image (.tiff)';
-      }
-      // Check file extension for ICO
-      if (fileType.toLowerCase().endsWith('.ico')) {
-        return 'ICO Image (.ico)';
-      }
-      return 'Unknown Image Format';
   }
+
+  // Then check file extensions
+  if (lowerCaseInput.endsWith('.jfif') || lowerCaseInput.includes('jfif')) {
+    return 'JFIF Image (.jfif)';
+  }
+  if (lowerCaseInput.endsWith('.jpg') || lowerCaseInput.endsWith('.jpeg')) {
+    // Make sure it's not a JFIF file misidentified as JPEG
+    if (!lowerCaseInput.includes('jfif')) {
+      return 'JPEG Image (.jpg)';
+    } else {
+      return 'JFIF Image (.jfif)';
+    }
+  }
+  if (lowerCaseInput.endsWith('.png')) {
+    return 'PNG Image (.png)';
+  }
+  if (lowerCaseInput.endsWith('.webp')) {
+    return 'WebP Image (.webp)';
+  }
+  if (lowerCaseInput.endsWith('.bmp')) {
+    return 'Bitmap Image (.bmp)';
+  }
+  if (lowerCaseInput.endsWith('.gif')) {
+    return 'GIF Image (.gif)';
+  }
+  if (lowerCaseInput.endsWith('.heic') || lowerCaseInput.endsWith('.heif') ||
+      lowerCaseInput.includes('_heic') || lowerCaseInput.includes('.heic')) {
+    return 'HEIC Image (.heic)';
+  }
+  if (lowerCaseInput.endsWith('.svg')) {
+    return 'SVG Image (.svg)';
+  }
+  if (lowerCaseInput.endsWith('.pdf')) {
+    return 'PDF Document (.pdf)';
+  }
+  if (lowerCaseInput.endsWith('.tiff') || lowerCaseInput.endsWith('.tif')) {
+    return 'TIFF Image (.tiff)';
+  }
+  if (lowerCaseInput.endsWith('.ico')) {
+    return 'ICO Image (.ico)';
+  }
+
+  // If no match found
+  return 'Unknown Image Format';
 };
 
 // Generate a filename for the converted image
@@ -124,11 +163,39 @@ export const getFileExtension = (fileName: string): string => {
  * @returns True if the file is a HEIC image, false otherwise
  */
 export const isHeicImage = (file: File): boolean => {
+  const fileName = file.name.toLowerCase();
+  const fileType = file.type.toLowerCase();
+
   return (
-    file.type === 'image/heic' ||
-    file.type === 'image/heif' ||
-    file.name.toLowerCase().endsWith('.heic') ||
-    file.name.toLowerCase().endsWith('.heif')
+    fileType === 'image/heic' ||
+    fileType === 'image/heif' ||
+    fileName.endsWith('.heic') ||
+    fileName.endsWith('.heif') ||
+    // Also check for files that contain 'heic' in the name, which might be the case for converted files
+    fileName.includes('_heic') ||
+    fileName.includes('.heic')
+  );
+};
+
+/**
+ * Check if a file is a JFIF image
+ *
+ * JFIF (JPEG File Interchange Format) is a file format for storing JPEG images
+ * Browsers often report JFIF files as 'image/jpeg', so we need to check the file extension
+ * to correctly identify them
+ *
+ * @param file The file to check
+ * @returns True if the file is a JFIF image, false otherwise
+ */
+export const isJfifImage = (file: File): boolean => {
+  const fileName = file.name.toLowerCase();
+  const fileType = file.type.toLowerCase();
+
+  return (
+    fileType === 'image/jfif' ||
+    fileName.endsWith('.jfif') ||
+    // Also check for files that contain 'jfif' in the name
+    fileName.includes('jfif')
   );
 };
 
@@ -174,4 +241,21 @@ export const getMimeType = (format: string): string => {
     default:
       return 'image/jpeg'; // Default to JPEG
   }
+};
+
+/**
+ * Format file size in bytes to a human-readable string
+ *
+ * @param bytes The file size in bytes
+ * @param decimals The number of decimal places to show (default: 2)
+ * @returns A formatted string like "1.5 MB" or "820 KB"
+ */
+export const formatFileSize = (bytes: number, decimals: number = 2): string => {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
 };

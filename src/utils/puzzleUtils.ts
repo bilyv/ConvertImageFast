@@ -1,6 +1,6 @@
 /**
  * Puzzle Creator Utility
- * 
+ *
  * This utility provides functions for creating puzzle games from images.
  * It supports JPEG, PNG, GIF, and HEIC formats.
  */
@@ -39,26 +39,46 @@ export const DEFAULT_PUZZLE_CONFIG: PuzzleConfig = {
 
 /**
  * Check if the image format is supported for puzzle creation
- * 
- * @param fileType The MIME type of the image
+ *
+ * @param fileTypeOrName The MIME type or filename to check
  * @returns True if the format is supported, false otherwise
  */
-export const isPuzzleSupportedFormat = (fileType: string): boolean => {
+export const isPuzzleSupportedFormat = (fileTypeOrName: string): boolean => {
+  const lowerCaseInput = fileTypeOrName.toLowerCase();
+
+  // Check MIME types
   const supportedTypes = [
-    'image/jpeg', 
-    'image/jpg', 
-    'image/png', 
-    'image/gif', 
-    'image/heic', 
-    'image/heif'
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/gif',
+    'image/heic',
+    'image/heif',
+    'image/jfif'
   ];
-  
-  return supportedTypes.includes(fileType);
+
+  if (supportedTypes.includes(lowerCaseInput)) {
+    return true;
+  }
+
+  // Check file extensions
+  return (
+    lowerCaseInput.endsWith('.jpg') ||
+    lowerCaseInput.endsWith('.jpeg') ||
+    lowerCaseInput.endsWith('.png') ||
+    lowerCaseInput.endsWith('.gif') ||
+    lowerCaseInput.endsWith('.heic') ||
+    lowerCaseInput.endsWith('.heif') ||
+    lowerCaseInput.includes('_heic') ||
+    lowerCaseInput.includes('.heic') ||
+    lowerCaseInput.endsWith('.jfif') ||
+    lowerCaseInput.includes('jfif')
+  );
 };
 
 /**
  * Create puzzle pieces from an image
- * 
+ *
  * @param imageUrl URL of the image to convert to puzzle
  * @param config Puzzle configuration (rows, columns, difficulty)
  * @returns Promise that resolves to an array of puzzle pieces
@@ -70,14 +90,14 @@ export const createPuzzlePieces = async (
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "anonymous"; // Handle CORS issues
-    
+
     img.onload = () => {
       try {
         // Create pieces based on the configuration
         const pieces: PuzzlePiece[] = [];
         const pieceWidth = img.width / config.columns;
         const pieceHeight = img.height / config.rows;
-        
+
         // Create a canvas for the whole image
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -85,7 +105,7 @@ export const createPuzzlePieces = async (
           reject(new Error("Failed to create canvas context"));
           return;
         }
-        
+
         // For each piece position, create a separate canvas and draw the piece
         for (let row = 0; row < config.rows; row++) {
           for (let col = 0; col < config.columns; col++) {
@@ -94,32 +114,32 @@ export const createPuzzlePieces = async (
             pieceCanvas.width = pieceWidth;
             pieceCanvas.height = pieceHeight;
             const pieceCtx = pieceCanvas.getContext('2d');
-            
+
             if (!pieceCtx) {
               reject(new Error("Failed to create piece canvas context"));
               return;
             }
-            
+
             // Draw the piece from the original image
             pieceCtx.drawImage(
               img,
               col * pieceWidth, row * pieceHeight, pieceWidth, pieceHeight,
               0, 0, pieceWidth, pieceHeight
             );
-            
+
             // Convert the piece to a data URL
             const pieceUrl = pieceCanvas.toDataURL('image/png');
-            
+
             // Calculate initial position (random for medium/hard difficulty)
             let initialX = col * pieceWidth;
             let initialY = row * pieceHeight;
-            
+
             if (config.difficulty !== 'easy') {
               // For medium and hard difficulties, randomize the initial positions
               initialX = Math.random() * (img.width - pieceWidth);
               initialY = Math.random() * (img.height - pieceHeight);
             }
-            
+
             // Add the piece to the array
             pieces.push({
               id: row * config.columns + col,
@@ -133,17 +153,17 @@ export const createPuzzlePieces = async (
             });
           }
         }
-        
+
         resolve(pieces);
       } catch (error) {
         reject(error);
       }
     };
-    
+
     img.onerror = (error) => {
       reject(new Error(`Failed to load image: ${error}`));
     };
-    
+
     img.src = imageUrl;
   });
 };
