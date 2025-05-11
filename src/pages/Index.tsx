@@ -11,6 +11,7 @@ const Index = () => {
       {/* Enhanced SEO Metadata with platform-specific resizing and cropping functionality mentioned */}
       <Helmet>
         <title>ConvertImageFast | Best Online Image Converter for PNG, JPG, WebP | Free Tool</title>
+        <meta name="google-site-verification" content="26RA6xhWMBWCIbfb50QJ1gv8ou-B_56ppgoTswXY_hk" />
         <meta name="description" content="Convert images online between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool with no registration required. Instant results." />
         <meta name="keywords" content="convert image online, png to jpg converter, jpg to png converter, webp converter, image format converter, resize image for instagram, tiktok image size, youtube thumbnail maker, free image converter, online image resizer, crop image online, convert image without upload" />
         <link rel="canonical" href="https://convertimagefast.com" />
