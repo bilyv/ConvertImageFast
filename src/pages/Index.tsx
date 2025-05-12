@@ -10,28 +10,28 @@ const Index = () => {
     <div className="min-h-screen bg-app-background">
       {/* Enhanced SEO Metadata with platform-specific resizing and cropping functionality mentioned */}
       <Helmet>
-        <title>ConvertImageFast | Best Online Image Converter for PNG, JPG, WebP | Free Tool</title>
-        <meta name="google-site-verification" content="26RA6xhWMBWCIbfb50QJ1gv8ou-B_56ppgoTswXY_hk" />
-        <meta name="description" content="Convert images online between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool with no registration required. Instant results." />
-        <meta name="keywords" content="convert image online, png to jpg converter, jpg to png converter, webp converter, image format converter, resize image for instagram, tiktok image size, youtube thumbnail maker, free image converter, online image resizer, crop image online, convert image without upload" />
+        <title>ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker | PNG, JPG, WebP</title>
+        <meta name="google-site-verification" content="26RA6xhWCIbfb50QJ1gv8ou-B_56ppgoTswXY_hk" />
+        <meta name="description" content="Free online image converter, compressor & puzzle maker. Convert between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for Instagram, TikTok, YouTube. Compress images without quality loss. Create shareable puzzles. 100% secure browser-based tool, no registration required." />
+        <meta name="keywords" content="convert image online, png to jpg converter, jpg to png converter, webp converter, image format converter, resize image for instagram, tiktok image size, youtube thumbnail maker, free image converter, online image resizer, crop image online, convert image without upload, image compressor, reduce file size, create image puzzle, compress jpg without losing quality, optimize images for web" />
         <link rel="canonical" href="https://convertimagefast.com" />
 
         {/* Open Graph / Facebook */}
-        <meta property="og:title" content="ConvertImageFast | Best Online Image Converter for PNG, JPG, WebP | Free Tool" />
-        <meta property="og:description" content="Convert images online between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool with no registration required." />
+        <meta property="og:title" content="ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker | PNG, JPG, WebP" />
+        <meta property="og:description" content="Free online image converter, compressor & puzzle maker. Convert between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for social media, compress images, create shareable puzzles. 100% secure browser-based tool." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://convertimagefast.com" />
         <meta property="og:image" content="/og-image.jpg" />
-        <meta property="og:image:alt" content="ConvertImageFast - Online Image Converter Tool" />
+        <meta property="og:image:alt" content="ConvertImageFast - Online Image Converter, Compressor & Puzzle Maker" />
         <meta property="og:site_name" content="ConvertImageFast" />
         <meta property="og:locale" content="en_US" />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="ConvertImageFast | Best Online Image Converter for PNG, JPG, WebP" />
-        <meta name="twitter:description" content="Convert images online between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for Instagram, TikTok, YouTube. Free, secure, browser-based tool." />
+        <meta name="twitter:title" content="ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker" />
+        <meta name="twitter:description" content="Free online image converter, compressor & puzzle maker. Convert between PNG, JPG, WebP formats. Resize for social media, compress images, create shareable puzzles. 100% secure browser-based tool." />
         <meta name="twitter:image" content="/twitter-image.jpg" />
-        <meta name="twitter:image:alt" content="ConvertImageFast - Online Image Converter Tool" />
+        <meta name="twitter:image:alt" content="ConvertImageFast - Online Image Converter, Compressor & Puzzle Maker" />
 
         {/* Additional SEO metadata */}
         <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -50,7 +50,7 @@ const Index = () => {
           "@type": "WebApplication",
           "name": "ConvertImageFast",
           "url": "https://convertimagefast.com",
-          "description": "Free online image converter with platform-specific resizing for Instagram, TikTok, YouTube & more. Convert between PNG, JPG, WebP, BMP, GIF & HEIC formats with cropping functionality.",
+          "description": "Free online image converter, compressor and puzzle maker with platform-specific resizing for Instagram, TikTok, YouTube & more. Convert between PNG, JPG, WebP, BMP, GIF & HEIC formats with cropping functionality. Compress images without quality loss and create shareable puzzles.",
           "applicationCategory": "MultimediaApplication",
           "operatingSystem": "All",
           "offers": {
@@ -65,13 +65,21 @@ const Index = () => {
             "Social media image resizing for Instagram",
             "Social media image resizing for TikTok",
             "Social media image resizing for YouTube",
+            "Social media image resizing for Twitter/X",
+            "Social media image resizing for Facebook",
+            "Social media image resizing for LinkedIn",
+            "Social media image resizing for Pinterest",
+            "Image compression with quality control",
+            "Create interactive image puzzles",
+            "Shareable puzzles with custom difficulty",
             "Image cropping",
+            "Batch image processing",
             "Browser-based processing",
             "No registration required",
             "Privacy-focused image conversion"
           ],
           "screenshot": "/og-image.jpg",
-          "softwareVersion": "1.0",
+          "softwareVersion": "1.1",
           "aggregateRating": {
             "@type": "AggregateRating",
             "ratingValue": "4.8",
@@ -112,11 +120,11 @@ const Index = () => {
       <section className="pt-12 pb-8 px-4" aria-labelledby="main-heading">
         <div className="max-w-5xl mx-auto text-center">
           <h1 id="main-heading" className="text-3xl md:text-4xl font-bold text-app-text mb-3">
-            ConvertImageFast: #1 Free Online Image Converter & Resizer
+            ConvertImageFast: #1 Free Online Image Converter, Compressor & Puzzle Maker
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-            Instantly convert and resize images between <strong>PNG</strong>, <strong>JPG</strong>, <strong>WebP</strong>, <strong>BMP</strong>, <strong>GIF</strong>, and <strong>HEIC</strong> formats.
-            Optimize for Instagram, TikTok, YouTube and other social media platforms with our free online tool.
+            Instantly convert, compress, and create puzzles from images in <strong>PNG</strong>, <strong>JPG</strong>, <strong>WebP</strong>, <strong>BMP</strong>, <strong>GIF</strong>, and <strong>HEIC</strong> formats.
+            Optimize for Instagram, TikTok, YouTube and other social media platforms. Reduce file size without losing quality. All with our free online tool.
           </p>
           <p className="text-md text-muted-foreground max-w-2xl mx-auto mb-6">
             <span className="font-semibold text-app-primary">100% Free</span> • <span className="font-semibold text-app-primary">No Registration</span> • <span className="font-semibold text-app-primary">Privacy-Focused</span> • <span className="font-semibold text-app-primary">Browser-Based</span>
@@ -129,6 +137,8 @@ const Index = () => {
             <a href="#convert-webp" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">WebP Converter</a>
             <a href="#convert-bmp-gif" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">BMP & GIF Support</a>
             <a href="#convert-heic" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">HEIC Converter</a>
+            <a href="/compress" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">Image Compressor</a>
+            <a href="/puzzle" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">Create Puzzle</a>
           </div>
 
           {/* Social media platform options with links */}
@@ -141,18 +151,22 @@ const Index = () => {
           </div>
 
           {/* Quick benefits section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <h3 className="font-semibold text-app-primary mb-2">Fast Conversion</h3>
               <p className="text-sm">Convert images in seconds with our optimized algorithms</p>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-app-primary mb-2">Privacy Protected</h3>
-              <p className="text-sm">Your images never leave your browser - 100% secure</p>
+              <h3 className="font-semibold text-app-primary mb-2">Image Compression</h3>
+              <p className="text-sm">Reduce file size while maintaining image quality</p>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-app-primary mb-2">Multiple Formats</h3>
-              <p className="text-sm">Support for PNG, JPG, WebP, BMP, GIF and HEIC formats</p>
+              <h3 className="font-semibold text-app-primary mb-2">Create Puzzles</h3>
+              <p className="text-sm">Turn any image into an interactive, shareable puzzle</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <h3 className="font-semibold text-app-primary mb-2">Privacy Protected</h3>
+              <p className="text-sm">Your images never leave your browser - 100% secure</p>
             </div>
           </div>
         </div>
@@ -162,17 +176,19 @@ const Index = () => {
       <main className="pb-12" id="tools">
         <div className="max-w-5xl mx-auto px-4 mb-8">
           <h2 id="converter-heading" className="text-2xl md:text-3xl font-bold text-center text-app-text mb-6 pt-4">
-            Free Online Image Converter Tool
+            Free Online Image Converter, Compressor & Puzzle Maker
           </h2>
           <p className="text-center max-w-3xl mx-auto mb-4">
             Select your image, choose your desired format, and customize settings as needed.
-            Your converted image will be ready to download in seconds.
+            Convert, compress, or create puzzles - all with our free online tools.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             <a href="#convert-png-jpg" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert PNG to JPG</a>
             <a href="#convert-jpg-png" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert JPG to PNG</a>
             <a href="#convert-webp" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert WebP</a>
-            <a href="#instagram-size" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Resize for Instagram</a>
+            <a href="/compress" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Compress Images</a>
+            <a href="/puzzle" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Create Puzzle</a>
+            <a href="#instagram-size" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Resize for Social Media</a>
           </div>
         </div>
         <ImageConverter />
@@ -180,7 +196,7 @@ const Index = () => {
         {/* Features Section */}
         <div id="features" className="max-w-5xl mx-auto px-4 mt-16">
           <h2 className="text-2xl md:text-3xl font-bold text-center text-app-text mb-8 pt-4">
-            Key Features of Our Image Converter
+            Key Features of Our Image Tools
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -188,12 +204,24 @@ const Index = () => {
               <p>Convert between <a href="#convert-png-jpg" className="text-app-primary hover:underline">PNG</a>, <a href="#convert-jpg-png" className="text-app-primary hover:underline">JPG</a>, <a href="#convert-webp" className="text-app-primary hover:underline">WebP</a>, <a href="#convert-bmp-gif" className="text-app-primary hover:underline">BMP</a>, <a href="#convert-bmp-gif" className="text-app-primary hover:underline">GIF</a>, and <a href="#convert-heic" className="text-app-primary hover:underline">HEIC</a> formats with perfect quality preservation.</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">Image Compression</h3>
+              <p>Reduce file size while maintaining quality with our <a href="/compress" className="text-app-primary hover:underline">image compressor</a>. Perfect for web, email, and social media sharing.</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">Interactive Puzzles</h3>
+              <p>Transform any image into a fun, <a href="/puzzle" className="text-app-primary hover:underline">interactive puzzle</a> that you can share with friends and family. Customize difficulty and grid size.</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-3 text-app-primary">Social Media Optimization</h3>
-              <p>Resize images for <a href="#instagram-size" className="text-app-primary hover:underline">Instagram</a>, <a href="#tiktok-format" className="text-app-primary hover:underline">TikTok</a>, <a href="#youtube-thumbnail" className="text-app-primary hover:underline">YouTube</a>, and other platforms with optimal dimensions.</p>
+              <p>Resize images for <a href="#instagram-size" className="text-app-primary hover:underline">Instagram</a>, <a href="#tiktok-format" className="text-app-primary hover:underline">TikTok</a>, <a href="#youtube-thumbnail" className="text-app-primary hover:underline">YouTube</a>, <a href="#twitter-size" className="text-app-primary hover:underline">Twitter</a>, <a href="#facebook-format" className="text-app-primary hover:underline">Facebook</a>, and other platforms with optimal dimensions.</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">Batch Processing</h3>
+              <p>Convert and process multiple images at once, saving you time and effort. Perfect for handling large collections of photos.</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-3 text-app-primary">Privacy First</h3>
-              <p>Your images never leave your browser. Learn more about our <a href="#about" className="text-app-primary hover:underline">privacy-focused approach</a> to image conversion.</p>
+              <p>Your images never leave your browser. Learn more about our <a href="#about" className="text-app-primary hover:underline">privacy-focused approach</a> to image processing.</p>
             </div>
           </div>
         </div>
@@ -211,8 +239,8 @@ const Index = () => {
 
           <div className="mb-8">
             <p className="text-center max-w-3xl mx-auto mb-8">
-              <strong>ConvertImageFast</strong> is the leading online image conversion tool that prioritizes speed, privacy, and ease of use.
-              Our platform allows you to convert between multiple image formats and optimize for various social media platforms without any technical knowledge.
+              <strong>ConvertImageFast</strong> is the leading online image toolkit that prioritizes speed, privacy, and ease of use.
+              Our platform allows you to convert between multiple image formats, compress images without quality loss, create interactive puzzles, and optimize for various social media platforms without any technical knowledge.
             </p>
           </div>
 
@@ -234,6 +262,40 @@ const Index = () => {
               </ul>
             </div>
 
+            <div id="image-compression" className="bg-white p-6 rounded-lg shadow-md border-l-4 border-app-primary">
+              <h3 className="text-xl font-semibold mb-3 flex items-center">
+                <span className="inline-block w-2 h-2 rounded-full bg-app-primary mr-2"></span>
+                Image Compression
+              </h3>
+              <p className="mb-4">
+                Our <a href="/compress" className="text-app-primary hover:underline">image compressor</a> reduces file size while maintaining visual quality. Perfect for websites, email attachments, and social media uploads.
+              </p>
+              <ul className="list-disc pl-5 mb-4 space-y-1">
+                <li><strong>Quality Control</strong>: Adjust compression level to balance size and quality</li>
+                <li><strong>Format Selection</strong>: Choose the best format for your needs (JPG, PNG, WebP)</li>
+                <li><strong>Size Comparison</strong>: See before/after file sizes to gauge compression efficiency</li>
+                <li><strong>Batch Processing</strong>: Compress multiple images at once to save time</li>
+                <li><strong>Preview</strong>: See the compressed result before downloading</li>
+              </ul>
+            </div>
+
+            <div id="puzzle-creation" className="bg-white p-6 rounded-lg shadow-md border-l-4 border-app-primary">
+              <h3 className="text-xl font-semibold mb-3 flex items-center">
+                <span className="inline-block w-2 h-2 rounded-full bg-app-primary mr-2"></span>
+                Interactive Puzzle Maker
+              </h3>
+              <p className="mb-4">
+                Transform any image into a fun, interactive puzzle with our <a href="/puzzle" className="text-app-primary hover:underline">puzzle maker</a>. Create and share puzzles with friends and family.
+              </p>
+              <ul className="list-disc pl-5 mb-4 space-y-1">
+                <li><strong>Customizable Difficulty</strong>: Choose from easy, medium, or hard settings</li>
+                <li><strong>Adjustable Grid Size</strong>: Select from 2x2, 3x3, 4x4, or 5x5 grids</li>
+                <li><strong>Multiple Interaction Modes</strong>: Drag-and-drop or click-to-swap pieces</li>
+                <li><strong>Shareable Puzzles</strong>: Generate links to share your puzzles with others</li>
+                <li><strong>Download Option</strong>: Save your completed puzzles as images</li>
+              </ul>
+            </div>
+
             <div id="instagram-size" className="bg-white p-6 rounded-lg shadow-md border-l-4 border-app-primary">
               <h3 className="text-xl font-semibold mb-3 flex items-center">
                 <span className="inline-block w-2 h-2 rounded-full bg-app-primary mr-2"></span>
@@ -247,8 +309,10 @@ const Index = () => {
                 <li id="instagram-size"><strong>Instagram</strong>: Posts, Stories, and Profile Pictures</li>
                 <li id="tiktok-format"><strong>TikTok</strong>: Video thumbnails and profile images</li>
                 <li id="youtube-thumbnail"><strong>YouTube</strong>: Thumbnails and channel art</li>
-                <li id="twitter-size"><strong>Twitter</strong>: Post images and profile pictures</li>
+                <li id="twitter-size"><strong>Twitter/X</strong>: Post images and profile pictures</li>
                 <li id="facebook-format"><strong>Facebook</strong>: Posts, covers, and profile pictures</li>
+                <li id="linkedin-format"><strong>LinkedIn</strong>: Posts, profile pictures, company pages</li>
+                <li id="pinterest-format"><strong>Pinterest</strong>: Pins (2:3 ratio), profile images</li>
               </ul>
             </div>
 
@@ -258,7 +322,7 @@ const Index = () => {
                 Privacy & Security
               </h3>
               <p className="mb-4">
-                Our image converter processes your files <strong>directly in your browser</strong>. Your images are never uploaded to any server,
+                All our tools process your files <strong>directly in your browser</strong>. Your images are never uploaded to any server,
                 ensuring complete privacy and security for your content.
               </p>
               <p className="mb-4">
@@ -275,7 +339,7 @@ const Index = () => {
                 Advanced Features
               </h3>
               <p className="mb-4">
-                ConvertImageFast offers more than just basic conversion:
+                ConvertImageFast offers more than just basic tools:
               </p>
               <ul className="list-disc pl-5 mb-4 space-y-1">
                 <li><strong>Batch Processing</strong>: Convert multiple images at once</li>
@@ -283,6 +347,8 @@ const Index = () => {
                 <li><strong>Quality Control</strong>: Adjust compression levels for optimal results</li>
                 <li><strong>Cropping Tools</strong>: Focus on the important parts of your image</li>
                 <li><strong>Instant Preview</strong>: See results before downloading</li>
+                <li><strong>Format Preservation</strong>: Remember your preferred formats</li>
+                <li><strong>Cross-Platform Support</strong>: Works on all modern browsers and devices</li>
               </ul>
             </div>
           </div>
@@ -317,7 +383,71 @@ const Index = () => {
                   <li><strong>GIF</strong> - For simple animations and graphics</li>
                   <li><strong>BMP</strong> - Uncompressed bitmap format</li>
                   <li><strong>TIFF</strong> - High-quality format for professional use</li>
+                  <li><strong>HEIC/HEIF</strong> - Apple's High Efficiency Image Format</li>
+                  <li><strong>SVG</strong> - Scalable Vector Graphics format</li>
+                  <li><strong>ICO</strong> - Icon file format</li>
                 </ul>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-muted">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">What tools does ConvertImageFast offer?</h3>
+              <div className="pl-5 border-l-2 border-app-primary/30">
+                <p>
+                  ConvertImageFast offers a comprehensive suite of image tools:
+                </p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li><strong>Image Converter</strong>: Convert between multiple image formats</li>
+                  <li><strong>Image Compressor</strong>: Reduce file size while maintaining quality</li>
+                  <li><strong>Puzzle Maker</strong>: Create interactive puzzles from your images</li>
+                  <li><strong>Social Media Resizer</strong>: Optimize images for various platforms</li>
+                  <li><strong>Cropping Tool</strong>: Focus on the important parts of your image</li>
+                  <li><strong>Batch Processing</strong>: Handle multiple images simultaneously</li>
+                </ul>
+                <p className="mt-2">
+                  All tools are free to use, with no registration required, and process your images directly in your browser for maximum privacy.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-muted">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">How does the image compression tool work?</h3>
+              <div className="pl-5 border-l-2 border-app-primary/30">
+                <p>
+                  Our image compression tool uses advanced algorithms to reduce file size while maintaining visual quality:
+                </p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>Upload your image in any supported format</li>
+                  <li>Choose your desired output format (JPG, PNG, or WebP)</li>
+                  <li>Adjust the quality level to balance size and visual quality</li>
+                  <li>Set maximum dimensions if needed</li>
+                  <li>Click "Compress" to process your image</li>
+                  <li>Compare before/after sizes and download the compressed result</li>
+                </ul>
+                <p className="mt-2">
+                  The compression is performed entirely in your browser using the Canvas API, ensuring your images never leave your device.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-muted">
+              <h3 className="text-lg font-semibold mb-3 text-app-primary">How do I create and share image puzzles?</h3>
+              <div className="pl-5 border-l-2 border-app-primary/30">
+                <p>
+                  Creating and sharing puzzles with ConvertImageFast is easy:
+                </p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>Upload any image in our supported formats</li>
+                  <li>Choose your puzzle difficulty (easy, medium, hard)</li>
+                  <li>Select grid size (2x2, 3x3, 4x4, or 5x5)</li>
+                  <li>Pick your preferred interaction mode (drag-and-drop or click-to-swap)</li>
+                  <li>Click "Create Puzzle" to generate your puzzle</li>
+                  <li>Solve the puzzle or share it immediately</li>
+                  <li>Use the "Share" button to generate a link that others can use to play your puzzle</li>
+                </ul>
+                <p className="mt-2">
+                  Puzzles can be shared via direct link, social media, or email. No account required!
+                </p>
               </div>
             </div>
 
@@ -380,20 +510,6 @@ const Index = () => {
                 </p>
               </div>
             </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-muted">
-              <h3 className="text-lg font-semibold mb-3 text-app-primary">Why should I crop before resizing for social media?</h3>
-              <div className="pl-5 border-l-2 border-app-primary/30">
-                <p>
-                  Cropping before resizing lets you control exactly which part of your image appears in the final result. This is
-                  especially important for platforms with fixed aspect ratios like Instagram, where you want to ensure the subject
-                  of your image remains properly framed after resizing.
-                </p>
-                <p className="mt-2">
-                  Our tool provides both cropping and resizing capabilities, allowing you to create perfectly optimized images for any platform.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -408,7 +524,31 @@ const Index = () => {
               "name": "What image formats does ConvertImageFast support?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "ConvertImageFast supports all major image formats including PNG (great for images with transparency), JPG/JPEG (ideal for photographs), WebP (modern format with excellent compression), JFIF (JPEG File Interchange Format), GIF (for simple animations), BMP (uncompressed bitmap format), and TIFF (high-quality format for professional use)."
+                "text": "ConvertImageFast supports all major image formats including PNG (great for images with transparency), JPG/JPEG (ideal for photographs), WebP (modern format with excellent compression), JFIF (JPEG File Interchange Format), GIF (for simple animations), BMP (uncompressed bitmap format), TIFF (high-quality format for professional use), HEIC/HEIF (Apple's High Efficiency Image Format), SVG (Scalable Vector Graphics format), and ICO (Icon file format)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What tools does ConvertImageFast offer?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "ConvertImageFast offers a comprehensive suite of image tools: Image Converter (convert between multiple image formats), Image Compressor (reduce file size while maintaining quality), Puzzle Maker (create interactive puzzles from your images), Social Media Resizer (optimize images for various platforms), Cropping Tool (focus on the important parts of your image), and Batch Processing (handle multiple images simultaneously). All tools are free to use, with no registration required, and process your images directly in your browser for maximum privacy."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does the image compression tool work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Our image compression tool uses advanced algorithms to reduce file size while maintaining visual quality. Upload your image in any supported format, choose your desired output format (JPG, PNG, or WebP), adjust the quality level to balance size and visual quality, set maximum dimensions if needed, click 'Compress' to process your image, and compare before/after sizes before downloading the compressed result. The compression is performed entirely in your browser using the Canvas API, ensuring your images never leave your device."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I create and share image puzzles?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Creating and sharing puzzles with ConvertImageFast is easy: Upload any image in our supported formats, choose your puzzle difficulty (easy, medium, hard), select grid size (2x2, 3x3, 4x4, or 5x5), pick your preferred interaction mode (drag-and-drop or click-to-swap), click 'Create Puzzle' to generate your puzzle, solve the puzzle or share it immediately, and use the 'Share' button to generate a link that others can use to play your puzzle. Puzzles can be shared via direct link, social media, or email. No account required!"
               }
             },
             {
@@ -441,14 +581,6 @@ const Index = () => {
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Resizing an image can potentially affect its quality. For best results, we recommend starting with a high-resolution image and scaling down rather than scaling up, using the quality slider for JPG and WebP formats to balance file size and image quality, choosing the appropriate format for your needs (PNG for graphics, JPG for photos), and using our 'Maintain aspect ratio' option to prevent distortion. Our algorithms are optimized to preserve as much quality as possible during conversion and resizing."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Why should I crop before resizing for social media?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Cropping before resizing lets you control exactly which part of your image appears in the final result. This is especially important for platforms with fixed aspect ratios like Instagram, where you want to ensure the subject of your image remains properly framed after resizing. Our tool provides both cropping and resizing capabilities, allowing you to create perfectly optimized images for any platform."
               }
             }
           ]
@@ -495,7 +627,20 @@ const Index = () => {
                 <li><a href="#convert-webp" className="hover:text-app-primary transition-colors">WebP Converter</a></li>
                 <li><a href="#convert-jfif" className="hover:text-app-primary transition-colors">JFIF Converter</a></li>
                 <li><a href="#tools" className="hover:text-app-primary transition-colors">GIF Converter</a></li>
-                <li><a href="#tools" className="hover:text-app-primary transition-colors">TIFF Converter</a></li>
+                <li><a href="#tools" className="hover:text-app-primary transition-colors">HEIC Converter</a></li>
+                <li><a href="#tools" className="hover:text-app-primary transition-colors">SVG Converter</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-base mb-3 text-app-primary">Image Tools</h3>
+              <ul className="space-y-2">
+                <li><a href="/compress" className="hover:text-app-primary transition-colors">Image Compressor</a></li>
+                <li><a href="/puzzle" className="hover:text-app-primary transition-colors">Create Image Puzzle</a></li>
+                <li><a href="#image-compression" className="hover:text-app-primary transition-colors">Reduce File Size</a></li>
+                <li><a href="#puzzle-creation" className="hover:text-app-primary transition-colors">Interactive Puzzles</a></li>
+                <li><a href="#tools" className="hover:text-app-primary transition-colors">Batch Processing</a></li>
+                <li><a href="#tools" className="hover:text-app-primary transition-colors">Image Cropping</a></li>
               </ul>
             </div>
 
@@ -507,6 +652,8 @@ const Index = () => {
                 <li><a href="#youtube-thumbnail" className="hover:text-app-primary transition-colors">YouTube Thumbnail Maker</a></li>
                 <li><a href="#twitter-size" className="hover:text-app-primary transition-colors">Twitter Image Resizer</a></li>
                 <li><a href="#facebook-format" className="hover:text-app-primary transition-colors">Facebook Image Resizer</a></li>
+                <li><a href="#linkedin-format" className="hover:text-app-primary transition-colors">LinkedIn Image Resizer</a></li>
+                <li><a href="#pinterest-format" className="hover:text-app-primary transition-colors">Pinterest Pin Resizer</a></li>
               </ul>
             </div>
 
@@ -518,18 +665,7 @@ const Index = () => {
                 <li><a href="#contact" className="hover:text-app-primary transition-colors">Contact Us</a></li>
                 <li><a href="/privacy" className="hover:text-app-primary transition-colors">Privacy Policy</a></li>
                 <li><a href="/terms" className="hover:text-app-primary transition-colors">Terms of Service</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-base mb-3 text-app-primary">Why Choose Us</h3>
-              <ul className="space-y-2">
-                <li>✓ 100% Free to Use</li>
-                <li>✓ No Registration Required</li>
-                <li>✓ Privacy-Focused</li>
-                <li>✓ Browser-Based Processing</li>
-                <li>✓ High-Quality Conversion</li>
-                <li>✓ Multiple Format Support</li>
+                <li><a href="https://github.com/bilyv/ConvertImageFast" className="hover:text-app-primary transition-colors">GitHub Repository</a></li>
               </ul>
             </div>
           </div>
@@ -545,17 +681,23 @@ const Index = () => {
 
           <div className="mt-4 text-xs text-center text-muted-foreground/70">
             <p>
-              <a href="#tools" className="hover:text-app-primary transition-colors">Convert</a> and
+              <a href="#tools" className="hover:text-app-primary transition-colors">Convert</a>,
+              <a href="/compress" className="hover:text-app-primary transition-colors"> compress</a>,
+              <a href="/puzzle" className="hover:text-app-primary transition-colors"> create puzzles</a>, and
               <a href="#instagram-size" className="hover:text-app-primary transition-colors"> resize</a> images between
               <a href="#convert-png-jpg" className="hover:text-app-primary transition-colors"> PNG</a>,
               <a href="#convert-jpg-png" className="hover:text-app-primary transition-colors"> JPG</a>,
               <a href="#convert-webp" className="hover:text-app-primary transition-colors"> WebP</a>,
-              <a href="#convert-jfif" className="hover:text-app-primary transition-colors"> JFIF</a> formats.
+              <a href="#convert-jfif" className="hover:text-app-primary transition-colors"> JFIF</a>,
+              <a href="#tools" className="hover:text-app-primary transition-colors"> HEIC</a>,
+              <a href="#tools" className="hover:text-app-primary transition-colors"> SVG</a>, and more formats.
               Optimize for <a href="#instagram-size" className="hover:text-app-primary transition-colors">Instagram</a>,
               <a href="#tiktok-format" className="hover:text-app-primary transition-colors"> TikTok</a>,
               <a href="#youtube-thumbnail" className="hover:text-app-primary transition-colors"> YouTube</a>,
               <a href="#twitter-size" className="hover:text-app-primary transition-colors"> Twitter</a>,
-              <a href="#facebook-format" className="hover:text-app-primary transition-colors"> Facebook</a> and more -
+              <a href="#facebook-format" className="hover:text-app-primary transition-colors"> Facebook</a>,
+              <a href="#linkedin-format" className="hover:text-app-primary transition-colors"> LinkedIn</a>,
+              <a href="#pinterest-format" className="hover:text-app-primary transition-colors"> Pinterest</a> and more -
               all for free, with no sign-up required.
             </p>
           </div>

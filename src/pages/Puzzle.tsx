@@ -67,7 +67,6 @@ import {
   ShareablePuzzleData
 } from '@/utils/puzzleUtils';
 import Header from '@/components/Header';
-import AnimatedPromoLink from '@/components/AnimatedPromoLink';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 
@@ -181,11 +180,18 @@ const Puzzle: React.FC = () => {
 
     // Validate file type
     const validImageTypes = [
-      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/heic', 'image/heif'
+      'image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/bmp', 'image/gif',
+      'image/heic', 'image/heif', 'image/jfif', 'image/svg+xml', 'application/pdf',
+      'image/tiff', 'image/x-icon', 'image/vnd.microsoft.icon'
     ];
 
-    if (!validImageTypes.includes(file.type)) {
-      setUploadError('Please upload a valid image file (JPEG, PNG, GIF, or HEIC)');
+    // Also check file extension for formats that might not be correctly identified by MIME type
+    const fileExtension = file.name.toLowerCase().split('.').pop() || '';
+    const validExtensions = ['jpg', 'jpeg', 'png', 'webp', 'bmp', 'gif', 'heic', 'heif',
+                            'jfif', 'svg', 'pdf', 'tiff', 'tif', 'ico'];
+
+    if (!validImageTypes.includes(file.type) && !validExtensions.includes(fileExtension)) {
+      setUploadError('Please upload a valid image file in one of these formats: JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, or ICO');
       return;
     }
 
@@ -594,8 +600,52 @@ const Puzzle: React.FC = () => {
   return (
     <div className="min-h-screen bg-app-background">
       <Helmet>
-        <title>Image Puzzle | ConvertImageFast</title>
-        <meta name="description" content="Create and play interactive puzzles from your images. Upload an image and customize your puzzle." />
+        <title>Create Custom Image Puzzles Online | Free Puzzle Maker | ConvertImageFast</title>
+        <meta name="description" content="Turn any image into a fun, interactive puzzle with our free online puzzle maker. Customize difficulty, grid size, and sharing options. Create and share puzzles from your photos with friends and family. No registration required." />
+        <meta name="keywords" content="image puzzle maker, create puzzle from photo, online puzzle creator, custom jigsaw puzzle, interactive puzzle game, free puzzle maker, share puzzles online, photo puzzle generator, make puzzle from image, puzzle creator tool, online jigsaw puzzle" />
+        <link rel="canonical" href="https://convertimagefast.com/puzzle" />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:title" content="Create Custom Image Puzzles Online | Free Puzzle Maker" />
+        <meta property="og:description" content="Turn any image into a fun, interactive puzzle with our free online puzzle maker. Customize difficulty, grid size, and sharing options." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://convertimagefast.com/puzzle" />
+        <meta property="og:image" content="/og-image.jpg" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Create Custom Image Puzzles Online | Free Puzzle Maker" />
+        <meta name="twitter:description" content="Turn any image into a fun, interactive puzzle with our free online puzzle maker. Customize difficulty, grid size, and sharing options." />
+        <meta name="twitter:image" content="/twitter-image.jpg" />
+
+        {/* Schema.org structured data */}
+        <script type="application/ld+json">{`
+        {
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "ConvertImageFast Puzzle Maker",
+          "url": "https://convertimagefast.com/puzzle",
+          "description": "Free online puzzle maker that turns any image into an interactive puzzle. Create, play, and share custom puzzles with friends and family.",
+          "applicationCategory": "GameApplication",
+          "operatingSystem": "All",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Create puzzles from any image",
+            "Customize puzzle difficulty",
+            "Choose grid size (2x2 to 5x5)",
+            "Multiple interaction modes",
+            "Share puzzles with friends",
+            "Download completed puzzles",
+            "Browser-based processing",
+            "No registration required",
+            "Privacy-focused design"
+          ]
+        }
+        `}</script>
       </Helmet>
 
       {/* Header with custom right navigation */}
@@ -638,19 +688,32 @@ const Puzzle: React.FC = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto p-4">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <PuzzleIcon className="h-6 w-6 text-app-primary" />
-            {puzzleCreated && !showConfig
-              ? `Puzzle: ${uploadedFile?.name || (imageData?.fileName || 'Image')}`
-              : 'Create Your Puzzle'}
-          </h1>
-          <p className="text-muted-foreground">
-            {puzzleCreated && !showConfig
-              ? interactionMode === 'drag'
-                ? 'Drag and drop the pieces to solve the puzzle'
-                : 'Click two pieces to swap their positions'
-              : 'Upload an image and configure your puzzle settings'}
-          </p>
+          {puzzleCreated && !showConfig ? (
+            <div>
+              <h1 className="text-2xl font-bold flex items-center gap-2">
+                <PuzzleIcon className="h-6 w-6 text-app-primary" />
+                {`Puzzle: ${uploadedFile?.name || (imageData?.fileName || 'Image')}`}
+              </h1>
+              <p className="text-muted-foreground">
+                {interactionMode === 'drag'
+                  ? 'Drag and drop the pieces to solve the puzzle'
+                  : 'Click two pieces to swap their positions'}
+              </p>
+            </div>
+          ) : (
+            <div className="text-center">
+              <h1 className="text-2xl font-bold flex items-center gap-2 justify-center">
+                <PuzzleIcon className="h-6 w-6 text-app-primary" />
+                Create Your Custom Image Puzzle
+              </h1>
+              <p className="text-muted-foreground">
+                Transform any image into an interactive puzzle to play and share
+              </p>
+              <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
+                Upload any image, customize difficulty and grid size, then play or share your puzzle with friends and family
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Show upload interface if no puzzle has been created yet or if in config mode */}
@@ -659,14 +722,17 @@ const Puzzle: React.FC = () => {
             {/* Image Upload Section */}
             {!imageData && (
               <div className="mb-6">
-                <h2 className="text-lg font-semibold mb-3">Upload Image</h2>
+                <h2 className="text-lg font-semibold mb-3 text-center">Upload Image for Your Puzzle</h2>
+                <p className="text-sm text-muted-foreground mb-4 text-center">
+                  Choose any image to transform into an interactive puzzle. Family photos, landscapes, artwork - anything works!
+                </p>
 
                 {/* Hidden file input */}
                 <input
                   type="file"
                   ref={fileInputRef}
                   className="hidden"
-                  accept="image/jpeg,image/png,image/gif,image/heic,image/heif"
+                  accept="image/jpeg,image/jpg,image/png,image/webp,image/bmp,image/gif,image/heic,image/heif,image/jfif,image/svg+xml,application/pdf,image/tiff,image/x-icon,.jpg,.jpeg,.png,.webp,.bmp,.gif,.heic,.heif,.jfif,.svg,.pdf,.tiff,.tif,.ico"
                   onChange={handleFileUpload}
                 />
 
@@ -682,7 +748,7 @@ const Puzzle: React.FC = () => {
                       <div className="aspect-video mx-auto max-w-xs overflow-hidden rounded-md">
                         <img
                           src={uploadedImageUrl}
-                          alt="Uploaded"
+                          alt="Uploaded image for puzzle creation"
                           className="h-full w-full object-contain"
                         />
                       </div>
@@ -710,7 +776,10 @@ const Puzzle: React.FC = () => {
                         Drag and drop an image here or click to browse
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Supports JPG, PNG, GIF, and HEIC (max 10MB)
+                        Supports all 11 formats: JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO (max 10MB)
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Your image stays private - all processing happens in your browser
                       </p>
                     </div>
                   )}
@@ -725,10 +794,13 @@ const Puzzle: React.FC = () => {
 
             {/* Puzzle Configuration */}
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold">Puzzle Settings</h2>
+              <h2 className="text-lg font-semibold text-center">Customize Your Puzzle</h2>
+              <p className="text-sm text-muted-foreground text-center mb-4">
+                Personalize your puzzle experience with these settings
+              </p>
 
               <div className="space-y-2">
-                <Label htmlFor="difficulty">Difficulty</Label>
+                <Label htmlFor="difficulty">Puzzle Difficulty</Label>
                 <Select
                   value={config.difficulty}
                   onValueChange={(value: 'easy' | 'medium' | 'hard') =>
@@ -739,15 +811,15 @@ const Puzzle: React.FC = () => {
                     <SelectValue placeholder="Select difficulty" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="easy">Easy</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="hard">Hard</SelectItem>
+                    <SelectItem value="easy">Easy - Perfect for beginners</SelectItem>
+                    <SelectItem value="medium">Medium - Balanced challenge</SelectItem>
+                    <SelectItem value="hard">Hard - For puzzle experts</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="grid">Grid Size</Label>
+                <Label htmlFor="grid">Puzzle Grid Size</Label>
                 <Select
                   value={`${config.rows}x${config.columns}`}
                   onValueChange={(value) => {
@@ -759,16 +831,16 @@ const Puzzle: React.FC = () => {
                     <SelectValue placeholder="Select grid size" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="2x2">2x2 (4 pieces)</SelectItem>
-                    <SelectItem value="3x3">3x3 (9 pieces)</SelectItem>
-                    <SelectItem value="4x4">4x4 (16 pieces)</SelectItem>
-                    <SelectItem value="5x5">5x5 (25 pieces)</SelectItem>
+                    <SelectItem value="2x2">2x2 (4 pieces) - Quick puzzles</SelectItem>
+                    <SelectItem value="3x3">3x3 (9 pieces) - Classic size</SelectItem>
+                    <SelectItem value="4x4">4x4 (16 pieces) - More challenging</SelectItem>
+                    <SelectItem value="5x5">5x5 (25 pieces) - Advanced puzzles</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="interaction">Interaction Mode</Label>
+                <Label htmlFor="interaction">Interaction Style</Label>
                 <Select
                   value={interactionMode}
                   onValueChange={(value: 'drag' | 'click') => setInteractionMode(value)}
@@ -777,8 +849,8 @@ const Puzzle: React.FC = () => {
                     <SelectValue placeholder="Select interaction mode" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="drag">Drag and Drop</SelectItem>
-                    <SelectItem value="click">Click to Swap</SelectItem>
+                    <SelectItem value="drag">Drag and Drop - Move pieces freely</SelectItem>
+                    <SelectItem value="click">Click to Swap - Select two pieces to exchange</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -788,14 +860,12 @@ const Puzzle: React.FC = () => {
                 className="w-full"
                 disabled={!uploadedImageUrl && !imageData}
               >
-                Create Puzzle
+                Create Your Custom Puzzle
               </Button>
 
-              {/* Animated Promotional Link */}
-              <AnimatedPromoLink
-                href="https://github.com/yourusername/image-puzzle-component"
-                featureName="Image Puzzle"
-              />
+              <p className="text-xs text-center text-muted-foreground mt-2">
+                After creating, you can play your puzzle, share it with friends, or download the completed image
+              </p>
             </div>
           </div>
         )}

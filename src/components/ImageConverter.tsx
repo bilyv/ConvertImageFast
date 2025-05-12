@@ -1,15 +1,18 @@
 
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FileUploader from './FileUploader';
 import ConversionOptions from './ConversionOptions';
 import ImagePreview from './ImagePreview';
 import ImageTypeDisplay from './ImageTypeDisplay';
 import ImageCropper from './ImageCropper';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Crop } from 'lucide-react';
+import { ArrowRight, Crop, FileDown } from 'lucide-react';
 import { useImageConverter } from '../hooks/useImageConverter';
 
 const ImageConverter: React.FC = () => {
+  const navigate = useNavigate();
+
   const {
     imageFile,
     selectedFormat,
@@ -75,15 +78,26 @@ const ImageConverter: React.FC = () => {
                       >
                         Remove Image
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleStartCropping}
-                        className="flex items-center"
-                      >
-                        <Crop className="h-4 w-4 mr-1" />
-                        Crop Image
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigate('/compress')}
+                          className="flex items-center"
+                        >
+                          <FileDown className="h-4 w-4 mr-1" />
+                          Compressor
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleStartCropping}
+                          className="flex items-center"
+                        >
+                          <Crop className="h-4 w-4 mr-1" />
+                          Crop Image
+                        </Button>
+                      </div>
                     </div>
                   </div>
 
