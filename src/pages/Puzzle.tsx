@@ -7,6 +7,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { getCurrentDateISO, getCurrentDateTimeISO } from '../utils/dateUtils';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -611,6 +612,7 @@ const Puzzle: React.FC = () => {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://convertimagefast.com/puzzle" />
         <meta property="og:image" content="/og-image.jpg" />
+        <meta property="og:updated_time" content={getCurrentDateTimeISO()} />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -643,7 +645,8 @@ const Puzzle: React.FC = () => {
             "Browser-based processing",
             "No registration required",
             "Privacy-focused design"
-          ]
+          ],
+          "dateModified": "${getCurrentDateISO()}"
         }
         `}</script>
       </Helmet>

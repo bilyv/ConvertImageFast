@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import ImageConverter from '../components/ImageConverter';
 import BreadcrumbNav from '../components/BreadcrumbNav';
 import Header from '../components/Header';
+import { getCurrentDateISO, getCurrentDateTimeISO } from '../utils/dateUtils';
 
 const Index = () => {
   return (
@@ -25,6 +26,7 @@ const Index = () => {
         <meta property="og:image:alt" content="ConvertImageFast - Online Image Converter, Compressor & Puzzle Maker" />
         <meta property="og:site_name" content="ConvertImageFast" />
         <meta property="og:locale" content="en_US" />
+        <meta property="og:updated_time" content={getCurrentDateTimeISO()} />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -80,6 +82,7 @@ const Index = () => {
           ],
           "screenshot": "/og-image.jpg",
           "softwareVersion": "1.1",
+          "dateModified": "${getCurrentDateISO()}",
           "aggregateRating": {
             "@type": "AggregateRating",
             "ratingValue": "4.8",
@@ -98,6 +101,7 @@ const Index = () => {
           "name": "ConvertImageFast",
           "url": "https://convertimagefast.com",
           "logo": "/green-file-icon.png",
+          "dateModified": "${getCurrentDateISO()}",
           "sameAs": [
             "https://github.com/bilyv/ConvertImageFast"
           ],

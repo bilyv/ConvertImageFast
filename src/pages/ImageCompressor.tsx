@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import ImageCompressorComponent from '../components/ImageCompressorComponent';
 import BreadcrumbNav from '../components/BreadcrumbNav';
 import Header from '../components/Header';
+import { getCurrentDateISO, getCurrentDateTimeISO } from '../utils/dateUtils';
 
 const ImageCompressor = () => {
   return (
@@ -20,6 +21,7 @@ const ImageCompressor = () => {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://convertimagefast.com/compress" />
         <meta property="og:image" content="/og-image.jpg" />
+        <meta property="og:updated_time" content={getCurrentDateTimeISO()} />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -52,7 +54,8 @@ const ImageCompressor = () => {
             "Browser-based processing",
             "No registration required",
             "Privacy-focused compression"
-          ]
+          ],
+          "dateModified": "${getCurrentDateISO()}"
         }
         `}</script>
       </Helmet>
