@@ -251,7 +251,7 @@ const Index = () => {
                 Image Format Conversion
               </h3>
               <p className="mb-4">
-                Easily convert between <strong>PNG</strong>, <strong>JPG</strong>, <strong>WebP</strong>, <strong>BMP</strong>, <strong>GIF</strong>, and <strong>HEIC</strong> formats with just a few clicks.
+                Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!
                 Our tool preserves image quality while optimizing file size for faster loading times.
               </p>
               <ul className="list-disc pl-5 mb-4 space-y-1">
