@@ -12,13 +12,13 @@ const Index = () => {
       <Helmet>
         <title>ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker | PNG, JPG, WebP</title>
         <meta name="google-site-verification" content="26RA6xhWCIbfb50QJ1gv8ou-B_56ppgoTswXY_hk" />
-        <meta name="description" content="Free online image converter, compressor & puzzle maker. Convert between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for Instagram, TikTok, YouTube. Compress images without quality loss. Create shareable puzzles. 100% secure browser-based tool, no registration required." />
+        <meta name="description" content="Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!" />
         <meta name="keywords" content="convert image online, png to jpg converter, jpg to png converter, webp converter, image format converter, resize image for instagram, tiktok image size, youtube thumbnail maker, free image converter, online image resizer, crop image online, convert image without upload, image compressor, reduce file size, create image puzzle, compress jpg without losing quality, optimize images for web" />
         <link rel="canonical" href="https://convertimagefast.com" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:title" content="ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker | PNG, JPG, WebP" />
-        <meta property="og:description" content="Free online image converter, compressor & puzzle maker. Convert between PNG, JPG, WebP, BMP, GIF & HEIC formats. Resize for social media, compress images, create shareable puzzles. 100% secure browser-based tool." />
+        <meta property="og:description" content="Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://convertimagefast.com" />
         <meta property="og:image" content="/og-image.jpg" />
@@ -29,7 +29,7 @@ const Index = () => {
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker" />
-        <meta name="twitter:description" content="Free online image converter, compressor & puzzle maker. Convert between PNG, JPG, WebP formats. Resize for social media, compress images, create shareable puzzles. 100% secure browser-based tool." />
+        <meta name="twitter:description" content="Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!" />
         <meta name="twitter:image" content="/twitter-image.jpg" />
         <meta name="twitter:image:alt" content="ConvertImageFast - Online Image Converter, Compressor & Puzzle Maker" />
 
@@ -50,7 +50,7 @@ const Index = () => {
           "@type": "WebApplication",
           "name": "ConvertImageFast",
           "url": "https://convertimagefast.com",
-          "description": "Free online image converter, compressor and puzzle maker with platform-specific resizing for Instagram, TikTok, YouTube & more. Convert between PNG, JPG, WebP, BMP, GIF & HEIC formats with cropping functionality. Compress images without quality loss and create shareable puzzles.",
+          "description": "Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!",
           "applicationCategory": "MultimediaApplication",
           "operatingSystem": "All",
           "offers": {
