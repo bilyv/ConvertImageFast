@@ -11,29 +11,29 @@ const Index = () => {
     <div className="min-h-screen bg-app-background">
       {/* Enhanced SEO Metadata with platform-specific resizing and cropping functionality mentioned */}
       <Helmet>
-        <title>ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker | PNG, JPG, WebP</title>
+        <title>ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker | PNG, JPG, WebP, BMP, GIF, HEIC</title>
         <meta name="google-site-verification" content="26RA6xhWCIbfb50QJ1gv8ou-B_56ppgoTswXY_hk" />
-        <meta name="description" content="Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!" />
-        <meta name="keywords" content="convert image online, png to jpg converter, jpg to png converter, webp converter, image format converter, resize image for instagram, tiktok image size, youtube thumbnail maker, free image converter, online image resizer, crop image online, convert image without upload, image compressor, reduce file size, create image puzzle, compress jpg without losing quality, optimize images for web" />
+        <meta name="description" content="Instantly convert, compress, and create puzzles from images in PNG, JPG, WebP, BMP, GIF, and HEIC formats. Optimize for Instagram, TikTok, YouTube and other social media platforms. Reduce file size without losing quality. All with our free online tool." />
+        <meta name="keywords" content="convert image online, png to jpg converter, jpg to png converter, webp converter, bmp converter, gif converter, heic converter, jfif converter, svg converter, pdf to image, tiff converter, ico converter, image format converter, resize image for instagram, tiktok image size, youtube thumbnail maker, free image converter, online image resizer, crop image online, convert image without upload, image compressor, reduce file size, create image puzzle, compress jpg without losing quality, optimize images for web, convert heic to jpg, convert webp to jpg, convert png to webp, convert jpg to webp, convert svg to png, convert pdf to jpg, convert tiff to jpg, convert ico to png" />
         <link rel="canonical" href="https://convertimagefast.com" />
 
         {/* Open Graph / Facebook */}
-        <meta property="og:title" content="ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker | PNG, JPG, WebP" />
-        <meta property="og:description" content="Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!" />
+        <meta property="og:title" content="ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker | PNG, JPG, WebP, BMP, GIF, HEIC" />
+        <meta property="og:description" content="Instantly convert, compress, and create puzzles from images in PNG, JPG, WebP, BMP, GIF, and HEIC formats. Optimize for Instagram, TikTok, YouTube and other social media platforms. Reduce file size without losing quality. All with our free online tool." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://convertimagefast.com" />
         <meta property="og:image" content="/og-image.jpg" />
-        <meta property="og:image:alt" content="ConvertImageFast - Online Image Converter, Compressor & Puzzle Maker" />
+        <meta property="og:image:alt" content="ConvertImageFast - Online Image Converter, Compressor & Puzzle Maker for PNG, JPG, WebP, BMP, GIF, HEIC" />
         <meta property="og:site_name" content="ConvertImageFast" />
         <meta property="og:locale" content="en_US" />
         <meta property="og:updated_time" content={getCurrentDateTimeISO()} />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker" />
-        <meta name="twitter:description" content="Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!" />
+        <meta name="twitter:title" content="ConvertImageFast | Best Free Online Image Converter, Compressor & Puzzle Maker | PNG, JPG, WebP, BMP, GIF, HEIC" />
+        <meta name="twitter:description" content="Instantly convert, compress, and create puzzles from images in PNG, JPG, WebP, BMP, GIF, and HEIC formats. Optimize for Instagram, TikTok, YouTube and other social media platforms. Reduce file size without losing quality. All with our free online tool." />
         <meta name="twitter:image" content="/twitter-image.jpg" />
-        <meta name="twitter:image:alt" content="ConvertImageFast - Online Image Converter, Compressor & Puzzle Maker" />
+        <meta name="twitter:image:alt" content="ConvertImageFast - Online Image Converter, Compressor & Puzzle Maker for PNG, JPG, WebP, BMP, GIF, HEIC" />
 
         {/* Additional SEO metadata */}
         <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -52,7 +52,7 @@ const Index = () => {
           "@type": "WebApplication",
           "name": "ConvertImageFast",
           "url": "https://convertimagefast.com",
-          "description": "Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!",
+          "description": "Instantly convert, compress, and create puzzles from images in PNG, JPG, WebP, BMP, GIF, and HEIC formats. Optimize for Instagram, TikTok, YouTube and other social media platforms. Reduce file size without losing quality. All with our free online tool.",
           "applicationCategory": "MultimediaApplication",
           "operatingSystem": "All",
           "offers": {
@@ -64,6 +64,18 @@ const Index = () => {
             "PNG to JPG conversion",
             "JPG to PNG conversion",
             "WebP to JPG conversion",
+            "WebP to PNG conversion",
+            "BMP to JPG conversion",
+            "BMP to PNG conversion",
+            "GIF to JPG conversion",
+            "GIF to PNG conversion",
+            "HEIC to JPG conversion",
+            "HEIC to PNG conversion",
+            "JFIF to JPG conversion",
+            "SVG to PNG conversion",
+            "PDF to JPG conversion",
+            "TIFF to JPG conversion",
+            "ICO to PNG conversion",
             "Social media image resizing for Instagram",
             "Social media image resizing for TikTok",
             "Social media image resizing for YouTube",
@@ -101,15 +113,18 @@ const Index = () => {
           "name": "ConvertImageFast",
           "url": "https://convertimagefast.com",
           "logo": "/green-file-icon.png",
+          "description": "ConvertImageFast is a free online tool for converting, compressing, and creating puzzles from images in PNG, JPG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, and ICO formats.",
           "dateModified": "${getCurrentDateISO()}",
           "sameAs": [
             "https://github.com/bilyv/ConvertImageFast"
           ],
           "contactPoint": {
             "@type": "ContactPoint",
-            "email": "contact@convertimagefast.com",
-            "contactType": "customer service"
-          }
+            "email": "ntwaribrian92@gmail.com",
+            "contactType": "customer service",
+            "availableLanguage": ["English"]
+          },
+          "keywords": "image converter, image compressor, puzzle maker, PNG to JPG, JPG to PNG, WebP converter, HEIC converter, social media image resizer"
         }
         `}</script>
       </Helmet>
@@ -127,7 +142,7 @@ const Index = () => {
             ConvertImageFast: #1 Free Online Image Converter, Compressor & Puzzle Maker
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-            Instantly convert, compress, and create puzzles from images in <strong>PNG</strong>, <strong>JPG</strong>, <strong>WebP</strong>, <strong>BMP</strong>, <strong>GIF</strong>, and <strong>HEIC</strong> formats.
+            Instantly convert, compress, and create puzzles from images in <strong>PNG</strong>, <strong>JPG</strong>, <strong>WebP</strong>, <strong>BMP</strong>, <strong>GIF</strong>, <strong>HEIC</strong>, <strong>JFIF</strong>, <strong>SVG</strong>, <strong>PDF</strong>, <strong>TIFF</strong>, and <strong>ICO</strong> formats.
             Optimize for Instagram, TikTok, YouTube and other social media platforms. Reduce file size without losing quality. All with our free online tool.
           </p>
           <p className="text-md text-muted-foreground max-w-2xl mx-auto mb-6">
@@ -141,6 +156,11 @@ const Index = () => {
             <a href="#convert-webp" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">WebP Converter</a>
             <a href="#convert-bmp-gif" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">BMP & GIF Support</a>
             <a href="#convert-heic" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">HEIC Converter</a>
+            <a href="#convert-jfif" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">JFIF Converter</a>
+            <a href="#convert-svg" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">SVG Converter</a>
+            <a href="#convert-pdf" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">PDF to Image</a>
+            <a href="#convert-tiff" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">TIFF Converter</a>
+            <a href="#convert-ico" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">ICO Converter</a>
             <a href="/compress" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">Image Compressor</a>
             <a href="/puzzle" className="px-3 py-1 bg-app-primary/10 text-app-primary rounded-full text-sm hover:bg-app-primary/20 transition-colors">Create Puzzle</a>
           </div>
@@ -190,6 +210,13 @@ const Index = () => {
             <a href="#convert-png-jpg" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert PNG to JPG</a>
             <a href="#convert-jpg-png" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert JPG to PNG</a>
             <a href="#convert-webp" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert WebP</a>
+            <a href="#convert-bmp-gif" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert BMP & GIF</a>
+            <a href="#convert-heic" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert HEIC</a>
+            <a href="#convert-jfif" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert JFIF</a>
+            <a href="#convert-svg" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert SVG</a>
+            <a href="#convert-pdf" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert PDF to Image</a>
+            <a href="#convert-tiff" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert TIFF</a>
+            <a href="#convert-ico" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Convert ICO</a>
             <a href="/compress" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Compress Images</a>
             <a href="/puzzle" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Create Puzzle</a>
             <a href="#instagram-size" className="px-4 py-2 bg-app-primary/10 text-app-primary rounded-md text-sm hover:bg-app-primary/20 transition-colors">Resize for Social Media</a>
@@ -205,7 +232,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-3 text-app-primary">Multiple Format Support</h3>
-              <p>Convert between <a href="#convert-png-jpg" className="text-app-primary hover:underline">PNG</a>, <a href="#convert-jpg-png" className="text-app-primary hover:underline">JPG</a>, <a href="#convert-webp" className="text-app-primary hover:underline">WebP</a>, <a href="#convert-bmp-gif" className="text-app-primary hover:underline">BMP</a>, <a href="#convert-bmp-gif" className="text-app-primary hover:underline">GIF</a>, and <a href="#convert-heic" className="text-app-primary hover:underline">HEIC</a> formats with perfect quality preservation.</p>
+              <p>Convert between <a href="#convert-png-jpg" className="text-app-primary hover:underline">PNG</a>, <a href="#convert-jpg-png" className="text-app-primary hover:underline">JPG</a>, <a href="#convert-webp" className="text-app-primary hover:underline">WebP</a>, <a href="#convert-bmp-gif" className="text-app-primary hover:underline">BMP</a>, <a href="#convert-bmp-gif" className="text-app-primary hover:underline">GIF</a>, <a href="#convert-heic" className="text-app-primary hover:underline">HEIC</a>, <a href="#convert-jfif" className="text-app-primary hover:underline">JFIF</a>, <a href="#convert-svg" className="text-app-primary hover:underline">SVG</a>, <a href="#convert-pdf" className="text-app-primary hover:underline">PDF</a>, <a href="#convert-tiff" className="text-app-primary hover:underline">TIFF</a>, and <a href="#convert-ico" className="text-app-primary hover:underline">ICO</a> formats with perfect quality preservation.</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-3 text-app-primary">Image Compression</h3>
@@ -255,7 +282,8 @@ const Index = () => {
                 Image Format Conversion
               </h3>
               <p className="mb-4">
-                Convert JPG, PNG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, ICO & more. Compress images, create puzzles, and resize for social media—all for free!
+                Instantly convert, compress, and create puzzles from images in PNG, JPG, WebP, BMP, GIF, HEIC, JFIF, SVG, PDF, TIFF, and ICO formats.
+                Optimize for Instagram, TikTok, YouTube and other social media platforms. Reduce file size without losing quality.
                 Our tool preserves image quality while optimizing file size for faster loading times.
               </p>
               <ul className="list-disc pl-5 mb-4 space-y-1">
@@ -263,6 +291,11 @@ const Index = () => {
                 <li id="convert-jpg-png"><strong>JPG to PNG</strong>: Add transparency and improve quality</li>
                 <li id="convert-webp"><strong>WebP Conversion</strong>: Convert to and from this modern format</li>
                 <li id="convert-heic"><strong>HEIC Support</strong>: Convert Apple's HEIC format to standard formats</li>
+                <li id="convert-jfif"><strong>JFIF Conversion</strong>: Convert JPEG File Interchange Format</li>
+                <li id="convert-svg"><strong>SVG Support</strong>: Convert vector graphics to raster formats</li>
+                <li id="convert-pdf"><strong>PDF to Image</strong>: Extract images from PDF documents</li>
+                <li id="convert-tiff"><strong>TIFF Conversion</strong>: Convert high-quality TIFF images</li>
+                <li id="convert-ico"><strong>ICO Support</strong>: Convert icon files to standard formats</li>
               </ul>
             </div>
 
@@ -380,16 +413,17 @@ const Index = () => {
                   ConvertImageFast supports all major image formats including:
                 </p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                  <li><strong>PNG</strong> - Great for images with transparency</li>
-                  <li><strong>JPG/JPEG</strong> - Ideal for photographs and complex images</li>
-                  <li><strong>WebP</strong> - Modern format with excellent compression</li>
-                  <li><strong>JFIF</strong> - JPEG File Interchange Format</li>
-                  <li><strong>GIF</strong> - For simple animations and graphics</li>
-                  <li><strong>BMP</strong> - Uncompressed bitmap format</li>
-                  <li><strong>TIFF</strong> - High-quality format for professional use</li>
-                  <li><strong>HEIC/HEIF</strong> - Apple's High Efficiency Image Format</li>
-                  <li><strong>SVG</strong> - Scalable Vector Graphics format</li>
-                  <li><strong>ICO</strong> - Icon file format</li>
+                  <li><strong>PNG</strong> - Great for images with transparency and lossless compression</li>
+                  <li><strong>JPG/JPEG</strong> - Ideal for photographs and complex images with small file sizes</li>
+                  <li><strong>WebP</strong> - Modern format with excellent compression and transparency support</li>
+                  <li><strong>JFIF</strong> - JPEG File Interchange Format, compatible with most image viewers</li>
+                  <li><strong>GIF</strong> - For simple animations and graphics with limited colors</li>
+                  <li><strong>BMP</strong> - Uncompressed bitmap format for high-quality images</li>
+                  <li><strong>TIFF</strong> - High-quality format for professional use and printing</li>
+                  <li><strong>HEIC/HEIF</strong> - Apple's High Efficiency Image Format with superior compression</li>
+                  <li><strong>SVG</strong> - Scalable Vector Graphics format for logos and illustrations</li>
+                  <li><strong>PDF</strong> - Extract and convert images from PDF documents</li>
+                  <li><strong>ICO</strong> - Icon file format for website favicons and application icons</li>
                 </ul>
               </div>
             </div>
@@ -528,7 +562,7 @@ const Index = () => {
               "name": "What image formats does ConvertImageFast support?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "ConvertImageFast supports all major image formats including PNG (great for images with transparency), JPG/JPEG (ideal for photographs), WebP (modern format with excellent compression), JFIF (JPEG File Interchange Format), GIF (for simple animations), BMP (uncompressed bitmap format), TIFF (high-quality format for professional use), HEIC/HEIF (Apple's High Efficiency Image Format), SVG (Scalable Vector Graphics format), and ICO (Icon file format)."
+                "text": "ConvertImageFast supports all major image formats including PNG (great for images with transparency and lossless compression), JPG/JPEG (ideal for photographs and complex images with small file sizes), WebP (modern format with excellent compression and transparency support), JFIF (JPEG File Interchange Format, compatible with most image viewers), GIF (for simple animations and graphics with limited colors), BMP (uncompressed bitmap format for high-quality images), TIFF (high-quality format for professional use and printing), HEIC/HEIF (Apple's High Efficiency Image Format with superior compression), SVG (Scalable Vector Graphics format for logos and illustrations), PDF (extract and convert images from PDF documents), and ICO (Icon file format for website favicons and application icons)."
               }
             },
             {
@@ -606,11 +640,11 @@ const Index = () => {
             We're here to help! Reach out to our team for assistance.
           </p>
           <div className="flex flex-col items-center justify-center space-y-4">
-            <a href="mailto:contact@convertimagefast.com" className="text-app-primary hover:underline flex items-center">
+            <a href="mailto:ntwaribrian92@gmail.com" className="text-app-primary hover:underline flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              contact@convertimagefast.com
+              ntwaribrian92@gmail.com
             </a>
             <p className="text-sm text-muted-foreground">
               We typically respond within 24 hours.
@@ -629,10 +663,14 @@ const Index = () => {
                 <li><a href="#convert-png-jpg" className="hover:text-app-primary transition-colors">PNG to JPG Converter</a></li>
                 <li><a href="#convert-jpg-png" className="hover:text-app-primary transition-colors">JPG to PNG Converter</a></li>
                 <li><a href="#convert-webp" className="hover:text-app-primary transition-colors">WebP Converter</a></li>
+                <li><a href="#convert-bmp-gif" className="hover:text-app-primary transition-colors">BMP Converter</a></li>
+                <li><a href="#convert-bmp-gif" className="hover:text-app-primary transition-colors">GIF Converter</a></li>
+                <li><a href="#convert-heic" className="hover:text-app-primary transition-colors">HEIC Converter</a></li>
                 <li><a href="#convert-jfif" className="hover:text-app-primary transition-colors">JFIF Converter</a></li>
-                <li><a href="#tools" className="hover:text-app-primary transition-colors">GIF Converter</a></li>
-                <li><a href="#tools" className="hover:text-app-primary transition-colors">HEIC Converter</a></li>
-                <li><a href="#tools" className="hover:text-app-primary transition-colors">SVG Converter</a></li>
+                <li><a href="#convert-svg" className="hover:text-app-primary transition-colors">SVG Converter</a></li>
+                <li><a href="#convert-pdf" className="hover:text-app-primary transition-colors">PDF to Image</a></li>
+                <li><a href="#convert-tiff" className="hover:text-app-primary transition-colors">TIFF Converter</a></li>
+                <li><a href="#convert-ico" className="hover:text-app-primary transition-colors">ICO Converter</a></li>
               </ul>
             </div>
 
@@ -692,9 +730,14 @@ const Index = () => {
               <a href="#convert-png-jpg" className="hover:text-app-primary transition-colors"> PNG</a>,
               <a href="#convert-jpg-png" className="hover:text-app-primary transition-colors"> JPG</a>,
               <a href="#convert-webp" className="hover:text-app-primary transition-colors"> WebP</a>,
+              <a href="#convert-bmp-gif" className="hover:text-app-primary transition-colors"> BMP</a>,
+              <a href="#convert-bmp-gif" className="hover:text-app-primary transition-colors"> GIF</a>,
+              <a href="#convert-heic" className="hover:text-app-primary transition-colors"> HEIC</a>,
               <a href="#convert-jfif" className="hover:text-app-primary transition-colors"> JFIF</a>,
-              <a href="#tools" className="hover:text-app-primary transition-colors"> HEIC</a>,
-              <a href="#tools" className="hover:text-app-primary transition-colors"> SVG</a>, and more formats.
+              <a href="#convert-svg" className="hover:text-app-primary transition-colors"> SVG</a>,
+              <a href="#convert-pdf" className="hover:text-app-primary transition-colors"> PDF</a>,
+              <a href="#convert-tiff" className="hover:text-app-primary transition-colors"> TIFF</a>,
+              <a href="#convert-ico" className="hover:text-app-primary transition-colors"> ICO</a> formats.
               Optimize for <a href="#instagram-size" className="hover:text-app-primary transition-colors">Instagram</a>,
               <a href="#tiktok-format" className="hover:text-app-primary transition-colors"> TikTok</a>,
               <a href="#youtube-thumbnail" className="hover:text-app-primary transition-colors"> YouTube</a>,

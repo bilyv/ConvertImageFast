@@ -61,6 +61,7 @@ const LinkedinIcon = () => (
 import {
   PuzzlePiece,
   PuzzleConfig,
+  PuzzleShape,
   DEFAULT_PUZZLE_CONFIG,
   createPuzzlePieces,
   createShareablePuzzleData,
@@ -68,6 +69,7 @@ import {
   ShareablePuzzleData
 } from '@/utils/puzzleUtils';
 import Header from '@/components/Header';
+import PuzzleShapePreview from '@/components/PuzzleShapePreview';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 
@@ -840,6 +842,39 @@ const Puzzle: React.FC = () => {
                     <SelectItem value="5x5">5x5 (25 pieces) - Advanced puzzles</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="shape">Puzzle Piece Shape</Label>
+                <Select
+                  value={config.shape}
+                  onValueChange={(value: PuzzleShape) =>
+                    setConfig(prev => ({ ...prev, shape: value }))
+                  }
+                >
+                  <SelectTrigger id="shape">
+                    <SelectValue placeholder="Select piece shape" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="classic">Classic - Traditional square pieces</SelectItem>
+                    <SelectItem value="heart">Heart - Love-shaped pieces</SelectItem>
+                    <SelectItem value="rounded">Rounded - Smooth corner pieces</SelectItem>
+                    <SelectItem value="zigzag">Zigzag - Jagged edge pieces</SelectItem>
+                    <SelectItem value="cloud">Cloud - Bubbly shaped pieces</SelectItem>
+                    <SelectItem value="star">Star - Star-shaped pieces</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="mt-2 flex items-center gap-4">
+                  <PuzzleShapePreview shape={config.shape} className="bg-background" />
+                  <div className="text-sm text-muted-foreground">
+                    {config.shape === 'classic' && 'Traditional square puzzle pieces with straight edges.'}
+                    {config.shape === 'heart' && 'Heart-shaped pieces for a romantic or fun puzzle experience.'}
+                    {config.shape === 'rounded' && 'Pieces with smooth, rounded corners for a modern look.'}
+                    {config.shape === 'zigzag' && 'Pieces with jagged, zigzag edges for an extra challenge.'}
+                    {config.shape === 'cloud' && 'Bubbly, cloud-like pieces for a playful puzzle.'}
+                    {config.shape === 'star' && 'Star-shaped pieces for a celestial puzzle experience.'}
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">

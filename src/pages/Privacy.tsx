@@ -13,18 +13,18 @@ const Privacy = () => {
       </Helmet>
 
       <BreadcrumbNav />
-      
+
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold mb-8">Privacy Policy</h1>
-        
+
         <div className="prose dark:prose-invert max-w-none">
           <p className="text-lg mb-6">Last Updated: May 4, 2025</p>
-          
+
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
             <p>At ImageConvert, we take your privacy seriously. This Privacy Policy explains how we collect, use, and protect your information when you use our online image conversion tools.</p>
           </section>
-          
+
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Information We Don't Collect</h2>
             <p>Our service is designed with privacy in mind:</p>
@@ -35,7 +35,7 @@ const Privacy = () => {
               <li>We do not require registration or collect personal information</li>
             </ul>
           </section>
-          
+
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Information We May Collect</h2>
             <p>We collect minimal anonymous usage data:</p>
@@ -46,15 +46,15 @@ const Privacy = () => {
             </ul>
             <p>This information helps us improve our service and does not identify you personally.</p>
           </section>
-          
+
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Cookies</h2>
             <p>We use essential cookies that are necessary for the site to function. These cookies don't track you for advertising purposes.</p>
           </section>
-          
+
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Contact Information</h2>
-            <p>If you have any questions about our privacy practices, please contact us at <a href="mailto:contact@imageconvert.app" className="text-app-primary hover:underline">contact@imageconvert.app</a>.</p>
+            <p>If you have any questions about our privacy practices, please contact us at <a href="mailto:ntwaribrian92@gmail.com" className="text-app-primary hover:underline">ntwaribrian92@gmail.com</a>.</p>
           </section>
         </div>
       </div>

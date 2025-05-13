@@ -55,6 +55,7 @@
     "embla-carousel-react": "^8.3.0",
     "file-saver": "^2.0.5",
     "framer-motion": "^12.10.5",
+    "heic-convert": "^2.1.0",
     "heic2any": "^0.0.4",
     "html2canvas": "^1.4.1",
     "icojs": "^0.19.5",

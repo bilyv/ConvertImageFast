@@ -22,12 +22,18 @@ export interface PuzzlePiece {
 }
 
 /**
+ * Available puzzle piece shapes
+ */
+export type PuzzleShape = 'classic' | 'heart' | 'rounded' | 'zigzag' | 'cloud' | 'star';
+
+/**
  * Interface for puzzle configuration
  */
 export interface PuzzleConfig {
   rows: number;
   columns: number;
   difficulty: 'easy' | 'medium' | 'hard';
+  shape: PuzzleShape;
 }
 
 /**
@@ -36,7 +42,8 @@ export interface PuzzleConfig {
 export const DEFAULT_PUZZLE_CONFIG: PuzzleConfig = {
   rows: 3,
   columns: 3,
-  difficulty: 'medium'
+  difficulty: 'medium',
+  shape: 'classic'
 };
 
 /**
@@ -165,6 +172,255 @@ export const parseShareablePuzzleData = (encodedData: string): ShareablePuzzleDa
   }
 };
 
+/**
+ * Draw a heart shape on a canvas context
+ *
+ * @param ctx Canvas context to draw on
+ * @param x X position
+ * @param y Y position
+ * @param width Width of the heart
+ * @param height Height of the heart
+ */
+const drawHeartShape = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+): void => {
+  // Calculate dimensions for the heart shape
+
+  ctx.beginPath();
+  ctx.moveTo(x + width / 2, y + height);
+
+  // Left side of the heart
+  ctx.bezierCurveTo(
+    x, y + height * 0.7, // Control point 1
+    x, y + height * 0.4, // Control point 2
+    x + width / 2, y     // End point
+  );
+
+  // Right side of the heart
+  ctx.bezierCurveTo(
+    x + width, y + height * 0.4, // Control point 1
+    x + width, y + height * 0.7, // Control point 2
+    x + width / 2, y + height    // End point
+  );
+
+  ctx.closePath();
+};
+
+/**
+ * Draw a rounded shape on a canvas context
+ *
+ * @param ctx Canvas context to draw on
+ * @param x X position
+ * @param y Y position
+ * @param width Width of the shape
+ * @param height Height of the shape
+ */
+const drawRoundedShape = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+): void => {
+  const radius = Math.min(width, height) * 0.2;
+
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+};
+
+/**
+ * Draw a zigzag shape on a canvas context
+ *
+ * @param ctx Canvas context to draw on
+ * @param x X position
+ * @param y Y position
+ * @param width Width of the shape
+ * @param height Height of the shape
+ */
+const drawZigzagShape = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+): void => {
+  const zigzagSize = Math.min(width, height) * 0.1;
+  const steps = 8;
+
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+
+  // Top edge
+  for (let i = 0; i < steps; i++) {
+    const xPos = x + (width / steps) * i;
+    const yPos = y + (i % 2 === 0 ? zigzagSize : 0);
+    ctx.lineTo(xPos, yPos);
+  }
+  ctx.lineTo(x + width, y);
+
+  // Right edge
+  for (let i = 0; i < steps; i++) {
+    const xPos = x + width - (i % 2 === 0 ? zigzagSize : 0);
+    const yPos = y + (height / steps) * i;
+    ctx.lineTo(xPos, yPos);
+  }
+  ctx.lineTo(x + width, y + height);
+
+  // Bottom edge
+  for (let i = 0; i < steps; i++) {
+    const xPos = x + width - (width / steps) * i;
+    const yPos = y + height - (i % 2 === 0 ? zigzagSize : 0);
+    ctx.lineTo(xPos, yPos);
+  }
+  ctx.lineTo(x, y + height);
+
+  // Left edge
+  for (let i = 0; i < steps; i++) {
+    const xPos = x + (i % 2 === 0 ? zigzagSize : 0);
+    const yPos = y + height - (height / steps) * i;
+    ctx.lineTo(xPos, yPos);
+  }
+
+  ctx.closePath();
+};
+
+/**
+ * Draw a cloud shape on a canvas context
+ *
+ * @param ctx Canvas context to draw on
+ * @param x X position
+ * @param y Y position
+ * @param width Width of the shape
+ * @param height Height of the shape
+ */
+const drawCloudShape = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+): void => {
+  const bubbleRadius = Math.min(width, height) * 0.15;
+
+  ctx.beginPath();
+
+  // Bottom left corner
+  ctx.moveTo(x + bubbleRadius, y + height);
+
+  // Bottom edge with bubbles
+  ctx.arc(x + width * 0.25, y + height - bubbleRadius, bubbleRadius, Math.PI / 2, Math.PI, false);
+  ctx.arc(x + width * 0.5, y + height - bubbleRadius, bubbleRadius, Math.PI, 3 * Math.PI / 2, false);
+  ctx.arc(x + width * 0.75, y + height - bubbleRadius, bubbleRadius, 3 * Math.PI / 2, 0, false);
+
+  // Right edge with bubbles
+  ctx.arc(x + width - bubbleRadius, y + height * 0.75, bubbleRadius, 0, Math.PI / 2, false);
+  ctx.arc(x + width - bubbleRadius, y + height * 0.5, bubbleRadius, Math.PI / 2, Math.PI, false);
+  ctx.arc(x + width - bubbleRadius, y + height * 0.25, bubbleRadius, Math.PI, 3 * Math.PI / 2, false);
+
+  // Top edge with bubbles
+  ctx.arc(x + width * 0.75, y + bubbleRadius, bubbleRadius, 3 * Math.PI / 2, 0, false);
+  ctx.arc(x + width * 0.5, y + bubbleRadius, bubbleRadius, 0, Math.PI / 2, false);
+  ctx.arc(x + width * 0.25, y + bubbleRadius, bubbleRadius, Math.PI / 2, Math.PI, false);
+
+  // Left edge with bubbles
+  ctx.arc(x + bubbleRadius, y + height * 0.25, bubbleRadius, Math.PI, 3 * Math.PI / 2, false);
+  ctx.arc(x + bubbleRadius, y + height * 0.5, bubbleRadius, 3 * Math.PI / 2, 0, false);
+  ctx.arc(x + bubbleRadius, y + height * 0.75, bubbleRadius, 0, Math.PI / 2, false);
+
+  ctx.closePath();
+};
+
+/**
+ * Draw a star shape on a canvas context
+ *
+ * @param ctx Canvas context to draw on
+ * @param x X position
+ * @param y Y position
+ * @param width Width of the shape
+ * @param height Height of the shape
+ */
+const drawStarShape = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+): void => {
+  const centerX = x + width / 2;
+  const centerY = y + height / 2;
+  const outerRadius = Math.min(width, height) / 2;
+  const innerRadius = outerRadius * 0.4;
+  const spikes = 5;
+
+  ctx.beginPath();
+  ctx.moveTo(centerX, y);
+
+  for (let i = 0; i < spikes * 2; i++) {
+    const radius = i % 2 === 0 ? outerRadius : innerRadius;
+    const angle = (Math.PI * i) / spikes;
+    const pointX = centerX + radius * Math.sin(angle);
+    const pointY = centerY - radius * Math.cos(angle);
+    ctx.lineTo(pointX, pointY);
+  }
+
+  ctx.closePath();
+};
+
+/**
+ * Draw a shape on a canvas context based on the selected shape type
+ *
+ * @param ctx Canvas context to draw on
+ * @param x X position
+ * @param y Y position
+ * @param width Width of the shape
+ * @param height Height of the shape
+ * @param shape Shape type to draw
+ */
+const drawShape = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  shape: PuzzleShape
+): void => {
+  switch (shape) {
+    case 'heart':
+      drawHeartShape(ctx, x, y, width, height);
+      break;
+    case 'rounded':
+      drawRoundedShape(ctx, x, y, width, height);
+      break;
+    case 'zigzag':
+      drawZigzagShape(ctx, x, y, width, height);
+      break;
+    case 'cloud':
+      drawCloudShape(ctx, x, y, width, height);
+      break;
+    case 'star':
+      drawStarShape(ctx, x, y, width, height);
+      break;
+    case 'classic':
+    default:
+      // Classic rectangular shape
+      ctx.rect(x, y, width, height);
+      break;
+  }
+};
+
 export const createPuzzlePieces = async (
   imageUrl: string,
   config: PuzzleConfig = DEFAULT_PUZZLE_CONFIG
@@ -202,12 +458,30 @@ export const createPuzzlePieces = async (
               return;
             }
 
+            // Save the context state
+            pieceCtx.save();
+
+            // Create a clipping path for the piece shape
+            pieceCtx.beginPath();
+            drawShape(pieceCtx, 0, 0, pieceWidth, pieceHeight, config.shape);
+            pieceCtx.clip();
+
             // Draw the piece from the original image
             pieceCtx.drawImage(
               img,
               col * pieceWidth, row * pieceHeight, pieceWidth, pieceHeight,
               0, 0, pieceWidth, pieceHeight
             );
+
+            // Restore the context state
+            pieceCtx.restore();
+
+            // Draw a border around the piece
+            pieceCtx.beginPath();
+            drawShape(pieceCtx, 0, 0, pieceWidth, pieceHeight, config.shape);
+            pieceCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            pieceCtx.lineWidth = 2;
+            pieceCtx.stroke();
 
             // Convert the piece to a data URL
             const pieceUrl = pieceCanvas.toDataURL('image/png');
