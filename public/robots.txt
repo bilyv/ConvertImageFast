@@ -14,4 +14,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://convertimagefast.com/sitemap.xml
+Sitemap: https://convertimagefast.vercel.app/sitemap.xml
