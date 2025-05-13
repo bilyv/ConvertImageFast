@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "update-sitemap": "node scripts/updateSitemap.js",
-    "prebuild": "node scripts/updateSitemap.js"
+    "prebuild": "node scripts/updateSitemap.js",
+    "postbuild": "node scripts/copyRedirectFiles.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

@@ -56,6 +56,9 @@ const updateSitemap = () => {
           url.appendChild(lastmodElement);
         }
       }
+
+      // Important: We're NOT modifying the domain in the loc element
+      // This preserves your existing domain names in the sitemap
     }
 
     // Serialize the XML back to string
